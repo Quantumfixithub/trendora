@@ -1,0 +1,2026 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Trendora</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #f3f4f6;
+            color: #333;
+        }
+
+        .dashboard {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 260px;
+            background: #1f2937;
+            color: white;
+            padding: 20px 0;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        .logo {
+            padding: 0 20px 20px;
+            border-bottom: 1px solid #374151;
+            margin-bottom: 20px;
+        }
+
+        .logo h2 {
+            color: #d97706;
+            font-size: 24px;
+        }
+
+        .logo p {
+            font-size: 12px;
+            color: #9ca3af;
+            margin-top: 5px;
+        }
+
+        .nav-menu {
+            list-style: none;
+        }
+
+        .nav-item {
+            padding: 12px 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: #d1d5db;
+        }
+
+        .nav-item:hover,
+        .nav-item.active {
+            background: #374151;
+            color: white;
+            border-left: 4px solid #d97706;
+            padding-left: 16px;
+        }
+
+        .nav-item .icon {
+            font-size: 20px;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-left: 260px;
+            padding: 30px;
+        }
+
+        .header {
+            background: white;
+            padding: 20px 30px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            color: #1f2937;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background: #d97706;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .stat-card .icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin-bottom: 15px;
+        }
+
+        .stat-card.revenue .icon {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .stat-card.orders .icon {
+            background: #fef3c7;
+            color: #d97706;
+        }
+
+        .stat-card.users .icon {
+            background: #d1fae5;
+            color: #059669;
+        }
+
+        .stat-card.products .icon {
+            background: #e9d5ff;
+            color: #7c3aed;
+        }
+
+        .stat-card h3 {
+            color: #6b7280;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+
+        .stat-card .value {
+            font-size: 32px;
+            font-weight: bold;
+            color: #1f2937;
+            margin-bottom: 8px;
+        }
+
+        .stat-card .change {
+            font-size: 13px;
+            color: #059669;
+        }
+
+        .stat-card .change.negative {
+            color: #dc2626;
+        }
+
+        /* Content Sections */
+        .content-section {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            display: none;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f3f4f6;
+        }
+
+        .section-header h2 {
+            font-size: 22px;
+            color: #1f2937;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: #d97706;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #b45309;
+        }
+
+        .btn-secondary {
+            background: #e5e7eb;
+            color: #374151;
+        }
+
+        .btn-secondary:hover {
+            background: #d1d5db;
+        }
+
+        .btn-danger {
+            background: #dc2626;
+            color: white;
+        }
+
+        .btn-success {
+            background: #059669;
+            color: white;
+        }
+
+        /* Form Styles */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .form-group label {
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #374151;
+            font-size: 14px;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            padding: 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 15px;
+            font-family: inherit;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #d97706;
+        }
+
+        .image-upload {
+            border: 2px dashed #d1d5db;
+            padding: 40px;
+            text-align: center;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .image-upload:hover {
+            border-color: #d97706;
+            background: #fef3c7;
+        }
+
+        .image-upload input[type="file"] {
+            display: none;
+        }
+
+        .image-preview {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 15px;
+        }
+
+        .image-preview img {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 6px;
+            border: 2px solid #e5e7eb;
+        }
+
+        /* Table Styles */
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        table thead {
+            background: #f9fafb;
+        }
+
+        table th {
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            color: #374151;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        table td {
+            padding: 15px;
+            border-bottom: 1px solid #f3f4f6;
+            color: #6b7280;
+        }
+
+        table tbody tr:hover {
+            background: #f9fafb;
+        }
+
+        .product-cell {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .product-image {
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
+            border-radius: 6px;
+        }
+
+        .status-badge {
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .status-badge.active {
+            background: #d1fae5;
+            color: #059669;
+        }
+
+        .status-badge.inactive {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .status-badge.pending {
+            background: #fef3c7;
+            color: #d97706;
+        }
+
+        .status-badge.completed {
+            background: #d1fae5;
+            color: #059669;
+        }
+
+        .status-badge.cancelled {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .action-btn {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.3s;
+        }
+
+        .action-btn.edit {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .action-btn.delete {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .action-btn.view {
+            background: #e9d5ff;
+            color: #7c3aed;
+        }
+
+        /* Chart Container */
+        .chart-container {
+            height: 300px;
+            margin: 20px 0;
+            background: #f9fafb;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #9ca3af;
+        }
+
+        /* Search and Filter */
+        .controls {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 250px;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 10px 15px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .filter-select {
+            padding: 10px 15px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-header h3 {
+            font-size: 20px;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #6b7280;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 70px;
+            }
+
+            .sidebar .logo p,
+            .sidebar .nav-item span {
+                display: none;
+            }
+
+            .main-content {
+                margin-left: 70px;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .analytics-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .analytics-card {
+            background: #f9fafb;
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        .analytics-card h4 {
+            color: #374151;
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+
+        .metric-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .metric-item:last-child {
+            border-bottom: none;
+        }
+
+        .metric-label {
+            color: #6b7280;
+            font-size: 14px;
+        }
+
+        .metric-value {
+            font-weight: 600;
+            color: #1f2937;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+           
+<div class="logo">
+                <h2>TRENDORA</h2>
+                <p>Admin Panel</p>
+            </div>
+            <ul class="nav-menu">
+                <li class="nav-item active" data-section="dashboard">
+                    <span class="icon">📊</span>
+                    <span>Dashboard</span>
+                </li>
+                <li class="nav-item" data-section="products">
+                    <span class="icon">📦</span>
+                    <span>Products</span>
+                </li>
+                <li class="nav-item" data-section="orders">
+                    <span class="icon">🛒</span>
+                    <span>Orders</span>
+                </li>
+                <li class="nav-item" data-section="users">
+                    <span class="icon">👥</span>
+                    <span>Users</span>
+                </li>
+                <li class="nav-item" data-section="analytics">
+                    <span class="icon">📈</span>
+                    <span>Analytics</span>
+                </li>
+                <li class="nav-item" data-section="sales">
+                    <span class="icon">💰</span>
+                    <span>Sales Report</span>
+                </li>
+                <li class="nav-item" data-section="categories">
+                    <span class="icon">🏷️</span>
+                    <span>Categories</span>
+                </li>
+                <li class="nav-item" data-section="settings">
+                    <span class="icon">⚙️</span>
+                    <span>Settings</span>
+                </li>
+                <li class="nav-item" data-section="logout">
+                    <span class="icon">🚪</span>
+                    <span>Logout</span>
+                </li>
+            </ul>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <div class="header">
+                <h1>Welcome Back, Admin!</h1>
+                <div class="user-info">
+                    <span>ADETUTU OLUWATOBI</span>
+                    <div class="user-avatar">AO</div>
+                </div>
+            </div>
+
+            <!-- Dashboard Section -->
+            <section class="content-section active" id="dashboard">
+                <div class="stats-grid">
+                    <div class="stat-card revenue">
+                        <div class="icon">💵</div>
+                        <h3>Total Revenue</h3>
+                        <div class="value">$124,563</div>
+                        <div class="change">↑ 12.5% from last month</div>
+                    </div>
+                    <div class="stat-card orders">
+                        <div class="icon">🛍️</div>
+                        <h3>Total Orders</h3>
+                        <div class="value">1,847</div>
+                        <div class="change">↑ 8.3% from last month</div>
+                    </div>
+                    <div class="stat-card users">
+                        <div class="icon">👤</div>
+                        <h3>Total Users</h3>
+                        <div class="value">3,462</div>
+                        <div class="change">↑ 15.2% from last month</div>
+                    </div>
+                    <div class="stat-card products">
+                        <div class="icon">📦</div>
+                        <h3>Total Products</h3>
+                        <div class="value">287</div>
+                        <div class="change">↑ 5.1% from last month</div>
+                    </div>
+                </div>
+
+                <div class="content-section active">
+                    <div class="section-header">
+                        <h2>Recent Orders</h2>
+                        <button class="btn btn-secondary">View All</button>
+                    </div>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Order ID</th>
+                                    <th>Customer</th>
+                                    <th>Date</th>
+                                    <th>Total</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>#ORD-1001</td>
+                                    <td>John Smith</td>
+                                    <td>Jan 15, 2025</td>
+                                    <td>$299.00</td>
+                                    <td><span class="status-badge completed">Completed</span></td>
+                                    <td>
+                                        <div class="action-buttons">
+                                            <button class="action-btn view">View</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>#ORD-1002</td>
+                                    <td>Emma Wilson</td>
+                                    <td>Jan 15, 2025</td>
+                                    <td>$459.00</td>
+                                    <td><span class="status-badge pending">Pending</span></td>
+                                    <td>
+                                        <div class="action-buttons">
+                                            <button class="action-btn view">View</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>#ORD-1003</td>
+                                    <td>Michael Brown</td>
+                                    <td>Jan 14, 2025</td>
+                                    <td>$189.00</td>
+                                    <td><span class="status-badge completed">Completed</span></td>
+                                    <td>
+                                        <div class="action-buttons">
+                                            <button class="action-btn view">View</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>#ORD-1004</td>
+                                    <td>Sarah Davis</td>
+                                    <td>Jan 14, 2025</td>
+                                    <td>$679.00</td>
+                                    <td><span class="status-badge cancelled">Cancelled</span></td>
+                                    <td>
+                                        <div class="action-buttons">
+                                            <button class="action-btn view">View</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>#ORD-1005</td>
+                                    <td>James Taylor</td>
+                                    <td>Jan 13, 2025</td>
+                                    <td>$329.00</td>
+                                    <td><span class="status-badge pending">Pending</span></td>
+                                    <td>
+                                        <div class="action-buttons">
+                                            <button class="action-btn view">View</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="chart-container">
+                    <p>📊 Sales Chart - Integration with Chart.js recommended</p>
+                </div>
+            </section>
+
+            <!-- Products Section -->
+            <section class="content-section" id="products">
+                <div class="section-header">
+                    <h2>Products Management</h2>
+                    <button class="btn btn-primary" onclick="openModal('addProductModal')">+ Add New Product</button>
+                </div>
+
+                <div class="controls">
+                    <div class="search-box">
+                        <input type="text" placeholder="🔍 Search products..." id="productSearch">
+                    </div>
+                    <select class="filter-select" id="categoryFilter">
+                        <option value="">All Categories</option>
+                        <option value="men">Men's Fashion</option>
+                        <option value="women">Women's Fashion</option>
+                        <option value="accessories">Accessories</option>
+                        <option value="shoes">Shoes</option>
+                    </select>
+                    <select class="filter-select" id="statusFilter">
+                        <option value="">All Status</option>
+                        <option value="active">Active</option>
+                        <option value="inactive">Inactive</option>
+                    </select>
+                </div>
+
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Product</th>
+                                <th>Category</th>
+                                <th>Price</th>
+                                <th>Stock</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <div class="product-cell">
+                                        <img src="https://via.placeholder.com/50" alt="Product" class="product-image">
+                                        <span>Classic White Sneakers</span>
+                                    </div>
+                                </td>
+                                <td>Shoes</td>
+                                <td>$89.99</td>
+                                <td>145</td>
+                                <td><span class="status-badge active">Active</span></td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="action-btn edit" onclick="editProduct(1)">Edit</button>
+                                        <button class="action-btn delete" onclick="deleteProduct(1)">Delete</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="product-cell">
+                                        <img src="https://via.placeholder.com/50" alt="Product" class="product-image">
+                                        <span>Leather Jacket</span>
+                                    </div>
+                                </td>
+                                <td>Men's Fashion</td>
+                                <td>$249.99</td>
+                                <td>28</td>
+                                <td><span class="status-badge active">Active</span></td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="action-btn edit" onclick="editProduct(2)">Edit</button>
+                                        <button class="action-btn delete" onclick="deleteProduct(2)">Delete</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="product-cell">
+                                        <img src="https://via.placeholder.com/50" alt="Product" class="product-image">
+                                        <span>Summer Dress</span>
+                                    </div>
+                                </td>
+                                <td>Women's Fashion</td>
+                                <td>$129.99</td>
+                                <td>0</td>
+                                <td><span class="status-badge inactive">Inactive</span></td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="action-btn edit" onclick="editProduct(3)">Edit</button>
+                                        <button class="action-btn delete" onclick="deleteProduct(3)">Delete</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="product-cell">
+                                        <img src="https://via.placeholder.com/50" alt="Product" class="product-image">
+                                        <span>Designer Handbag</span>
+                                    </div>
+                                </td>
+                                <td>Accessories</td>
+                                <td>$349.99</td>
+                                <td>52</td>
+                                <td><span class="status-badge active">Active</span></td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="action-btn edit" onclick="editProduct(4)">Edit</button>
+                                        <button class="action-btn delete" onclick="deleteProduct(4)">Delete</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="product-cell">
+                                        <img src="https://via.placeholder.com/50" alt="Product" class="product-image">
+                                        <span>Running Shoes</span>
+                                    </div>
+                                </td>
+                                <td>Shoes</td>
+                                <td>$119.99</td>
+                                <td>87</td>
+                                <td><span class="status-badge active">Active</span></td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="action-btn edit" onclick="editProduct(5)">Edit</button>
+                                        <button class="action-btn delete" onclick="deleteProduct(5)">Delete</button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Orders Section -->
+            <section class="content-section" id="orders">
+                <div class="section-header">
+                    <h2>Orders Management</h2>
+                    <button class="btn btn-secondary">Export Orders</button>
+                </div>
+
+                <div class="controls">
+                    <div class="search-box">
+                        <input type="text" placeholder="🔍 Search orders..." id="orderSearch">
+                    </div>
+                    <select class="filter-select">
+                        <option value="">All Status</option>
+                        <option value="pending">Pending</option>
+                        <option value="completed">Completed</option>
+                        <option value="cancelled">Cancelled</option>
+                    </select>
+                    <input type="date" class="filter-select">
+                </div>
+
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Order ID</th>
+                                <th>Customer</th>
+                                <th>Email</th>
+                                <th>Date</th>
+                                <th>Total</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>#ORD-1001</td>
+                                <td>John Smith</td>
+                                <td>john@email.com</td>
+                                <td>Jan 15, 2025</td>
+                                <td>$299.00</td>
+                                <td><span class="status-badge completed">Completed</span></td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="action-btn view" onclick="viewOrder(1001)">View</button>
+                                        <button class="action-btn edit">Update</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>#ORD-1002</td>
+                                <td>Emma Wilson</td>
+                                <td>emma@email.com</td>
+                                <td>Jan 15, 2025</td>
+                                <td>$459.00</td>
+                                <td><span class="status-badge pending">Pending</span></td>
+
+<td>
+                                    <div class="action-buttons">
+                                        <button class="action-btn view" onclick="viewOrder(1002)">View</button>
+                                        <button class="action-btn edit">Update</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>#ORD-1003</td>
+                                <td>Michael Brown</td>
+                                <td>michael@email.com</td>
+                                <td>Jan 14, 2025</td>
+                                <td>$189.00</td>
+                                <td><span class="status-badge completed">Completed</span></td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="action-btn view" onclick="viewOrder(1003)">View</button>
+                                        <button class="action-btn edit">Update</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>#ORD-1004</td>
+                                <td>Sarah Davis</td>
+                                <td>sarah@email.com</td>
+                                <td>Jan 14, 2025</td>
+                                <td>$679.00</td>
+                                <td><span class="status-badge cancelled">Cancelled</span></td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="action-btn view" onclick="viewOrder(1004)">View</button>
+                                        <button class="action-btn edit">Update</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>#ORD-1005</td>
+                                <td>James Taylor</td>
+                                <td>james@email.com</td>
+                                <td>Jan 13, 2025</td>
+                                <td>$329.00</td>
+                                <td><span class="status-badge pending">Pending</span></td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="action-btn view" onclick="viewOrder(1005)">View</button>
+                                        <button class="action-btn edit">Update</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>#ORD-1006</td>
+                                <td>Lisa Anderson</td>
+                                <td>lisa@email.com</td>
+                                <td>Jan 13, 2025</td>
+                                <td>$549.00</td>
+                                <td><span class="status-badge completed">Completed</span></td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="action-btn view" onclick="viewOrder(1006)">View</button>
+                                        <button class="action-btn edit">Update</button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Users Section -->
+            <section class="content-section" id="users">
+                <div class="section-header">
+                    <h2>Users Management</h2>
+                    <button class="btn btn-primary" onclick="openModal('addUserModal')">+ Add New User</button>
+                </div>
+
+                <div class="controls">
+                    <div class="search-box">
+                        <input type="text" placeholder="🔍 Search users..." id="userSearch">
+                    </div>
+                    <select class="filter-select">
+                        <option value="">All Roles</option>
+                        <option value="customer">Customer</option>
+                        <option value="admin">Admin</option>
+                        <option value="moderator">Moderator</option>
+                    </select>
+                    <select class="filter-select">
+                        <option value="">All Status</option>
+                        <option value="active">Active</option>
+                        <option value="inactive">Inactive</option>
+                    </select>
+                </div>
+
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>User</th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                                <th>Role</th>
+                                <th>Joined Date</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <div class="product-cell">
+                                        <div class="user-avatar" style="width: 35px; height: 35px; font-size: 14px;">JS</div>
+                                        <span>John Smith</span>
+                                    </div>
+                                </td>
+                                <td>john.smith@email.com</td>
+                                <td>+1 (555) 123-4567</td>
+                                <td>Customer</td>
+                                <td>Dec 10, 2024</td>
+                                <td><span class="status-badge active">Active</span></td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="action-btn view" onclick="viewUser(1)">View</button>
+                                        <button class="action-btn edit" onclick="editUser(1)">Edit</button>
+                                        <button class="action-btn delete" onclick="deleteUser(1)">Delete</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="product-cell">
+                                        <div class="user-avatar" style="width: 35px; height: 35px; font-size: 14px;">EW</div>
+                                        <span>Emma Wilson</span>
+                                    </div>
+                                </td>
+                                <td>emma.wilson@email.com</td>
+                                <td>+1 (555) 234-5678</td>
+                                <td>Customer</td>
+                                <td>Dec 15, 2024</td>
+                                <td><span class="status-badge active">Active</span></td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="action-btn view" onclick="viewUser(2)">View</button>
+                                        <button class="action-btn edit" onclick="editUser(2)">Edit</button>
+                                        <button class="action-btn delete" onclick="deleteUser(2)">Delete</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="product-cell">
+                                        <div class="user-avatar" style="width: 35px; height: 35px; font-size: 14px; background: #7c3aed;">MB</div>
+                                        <span>Michael Brown</span>
+                                    </div>
+                                </td>
+                                <td>michael.brown@email.com</td>
+                                <td>+1 (555) 345-6789</td>
+                                <td>Admin</td>
+                                <td>Nov 5, 2024</td>
+                                <td><span class="status-badge active">Active</span></td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="action-btn view" onclick="viewUser(3)">View</button>
+                                        <button class="action-btn edit" onclick="editUser(3)">Edit</button>
+                                        <button class="action-btn delete" onclick="deleteUser(3)">Delete</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="product-cell">
+                                        <div class="user-avatar" style="width: 35px; height: 35px; font-size: 14px;">SD</div>
+                                        <span>Sarah Davis</span>
+                                    </div>
+                                </td>
+                                <td>sarah.davis@email.com</td>
+                                <td>+1 (555) 456-7890</td>
+                                <td>Customer</td>
+                                <td>Jan 2, 2025</td>
+                                <td><span class="status-badge inactive">Inactive</span></td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="action-btn view" onclick="viewUser(4)">View</button>
+                                        <button class="action-btn edit" onclick="editUser(4)">Edit</button>
+                                        <button class="action-btn delete" onclick="deleteUser(4)">Delete</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="product-cell">
+                                        <div class="user-avatar" style="width: 35px; height: 35px; font-size: 14px;">JT</div>
+                                        <span>James Taylor</span>
+                                    </div>
+                                </td>
+                                <td>james.taylor@email.com</td>
+                                <td>+1 (555) 567-8901</td>
+                                <td>Customer</td>
+                                <td>Dec 20, 2024</td>
+                                <td><span class="status-badge active">Active</span></td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="action-btn view" onclick="viewUser(5)">View</button>
+                                        <button class="action-btn edit" onclick="editUser(5)">Edit</button>
+                                        <button class="action-btn delete" onclick="deleteUser(5)">Delete</button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Analytics Section -->
+            <section class="content-section" id="analytics">
+                <div class="section-header">
+                    <h2>Analytics & Insights</h2>
+                    <select class="filter-select">
+                        <option value="7days">Last 7 Days</option>
+                        <option value="30days">Last 30 Days</option>
+                        <option value="90days">Last 90 Days</option>
+                        <option value="year">This Year</option>
+                    </select>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card revenue">
+                        <div class="icon">📊</div>
+                        <h3>Conversion Rate</h3>
+                        <div class="value">3.24%</div>
+                        <div class="change">↑ 0.8% from last period</div>
+                    </div>
+                    <div class="stat-card orders">
+                        <div class="icon">⏱️</div>
+                        <h3>Avg Order Value</h3>
+                        <div class="value">$157.32</div>
+                        <div class="change">↑ 5.2% from last period</div>
+                    </div>
+                    <div class="stat-card users">
+                        <div class="icon">👁️</div>
+                        <h3>Page Views</h3>
+                        <div class="value">45,672</div>
+                        <div class="change">↑ 18.4% from last period</div>
+                    </div>
+                    <div class="stat-card products">
+                        <div class="icon">🎯</div>
+                        <h3>Bounce Rate</h3>
+                        <div class="value">42.1%</div>
+                        <div class="change negative">↓ 3.2% from last period</div>
+                    </div>
+                </div>
+
+                <div class="analytics-grid">
+                    <div class="analytics-card">
+                        <h4>Top Selling Products</h4>
+                        <div class="metric-item">
+                            <span class="metric-label">Classic White Sneakers</span>
+                            <span class="metric-value">342 sales</span>
+                        </div>
+                        <div class="metric-item">
+                            <span class="metric-label">Leather Jacket</span>
+                            <span class="metric-value">289 sales</span>
+                        </div>
+                        <div class="metric-item">
+                            <span class="metric-label">Designer Handbag</span>
+                            <span class="metric-value">256 sales</span>
+                        </div>
+                        <div class="metric-item">
+                            <span class="metric-label">Running Shoes</span>
+                            <span class="metric-value">234 sales</span>
+                        </div>
+                        <div class="metric-item">
+                            <span class="metric-label">Summer Dress</span>
+                            <span class="metric-value">198 sales</span>
+                        </div>
+                    </div>
+
+                    <div class="analytics-card">
+                        <h4>Revenue by Category</h4>
+                        <div class="metric-item">
+                            <span class="metric-label">Shoes</span>
+                            <span class="metric-value">$45,230</span>
+                        </div>
+                        <div class="metric-item">
+                            <span class="metric-label">Men's Fashion</span>
+                            <span class="metric-value">$38,450</span>
+                        </div>
+                        <div class="metric-item">
+                            <span class="metric-label">Women's Fashion</span>
+                            <span class="metric-value">$32,890</span>
+                        </div>
+                        <div class="metric-item">
+                            <span class="metric-label">Accessories</span>
+                            <span class="metric-value">$28,340</span>
+                        </div>
+                        <div class="metric-item">
+                            <span class="metric-label">Others</span>
+                            <span class="metric-value">$12,560</span>
+                        </div>
+                    </div>
+
+                    <div class="analytics-card">
+                        <h4>Traffic Sources</h4>
+                        <div class="metric-item">
+                            <span class="metric-label">Direct</span>
+                            <span class="metric-value">42.3%</span>
+                        </div>
+                        <div class="metric-item">
+                            <span class="metric-label">Social Media</span>
+                            <span class="metric-value">28.7%</span>
+                        </div>
+                        <div class="metric-item">
+                            <span class="metric-label">Search Engines</span>
+                            <span class="metric-value">18.5%</span>
+                        </div>
+                        <div class="metric-item">
+                            <span class="metric-label">Referrals</span>
+                            <span class="metric-value">7.2%</span>
+                        </div>
+                        <div class="metric-item">
+                            <span class="metric-label">Email</span>
+                            <span class="metric-value">3.3%</span>
+                        </div>
+                    </div>
+
+                    <div class="analytics -card">
+                        <h4>Customer Demographics</h4>
+                        <div class="metric-item">
+                            <span class="metric-label">Age 18-24</span>
+                            <span class="metric-value">23.4%</span>
+                        </div>
+                        <div class="metric-item">
+                            <span class="metric-label">Age 25-34</span>
+                            <span class="metric-value">38.9%</span>
+                        </div>
+                        <div class="metric-item">
+                            <span class="metric-label">Age 35-44</span>
+                            <span class="metric-value">22.1%</span>
+                        </div>
+                        <div class="metric-item">
+                            <span class="metric-label">Age 45-54</span>
+                            <span class="metric-value">11.3%</span>
+                        </div>
+                        <div class="metric-item">
+                            <span class="metric-label">Age 55+</span>
+                            <span class="metric-value">4.3%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="chart-container">
+                    <p>📈 Revenue Chart - Integration with Chart.js or similar library recommended</p>
+                </div>
+            </section>
+
+            <!-- Sales Report Section -->
+            <section class="content-section" id="sales">
+                <div class="section-header">
+                    <h2>Sales Report</h2>
+                    <div style="display: flex; gap: 10px;">
+                        <button class="btn btn-secondary">Download PDF</button>
+                        <button class="btn btn-secondary">Export Excel</button>
+                    </div>
+                </div>
+
+                <div class="controls">
+                    <input type="date" class="filter-select" id="startDate">
+                    <input type="date" class="filter-select" id="endDate">
+                    <button class="btn btn-primary">Generate Report</button>
+                </div>
+
+                <div class="stats-grid" style="margin-top: 20px;">
+                    <div class="stat-card revenue">
+                        <div class="icon">💰</div>
+                        <h3>Total Sales</h3>
+                        <div class="value">$124,563</div>
+                        <div class="change">This Month</div>
+                    </div>
+                    <div class="stat-card orders">
+                        <div class="icon">🛍️</div>
+                        <h3>Orders Count</h3>
+                        <div class="value">1,847</div>
+                        <div class="change">This Month</div>
+                    </div>
+                    <div class="stat-card users">
+                        <div class="icon">💵</div>
+                        <h3>Net Profit</h3>
+                        <div class="value">$87,194</div>
+                        <div class="change">70% Margin</div>
+                    </div>
+                    <div class="stat-card products">
+                        <div class="icon">📦</div>
+                        <h3>Products Sold</h3>
+                        <div class="value">3,245</div>
+                        <div class="change">Total Units</div>
+                    </div>
+                </div>
+
+                <div class="analytics-grid" style="margin-top: 30px;">
+                    <div class="analytics-card">
+                        <h4>Daily Sales Breakdown</h4>
+                        <div class="metric-item">
+                            <span class="metric-label">Monday</span>
+                            <span class="metric-value">$18,450</span>
+                        </div>
+                        <div class="metric-item">
+                            <span class="metric-label">Tuesday</span>
+                            <span class="metric-value">$22,340</span>
+                        </div>
+                        <div class="metric-item">
+                            <span class="metric-label">Wednesday</span>
+                            <span class="metric-value">$19,870</span>
+                        </div>
+                        <div class="metric-item">
+                            <span class="metric-label">Thursday</span>
+                            <span class="metric-value">$21,560</span>
+                        </div>
+                        <div class="metric-item">
+                            <span class="metric-label">Friday</span>
+                            <span class="metric-value">$25,890</span>
+                        </div>
+                        <div class="metric-item">
+                            <span class="metric-label">Saturday</span>
+                            <span class="metric-value">$28,340</span>
+                        </div>
+                        <div class="metric-item">
+                            <span class="metric-label">Sunday</span>
+                            <span class="metric-value">$24,230</span>
+                        </div>
+                    </div>
+
+                    <div class="analytics-card">
+                        <h4>Payment Methods</h4>
+                        <div class="metric-item">
+                            <span class="metric-label">Credit Card</span>
+                            <span class="metric-value">$68,450 (55%)</span>
+                        </div>
+                        <div class="metric-item">
+                            <span class="metric-label">PayPal</span>
+                            <span class="metric-value">$32,890 (26%)</span>
+                        </div>
+                        <div class="metric-item">
+                            <span class="metric-label">Bank Transfer</span>
+                            <span class="metric-value">$18,340 (15%)</span>
+                        </div>
+                        <div class="metric-item">
+                            <span class="metric-label">Cash on Delivery</span>
+                            <span class="metric-value">$4,883 (4%)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="table-container" style="margin-top: 30px;">
+                    <h3 style="margin-bottom: 15px;">Recent Transactions</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Transaction ID</th>
+                                <th>Date</th>
+                                <th>Customer</th>
+                                <th>Product</th>
+                                <th>Quantity</th>
+                                <th>Amount</th>
+                                <th>Payment Method</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>#TXN-5678</td>
+                                <td>Jan 15, 2025</td>
+                                <td>John Smith</td>
+                                <td>Classic White Sneakers</td>
+                                <td>2</td>
+                                <td>$179.98</td>
+                                <td>Credit Card</td>
+                            </tr>
+                            <tr>
+                                <td>#TXN-5679</td>
+                                <td>Jan 15, 2025</td>
+                                <td>Emma Wilson</td>
+                                <td>Leather Jacket</td>
+                                <td>1</td>
+                                <td>$249.99</td>
+                                <td>PayPal</td>
+                            </tr>
+                            <tr>
+                                <td>#TXN-5680</td>
+                                <td>Jan 14, 2025</td>
+                                <td>Michael Brown</td>
+                                <td>Designer Handbag</td>
+                                <td>1</td>
+                                <td>$349.99</td>
+                                <td>Credit Card</td>
+                            </tr>
+                            <tr>
+                                <td>#TXN-5681</td>
+                                <td>Jan 14, 2025</td>
+                                <td>Sarah Davis</td>
+                                <td>Summer Dress</td>
+                                <td>3</td>
+                                <td>$389.97</td>
+                                <td>Bank Transfer</td>
+                            </tr>
+                            <tr>
+                                <td>#TXN-5682</td>
+                                <td>Jan 13, 2025</td>
+                                <td>James Taylor</td>
+                                <td>Running Shoes</td>
+                                <td>1</td>
+                                <td>$119.99</td>
+                                <td>Cash on Delivery</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Categories Section -->
+            <section class="content-section" id="categories">
+                <div class="section-header">
+                    <h2>Categories Management</h2>
+                    <button class="btn btn-primary" onclick="openModal('addCategoryModal')">+ Add New Category</button>
+                </div>
+
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Category Name</th>
+                                <th>Products Count</th>
+                                <th>Total Sales</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <div class="product-cell">
+                                        <span>👟</span>
+                                        <span>Shoes</span>
+                                    </div>
+                                </td>
+                                <td>87</td>
+                                <td>$45,230</td>
+                                <td><span class="status-badge active">Active</span></td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="action-btn edit" onclick="editCategory(1)">Edit</button>
+                                        <button class="action-btn delete" onclick="deleteCategory(1)">Delete</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="product-cell">
+                                        <span>👔</span>
+                                        <span>Men's Fashion</span>
+                                    </div>
+                                </td>
+                                <td>64</td>
+                                <td>$38,450</td>
+                                <td><span class="status-badge active">Active</span></td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="action-btn edit" onclick="editCategory(2)">Edit</button>
+                                        <button class="action-btn delete" onclick="deleteCategory(2)">Delete</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="product-cell">
+                                        <span>👗</span>
+                                        <span>Women's Fashion</span>
+                                    </div>
+                                </td>
+                                <td>92</td>
+                                <td>$52,890</td>
+                                <td><span class="status-badge active">Active</span></td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="action-btn edit" onclick="editCategory(3)">Edit</button>
+                                        <button class="action-btn delete" onclick="deleteCategory(3)">Delete</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="product-cell">
+                                        <span>👜</span>
+                                        <span>Accessories</span>
+                                    </div>
+                                </td>
+                                <td>44</td>
+                                <td>$28,340</td>
+                                <td><span class="status-badge active">Active</span></td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="action-btn edit" onclick="editCategory(4)">Edit</button>
+                                        <button class="action-btn delete" onclick="deleteCategory(4)">Delete</button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Settings Section -->
+            <section class="content-section" id="settings">
+                <div class="section-header">
+                    <h2>Settings</h2>
+                </div>
+
+                <div style="background: white; padding: 30px; border-radius: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                    <h3 style="margin-bottom: 20px;">General Settings</h3>
+                    <div class="form-grid">
+                        <div class="form-group full-width">
+                            <label>Store Name</label>
+                            <input type="text" value="Trendora">
+                        </div>
+                        <div class="form-group">
+                            <label>Contact Email</label>
+                            <input type="email" value="admin@trendora.com">
+                        </div>
+                        <div class="form-group">
+                            <label>Contact Phone</label>
+                            <input type="tel" value="+1 (555) 000-0000">
+                        </div>
+                        <div class="form-group full-width">
+                            <label>Store Address</label>
+                            <textarea>123 Fashion Street, New York, NY 10001</textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Currency</label>
+                            <select>
+                                <option value="USD">USD ($)</option>
+                                <option value="EUR">EUR (€)</option>
+                                <option value="GBP">GBP (£)</option>
+                                <option value="NGN">NGN (₦)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Timezone</label>
+                            <select>
+                                <option value="UTC">UTC</option>
+                                <option value="EST">Eastern Time</option>
+                                <option value="PST">Pacific Time</option>
+                                <option value="WAT">West Africa Time</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <h3 style="margin: 30px 0 20px;">Email Notifications</h3>
+                    <div class="form-group">
+                        <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                            <input type="checkbox" checked>
+                            <span>New Order Notifications</span>
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                            <input type="checkbox" checked>
+                            <span>Low Stock Alerts</span>
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                            <input type="checkbox">
+                            <span>Customer Sign-up Notifications</span>
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                            <input type="checkbox" checked>
+                            <span>Daily Sales Report</span>
+                        </label>
+                    </div>
+
+                    <h3 style="margin: 30px 0 20px;">Payment Settings</h3>
+                    <div class="form-group">
+                        <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                            <input type="checkbox" checked>
+                            <span>Enable Credit Card Payments</span>
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                            <input type="checkbox" checked>
+                            <span>Enable PayPal</span>
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                            <input type="checkbox" checked>
+                            <span>Enable Bank Transfer</span>
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                            <input type="checkbox">
+                            <span>Enable Cash on Delivery</span>
+                        </label>
+                    </div>
+
+                    <h3 style="margin: 30px 0 20px;">Shipping Settings</h3>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Standard Shipping Fee</label>
+                            <input type="number" value="9.99" step="0.01">
+                        </div>
+                        <div class="form-group">
+                            <label>Express Shipping Fee</label>
+                            <input type="number" value="19.99" step="0.01">
+                        </div>
+                        <div class="form-group">
+                            <label>Free Shipping Threshold</label>
+                            <input type="number" value="100.00" step="0.01">
+                        </div>
+                        <div class="form-group">
+                            <label>Processing Time (Days)</label>
+                            <input type="number" value="2" min="1">
+                        </div>
+                    </div>
+
+                    <button class="btn btn-primary" style="margin-top: 30px;">Save All Settings</button>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Add Product Modal -->
+    <div class="modal" id="addProductModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Add New Product</h3>
+                <button class="close-modal" onclick="closeModal('addProductModal')">&times;</button>
+            </div>
+            <form onsubmit="addProduct(event)">
+                <div class="form-grid">
+                    <div class="form-group full-width">
+                        <label>Product Name *</label>
+                        <input type="text" required placeholder="Enter product name">
+                    </div>
+                    <div class="form-group">
+                        <label>Category *</label>
+                        <select required>
+                            <option value="">Select Category</option>
+                            <option value="shoes">Shoes</option>
+                            <option value="men">Men's Fashion</option>
+                            <option value="women">Women's Fashion</option>
+                            <option value="accessories">Accessories</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Price *</label>
+                        <input type="number" required placeholder="0.00" step="0.01" min="0">
+                    </div>
+                    <div class="form-group">
+                        <label>Stock Quantity *</label>
+                        <input type="number" required placeholder="0" min="0">
+                    </div>
+                    <div class="form-group">
+                        <label>SKU</label>
+                        <input type="text" placeholder="Product SKU">
+                    </div>
+                    <div class="form-group full-width">
+                        <label>Description</label>
+                        <textarea placeholder="Enter product description"></textarea>
+                    </div>
+                    <div class="form-group full-width">
+                        <label>Product Images</label>
+                        <div class="image-upload" onclick="document.getElementById('productImages').click()">
+                            <p>📷 Click to upload images</p>
+                            <p style="font-size: 12px; color: #6b7280; margin-top: 5px;">PNG, JPG up to 5MB</p>
+                            <input type="file" id="productImages" multiple accept="image/*" onchange="previewImages(event)">
+                        </div>
+                        <div class="image-preview" id="imagePreview"></div>
+                    </div>
+                    <div class="form-group">
+                        <label>Status</label>
+                        <select>
+                            <option value="active">Active</option>
+                            <option value="inactive">Inactive</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Featured Product</label>
+                        <select>
+                            <option value="no">No</option>
+                            <option value="yes">Yes</option>
+                        </select>
+                    </div>
+                </div>
+                <div style="display: flex; gap: 10px; margin-top: 20px;">
+                    <button type="submit" class="btn btn-primary">Add Product</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('addProductModal')">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add User Modal -->
+    <div class="modal" id="addUserModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Add New User</h3>
+                <button class="close-modal" onclick="closeModal('addUserModal')">&times;</button>
+            </div>
+            <form onsubmit="addUser(event)">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>First Name *</label>
+                        <input type="text" required placeholder="Enter first name">
+                    </div>
+                    <div class="form-group">
+                        <label>Last Name *</label>
+                        <input type="text" required placeholder="Enter last name">
+                    </div>
+                    <div class="form-group full-width">
+                        <label>Email *</label>
+                        <input type="email" required placeholder="user@email.com">
+                    </div>
+                    <div class="form-group">
+                        <label>Phone</label>
+                        <input type="tel" placeholder="+1 (555) 000-0000">
+                    </div>
+                    <div class="form-group">
+                        <label>Role *</label>
+                        <select required>
+                            <option value="customer">Customer</option>
+                            <option value="admin">Admin</option>
+                            <option value="moderator">Moderator</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Password *</label>
+                        <input type="password" required placeholder="Enter password">
+                    </div>
+                    <div class="form-group">
+                        <label>Confirm Password *</label>
+                        <input type="password" required placeholder="Confirm password">
+                    </div>
+                </div>
+                <div style="display: flex; gap: 10px; margin-top: 20px;">
+                    <button type="submit" class="btn btn-primary">Add User</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('addUserModal')">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add Category Modal -->
+    <div class="modal" id="addCategoryModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Add New Category</h3>
+                <button class="close-modal" onclick="closeModal('addCategoryModal')">&times;</button>
+            </div>
+            <form onsubmit="addCategory(event)">
+                <div class="form-grid">
+                    <div class="form-group full-width">
+                        <label>Category Name *</label>
+                        <input type="text" required placeholder="Enter category name">
+                    </div>
+                    <div class="form-group full-width">
+                        <label>Description</label>
+                        <textarea placeholder="Enter category description"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Icon (Emoji)</label>
+                        <input type="text" placeholder="👕">
+                    </div>
+                    <div class="form-group">
+                        <label>Status</label>
+                        <select>
+                            <option value="active">Active</option>
+                            <option value="inactive">Inactive</option>
+                        </select>
+                    </div>
+                </div>
+                <div style="display: flex; gap: 10px; margin-top: 20px;">
+                    <button type="submit" class="btn btn-primary">Add Category</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('addCategoryModal')">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Navigation
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', function() {
+                const section = this.dataset.section;
+                
+                if (section === 'logout') {
+                    if (confirm('Are you sure you want to logout?')) {
+                        alert('Logging out...');
+                        window.location.href = 'login.html';
+                    }
+                    return;
+                }
+                
+                // Remove active class from all nav items and sections
+                document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
+                document.querySelectorAll('.content-section').forEach(sec => sec.classList.remove('active'));
+                
+                // Add active class to clicked nav item and corresponding section
+                this.classList.add('active');
+                document.getElementById(section).classList.add('active');
+            });
+        });
+
+        // Modal Functions
+        function openModal(modalId) {
+            document.getElementById(modalId).classList.add('active');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+
+        // Close modal when clicking outside
+        document.querySelectorAll('.modal').forEach(modal => {
+            modal.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    this.classList.remove('active');
+                }
+            });
+        });
+
+        // Image Preview
+        function previewImages(event) {
+            const preview = document.getElementById('imagePreview');
+            preview.innerHTML = '';
+            const files = event.target.files;
+            
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                const reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+                    preview.appendChild(img);
+                }
+                
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // Product Functions
+        function addProduct(event) {
+            event.preventDefault();
+            alert('Product added successfully!');
+            closeModal('addProductModal');
+            event.target.reset();
+            document.getElementById('imagePreview').innerHTML = '';
+        }
+
+        function editProduct(id) {
+            alert('Editing product #' + id);
+            // Implement edit functionality
+        }
+
+        function deleteProduct(id) {
+            if (confirm('Are you sure you want to delete this product?')) {
+                alert('Product #' + id + ' deleted successfully!');
+                // Implement delete functionality
+            }
+        }
+
+        // User Functions
+        function addUser(event) {
+            event.preventDefault();
+            alert('User added successfully!');
+            closeModal('addUserModal');
+            event.target.reset();
+        }
+
+        function viewUser(id) {
+            alert('Viewing user details for user #' + id);
+            // Implement view functionality
+        }
+
+        function editUser(id) {
+            alert('Editing user #' + id);
+            // Implement edit functionality
+        }
+
+        function deleteUser(id) {
+            if (confirm('Are you sure you want to delete this user?')) {
+                alert('User #' + id + ' deleted successfully!');
+                // Implement delete functionality
+            }
+        }
+
+        // Order Functions
+        function viewOrder(orderId) {
+            alert('Viewing order details for #ORD-' + orderId);
+            // Implement view order functionality
+        }
+
+        // Category Functions
+        function addCategory(event) {
+            event.preventDefault();
+            alert('Category added successfully!');
+            closeModal('addCategoryModal');
+            event.target.reset();
+        }
+
+        function editCategory(id) {
+            alert('Editing category #' + id);
+            // Implement edit functionality
+        }
+
+        function deleteCategory(id) {
+            if (confirm('Are you sure you want to delete this category?')) {
+                alert('Category #' + id + ' deleted successfully!');
+                // Implement delete functionality
+            }
+        }
+
+        // Search Functionality
+        document.getElementById('productSearch')?.addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            // Implement search logic
+            console.log('Searching for:', searchTerm);
+        });
+
+        document.getElementById('orderSearch')?.addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            // Implement search logic
+            console.log('Searching for:', searchTerm);
+        });
+
+        document.getElementById('userSearch')?.addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            // Implement search logic
+            console.log('Searching for:', searchTerm);
+        });
+
+        // Filter Functionality
+        document.getElementById('categoryFilter')?.addEventListener('change', function(e) {
+            const category = e.target.value;
+            console.log('Filtering by category:', category);
+            // Implement filter logic
+        });
+
+        document.getElementById('statusFilter')?.addEventListener('change', function(e) {
+            const status = e.target.value;
+            console.log('Filtering by status:', status);
+            // Implement filter logic
+        });
+
+        // Initialize
+        console.log('Trendora Admin Dashboard Loaded');
+        console.log('Welcome, ADETUTU OLUWATOBI!');
+    </script>
+</body>
+</html>
+
+
+
+
+
+

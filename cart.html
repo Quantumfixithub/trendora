@@ -193,6 +193,63 @@
                 display: none;
             }
         }
+
+        /* Newly added css file */
+
+        / Responsive header + hamburger + shop dropdown /
+.header-nav { background:#fff; padding:0.7rem 1rem; box-shadow:0 2px 8px rgba(0,0,0,0.06); position:sticky; top:0; z-index:1000; }
+.header-inner { max-width:1200px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; gap:1rem; }
+.nav-main { display:flex; gap:1rem; align-items:center; }
+.nav-list { list-style:none; display:flex; gap:0.75rem; margin:0; padding:0; align-items:center; }
+.nav-item { position:relative; }
+.nav-link { text-decoration:none; color:#6b7280; padding:0.45rem 0.6rem; border-radius:8px; font-weight:600; }
+.nav-link:hover { background:rgba(102,126,234,0.06); color:var(--accent-b); }
+
+.shop-dropdown { position:absolute; left:0; top:calc(100% + 8px); background:#fff; border-radius:10px; box-shadow:0 10px 30px rgba(0,0,0,0.08); padding:8px; min-width:180px; display:none; }
+.shop-dropdown a { display:block; padding:8px 12px; color:#17233a; text-decoration:none; border-radius:8px; }
+.shop-dropdown a:hover { background:#f4f7ff; }
+
+.icon-group { display:flex; gap:0.6rem; align-items:center; }
+
+.hamburger{
+  display:none;
+  width:44px;height:44px;border-radius:10px;border:1px solid #eef2ff;background:#fff;align-items:center;justify-content:center;cursor:pointer;
+}
+
+/ Mobile menu /
+.mobile-menu {
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(10,12,20,0.5);
+  z-index:1100;
+}
+.mobile-drawer {
+  width:280px;
+  max-width:80%;
+  height:100%;
+  background:#fff;
+  padding:1rem;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+  transform:translateX(-12px);
+  animation: slideIn .18s ease forwards;
+}
+.mobile-drawer .nav-list { display:block; }
+.mobile-drawer .nav-item + .nav-item { margin-top:0.6rem; }
+.mobile-drawer .shop-sub { padding-left:0.6rem; margin-top:0.4rem; display:none; }
+.mobile-drawer .shop-toggle { display:flex; justify-content:space-between; align-items:center; width:100%; }
+
+/ animations /
+@keyframes slideIn { from { transform:translateX(-22px); opacity:0 } to { transform:translateX(0); opacity:1 } }
+
+/ Responsive breakpoints /
+@media (max-width:900px){
+  .nav-list { display:none; }
+  .hamburger { display:flex; }
+}
+@media (max-width:600px){
+  .grid { grid-template-columns:repeat(2,1fr); }
+}
     </style>
 </head>
 <body>
@@ -528,6 +585,7 @@ document.addEventListener('click', (e)=>{
 </script>
 </body>
 </html>
+
 
 
 

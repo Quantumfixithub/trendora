@@ -937,16 +937,71 @@ document.addEventListener('DOMContentLoaded', updateAuthLink);
             });
         });
 
-        // Checkout button - Redirect to payment page
-        const checkoutBtn = document.getElementById('checkoutBtn');
-        if (checkoutBtn) {
-            checkoutBtn.addEventListener('click', function(e) {
-                e.preventDefault();
-                
-                if (!cart || cart.length === 0) {
-                    showToast('Your cart is empty', 'error');
-                    return;
-                }
+       // Checkout button - Redirect to payment page
+const checkoutBtn = document.getElementById('checkoutBtn');
+if (checkoutBtn) {
+    checkoutBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        
+        if (!cart || cart.length === 0) {
+            showToast('Your cart is empty', 'error');
+            return;
+        }
+
+        // Get customer information
+        const customerName = document.getElementById('customerName').value.trim();
+        const customerEmail = document.getElementById('customerEmail').value.trim();
+        const customerPhone = document.getElementById('customerPhone').value.trim();
+
+        // Validate customer information
+        if (!customerName || !customerEmail || !customerPhone) {
+            showToast('Please fill in all customer information', 'error');
+            return;
+        }
+
+        // Validate email format
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(customerEmail)) {
+            showToast('Please enter a valid email address', 'error');
+            return;
+        }
+
+        // Calculate totals
+        const subtotal = cart.reduce((sum, item) => {
+            const price = parseFloat(item.price) || 0;
+            const qty = parseInt(item.quantity) || 0;
+            return sum + (price * qty);
+        }, 0);
+
+        const tax = subtotal * 0.08;
+        const shipping = subtotal > 100 ? 0 : (subtotal > 0 ? 9.99 : 0);
+        const total = subtotal + tax + shipping;
+
+        // Store checkout data for payment page
+        const checkoutData = {
+            customer: {
+                name: customerName,
+                email: customerEmail,
+                phone: customerPhone
+            },
+            cart: cart,
+            subtotal: subtotal,
+            tax: tax,
+            shipping: shipping,
+            total: total,
+            timestamp: new Date().toISOString()
+        };
+
+        localStorage.setItem('checkoutData', JSON.stringify(checkoutData));
+        
+        showToast('Redirecting to payment...', 'success');
+        
+        // Redirect to payment page
+        setTimeout(() => {
+            window.location.href = 'payment.html';
+        }, 1000);
+    });
+}
 
                 // Get customer information
                 const customerName = document.getElementById('customerName').value.trim();
@@ -1024,4 +1079,5 @@ document.addEventListener('DOMContentLoaded', updateAuthLink);
 </body>
 
 </html>
+
 

@@ -197,26 +197,39 @@
 </head>
 <body>
     <header>
-        <nav>
-            <a href="index.html" class="logo">Trendora</a>
-            <ul class="nav-links">
-                <li><a href="index.html">Home</a></li>
-                <li><a href="shop.html">Shop</a></li>
-                <li><a href="women.html">Women</a></li>
-                <li><a href="men.html">Men</a></li>
-                <li><a href="accessories.html">Accessories</a></li>
-                <li><a href="shoes.html">Shoes</a></li>
-            </ul>
-            <div class="nav-icons">
-                <a href="account.html" title="My Account">👤</a>
-                <a href="cart.html" title="Shopping Cart">
-                    🛒
-                    <span class="cart-count" id="cartCount">0</span>
-                </a>
-            </div>
-        </nav>
-    </header>
+  <nav style="background:#fff;padding:1rem;box-shadow:0 2px 8px rgba(0,0,0,0.06);position:sticky;top:0;z-index:1000;">
+    <div style="max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:1rem;">
+      <a href="index.html" class="logo" style="font-weight:700;text-decoration:none;color:#17233a;">Trendora</a>
 
+  <ul class="nav-links" style="list-style:none;display:flex;gap:1rem;align-items:center;margin:0;padding:0;">
+    <li><a href="index.html" style="text-decoration:none;color:#6b7280;">Home</a></li>
+
+    <li style="position:relative;">
+      <a href="shop.html" style="text-decoration:none;color:#6b7280;">Shop ▾</a>
+      <ul style="position:absolute;left:0;top:calc(100% + 6px);background:#fff;border-radius:8px;box-shadow:0 6px 20px rgba(0,0,0,0.08);padding:8px;display:none;min-width:180px;" id="shopDropdown">
+        <li><a href="women.html" style="display:block;padding:8px 12px;color:#17233a;text-decoration:none;">Women</a></li>
+        <li><a href="men.html" style="display:block;padding:8px 12px;color:#17233a;text-decoration:none;">Men</a></li>
+        <li><a href="accessories.html" style="display:block;padding:8px 12px;color:#17233a;text-decoration:none;">Accessories</a></li>
+        <li><a href="shoes.html" style="display:block;padding:8px 12px;color:#17233a;text-decoration:none;">Shoes</a></li>
+      </ul>
+    </li>
+
+    <li><a href="about.html" style="text-decoration:none;color:#6b7280;">About</a></li>
+    <li><a href="contact.html" style="text-decoration:none;color:#6b7280;">Contact</a></li>
+  </ul>
+
+  <div class="nav-icons" style="display:flex;gap:1rem;align-items:center;">
+    <a href="account.html" title="My Account" style="text-decoration:none;color:#17233a;">👤</a>
+    <a href="cart.html" title="Shopping Cart" style="position:relative;text-decoration:none;color:#17233a;">
+      🛒
+      <span class="cart-count" id="cartCount" style="position:absolute;top:-8px;right:-10px;background:#ff5a5f;color:#fff;padding:2px 6px;border-radius:999px;display:none;font-size:0.7rem;">0</span>
+    </a>
+  </div>
+</div>
+  
+
+</nav
+</header>
     <div class="container">
         <h1 class="page-title">Shopping Cart 🛒</h1>
 
@@ -257,136 +270,169 @@
     </div>
 
     <script src="auth.js"></script>
-    <script>
-        // Protect cart page
-        if (!requireAuth('cart.html')) {
-            showAuthModal();
-        }
+   <script>
+  // simple hover / focus toggle for Shop dropdown (works on touch by click)
+  (function(){
+    const parent = document.querySelector('nav li[style*="position:relative"]');
+    const dd = document.getElementById('shopDropdown');
 
-        // Load and display cart
-        function loadCart() {
-            const cart = JSON.parse(localStorage.getItem('cart')) || [];
-            const cartContainer = document.getElementById('cartItems');
-            const subtotalElement = document.getElementById('subtotal');
-            const totalElement = document.getElementById('total');
-            
-            if (!cartContainer) {
-                console.error('Cart container not found');
-                return;
-            }
-            
-            // Clear existing content
-            cartContainer.innerHTML = '';
-            
-            if (cart.length === 0) {
-                cartContainer.innerHTML = `
-                    <div style="text-align: center; padding: 4rem 2rem; background: white; border-radius: 15px;">
-                        <div style="font-size: 5rem; margin-bottom: 1rem;">🛒</div>
-                        <h2 style="color: #666; margin-bottom: 1rem;">Your cart is empty</h2>
-                        <p style="color: #999; margin-bottom: 2rem;">Add some products to get started!</p>
-                        <a href="shop.html" style="
-                            display: inline-block;
-                            padding: 1rem 2rem;
-                            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-                            color: white;
-                            text-decoration: none;
-                            border-radius: 8px;
-                            font-weight: 600;
-                        ">Continue Shopping</a>
-                    </div>
-                `;
-                
-                if (subtotalElement) subtotalElement.textContent = '$0.00';
-                if (document.getElementById('tax')) document.getElementById('tax').textContent = '$0.00';
-                if (document.getElementById('shipping')) document.getElementById('shipping').textContent = '$9.99';
-                if (totalElement) totalElement.textContent = '$0.00';
-                return;
-            }
-            
-            // Display cart items
-            let subtotal = 0;
-            
-            cart.forEach(item => {
-                const itemTotal = parseFloat(item.price) * parseInt(item.quantity || 1);
-                subtotal += itemTotal;
-                
-                const cartItem = document.createElement('div');
-                cartItem.className = 'cart-item';
-                cartItem.style.cssText = `
-                    display: flex;
-                    gap: 1.5rem;
-                    padding: 1.5rem;
-                    background: white;
-                    border-radius: 12px;
-                    margin-bottom: 1rem;
-                    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-                `;
-                
-                cartItem.innerHTML = `
-                    <div style="width: 100px; height: 100px; background: #f0f0f0; border-radius: 8px; overflow: hidden; flex-shrink: 0;">
-                        ${item.image ? `<img src="${item.image}" alt="${item.name}" style="width: 100%; height: 100%; object-fit: cover;">` : `<div style="display: flex; align-items: center; justify-content: center; height: 100%; font-size: 2rem;">📦
-                                            </div>
-                    <div style="flex: 1;">
-                        <h3 style="margin-bottom: 0.5rem; color: #2c3e50;">${item.name}</h3>
-                        <p style="color: #7f8c8d; margin-bottom: 0.5rem;">${item.category || 'Product'}</p>
-                        <p style="font-size: 1.2rem; font-weight: 600; color: #e74c3c;">$${parseFloat(item.price).toFixed(2)}</p>
-                    </div>
-                    <div style="display: flex; flex-direction: column; justify-content: space-between; align-items: flex-end;">
-                        <button onclick="removeFromCart(${JSON.stringify(item.id)})" style="
-                            background: none;
-                            border: none;
-                            color: #e74c3c;
-                            cursor: pointer;
-                            font-size: 1.5rem;
-                        " title="Remove">🗑️</button>
-                        <div style="display: flex; align-items: center; gap: 0.5rem;">
-                            <button onclick="updateCartQuantity(${JSON.stringify(item.id)}, ${item.quantity - 1})" style="
-                                width: 30px;
-                                height: 30px;
-                                border: 1px solid #ddd;
-                                background: white;
-                                border-radius: 5px;
-                                cursor: pointer;
-                            ">−</button>
-                            <span id="qty-${item.id}" style="min-width: 30px; text-align: center; font-weight: 600;">${item.quantity}</span>
-                            <button onclick="updateCartQuantity(${JSON.stringify(item.id)}, ${item.quantity + 1})" style="
-                                width: 30px;
-                                height: 30px;
-                                border: 1px solid #ddd;
-                                background: white;
-                                border-radius: 5px;
-                                cursor: pointer;
-                            ">+</button>
-                        </div>
-                        <p style="font-weight: 600; color: #2c3e50;">$${itemTotal.toFixed(2)}</p>
-                    </div>
-                `;
-                
-                cartContainer.appendChild(cartItem);
-            });
-            
-            // Update totals
-            const tax = subtotal * 0.08; // 8% tax
-            const shipping = subtotal > 100 ? 0 : 9.99;
-            const total = subtotal + tax + shipping;
-            
-            if (subtotalElement) subtotalElement.textContent = `$${subtotal.toFixed(2)}`;
-            if (document.getElementById('tax')) document.getElementById('tax').textContent = `$${tax.toFixed(2)}`;
-            if (document.getElementById('shipping')) document.getElementById('shipping').textContent = shipping === 0 ? 'FREE' : `$${shipping.toFixed(2)}`;
-            if (totalElement) totalElement.textContent = `$${total.toFixed(2)}`;
-            
-            // Update cart count
-            updateCartCount();
-        }
-        
-        // Initialize cart on page load
-        window.addEventListener('DOMContentLoaded', function() {
-            loadCart();
-            
-            // Update cart every 2 seconds in case of changes from other tabs
-            setInterval(loadCart, 2000);
-        });
-    </script>
+// show on hover (desktop)
+parent.addEventListener('mouseenter', ()=> dd.style.display = 'block');
+parent.addEventListener('mouseleave', ()=> dd.style.display = 'none');
+
+// toggle on click (mobile)
+parent.addEventListener('click', (e)=> {
+  // prevent link navigation if clicking the parent anchor
+  e.preventDefault();
+  dd.style.display = dd.style.display === 'block' ? 'none' : 'block';
+});
+
+// close when clicking outside
+document.addEventListener('click', (e)=>{
+  if (!parent.contains(e.target)) dd.style.display = 'none';
+});
+  
+
+})();
+
+  // Protect cart page
+  if (!requireAuth('cart.html')) {
+      showAuthModal();
+  }
+
+  // Load and display cart
+  function loadCart() {
+      const cart = JSON.parse(localStorage.getItem('cart')) || [];
+      const cartContainer = document.getElementById('cartItems');
+      const subtotalElement = document.getElementById('subtotal');
+      const totalElement = document.getElementById('total');
+
+  if (!cartContainer) {
+      console.error('Cart container not found');
+      return;
+  }
+
+  // Clear existing content
+  cartContainer.innerHTML = '';
+
+  if (cart.length === 0) {
+      cartContainer.innerHTML = `
+          <div style="text-align: center; padding: 4rem 2rem; background: white; border-radius: 15px;">
+              <div style="font-size: 5rem; margin-bottom: 1rem;">🛒</div>
+              <h2 style="color: #666; margin-bottom: 1rem;">Your cart is empty</h2>
+              <p style="color: #999; margin-bottom: 2rem;">Add some products to get started!</p>
+              <a href="shop.html" style="
+                  display: inline-block;
+                  padding: 1rem 2rem;
+                  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                  color: white;
+                  text-decoration: none;
+                  border-radius: 8px;
+                  font-weight: 600;
+              ">Continue Shopping</a>
+          </div>
+      `;
+
+      if (subtotalElement) subtotalElement.textContent = '$0.00';
+      if (document.getElementById('tax')) document.getElementById('tax').textContent = '$0.00';
+      if (document.getElementById('shipping')) document.getElementById('shipping').textContent = '$9.99';
+      if (totalElement) totalElement.textContent = '$0.00';
+      updateCartCount();
+      return;
+  }
+
+  // Display cart items
+  let subtotal = 0;
+
+  cart.forEach(item => {
+      const itemTotal = parseFloat(item.price) * parseInt(item.quantity || 1);
+      subtotal += itemTotal;
+
+      const cartItem = document.createElement('div');
+      cartItem.className = 'cart-item';
+      cartItem.style.cssText = `
+          display: flex;
+          gap: 1.5rem;
+          padding: 1.5rem;
+          background: white;
+          border-radius: 12px;
+          margin-bottom: 1rem;
+          box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      `;
+
+      cartItem.innerHTML = `
+          <div style="width: 100px; height: 100px; background: #f0f0f0; border-radius: 8px; overflow: hidden; flex-shrink: 0;">
+              ${item.image ? `<img src="${item.image}" alt="${item.name}" style="width: 100%; height: 100%; object-fit: cover;">` : `<div style="display: flex; align-items: center; justify-content: center; height: 100%; font-size: 2rem;">📦</div>`}
+          </div>
+
+          <div style="flex: 1;">
+              <h3 style="margin-bottom: 0.5rem; color: #2c3e50;">${item.name}</h3>
+              <p style="color: #7f8c8d; margin-bottom: 0.5rem;">${item.category || 'Product'}</p>
+              <p style="font-size: 1.2rem; font-weight: 600; color: #e74c3c;">$${parseFloat(item.price).toFixed(2)}</p>
+          </div>
+
+          <div style="display: flex; flex-direction: column; justify-content: space-between; align-items: flex-end;">
+              <button onclick="removeFromCart(${JSON.stringify(item.id)})" style="
+                  background: none;
+                  border: none;
+                  color: #e74c3c;
+                  cursor: pointer;
+                  font-size: 1.5rem;
+              " title="Remove">🗑️</button>
+
+              <div style="display: flex; align-items: center; gap: 0.5rem;">
+                  <button onclick="updateCartQuantity(${JSON.stringify(item.id)}, ${item.quantity - 1})" style="
+                      width: 30px;
+                      height: 30px;
+                      border: 1px solid #ddd;
+                      background: white;
+                      border-radius: 5px;
+                      cursor: pointer;
+                  ">−</button>
+                  <span id="qty-${item.id}" style="min-width: 30px; text-align: center; font-weight: 600;">${item.quantity}</span>
+                  <button onclick="updateCartQuantity(${JSON.stringify(item.id)}, ${item.quantity + 1})" style="
+                      width: 30px;
+                      height: 30px;
+                      border: 1px solid #ddd;
+                      background: white;
+                      border-radius: 5px;
+                      cursor: pointer;
+                  ">+</button>
+              </div>
+
+              <p style="font-weight: 600; color: #2c3e50;">$${itemTotal.toFixed(2)}</p>
+          </div>
+      `;
+
+      cartContainer.appendChild(cartItem);
+  });
+
+  // Update totals
+  const tax = subtotal * 0.08; // 8% tax
+  const shipping = subtotal > 100 ? 0 : 9.99;
+  const total = subtotal + tax + shipping;
+
+  if (subtotalElement) subtotalElement.textContent = `$${subtotal.toFixed(2)}`;
+  if (document.getElementById('tax')) document.getElementById('tax').textContent = `$${tax.toFixed(2)}`;
+  if (document.getElementById('shipping')) document.getElementById('shipping').textContent = shipping === 0 ? 'FREE' : `$${shipping.toFixed(2)}`;
+  if (totalElement) totalElement.textContent = `$${total.toFixed(2)}`;
+
+  // Update cart count
+  updateCartCount();
+  
+
+}
+  // Initialize cart on page load
+  window.addEventListener('DOMContentLoaded', function() {
+      loadCart();
+
+  // Update cart every 2 seconds in case of changes from other tabs
+  setInterval(loadCart, 2000);
+  
+
+});
+</script>
 </body>
 </html>
+
 

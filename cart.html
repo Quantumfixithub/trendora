@@ -818,9 +818,45 @@
             setQuantity(id, qty);
         };
     })();
+
+    (function(){
+  const PAYSTACK_PUBLIC = 'pk_test_xxxxxxxxxxxxxxxxxxxxxxxxx'; // <-- replace with your key
+
+  function loadScript(cb){
+    if (window.PaystackPop){ console.log('Paystack already loaded'); return cb(); }
+    const s = document.createElement('script');
+    s.src = 'https://js.paystack.co/v1/inline.js';
+    s.onload = ()=> { console.log('Paystack script loaded'); cb(); };
+    s.onerror = ()=> { console.error('Failed to load Paystack script'); alert('Failed to load Paystack script'); };
+    document.head.appendChild(s);
+  }
+
+  window.testPay = function(){
+    loadScript(function(){
+      if (!window.PaystackPop) { console.error('PaystackPop not available'); return; }
+      try {
+        const handler = PaystackPop.setup({
+          key: PAYSTACK_PUBLIC,
+          email: 'test@example.com',
+          amount: 1000, // NGN 10 => 1000 kobo
+          ref: 'TEST-' + Date.now(),
+          callback: function(resp){ console.log('PAYSTACK CALLBACK', resp); alert('Success: ' + resp.reference); },
+          onClose: function(){ console.log('Popup closed'); alert('Popup closed'); }
+        });
+        handler.openIframe();
+        console.log('openIframe called');
+      } catch (err){
+        console.error('Error opening Paystack', err);
+      }
+    });
+  };
+
+  console.log('Test script ready. Call testPay() to run.');
+})();
 </script>
 </body>
 </html>
+
 
 
 

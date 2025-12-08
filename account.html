@@ -1137,8 +1137,17 @@ window.addEventListener('DOMContentLoaded', function() {
             updateCartCount();
         });
     </script>
+    // Protect account page
+window.addEventListener('DOMContentLoaded', function() {
+    if (!requireAuth('account.html')) {
+        showAuthModal();
+    }
+    
+    // Your existing account code...
+});
 </body>
 
 </html?
+
 
 

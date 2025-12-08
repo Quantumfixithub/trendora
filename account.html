@@ -882,6 +882,28 @@
     <div class="toast" id="toast"></div>
 
     <script>
+
+ // Protect account page
+        if (!requireAuth('account.html')) {
+            // User will be redirected
+        }
+        
+        // Load user data
+        function loadUserData() {
+            const currentUser = getCurrentUser();
+            if (!currentUser) return;
+
+            document.getElementById('firstName').value = currentUser.firstName || '';
+            document.getElementById('lastName').value = currentUser.lastName || '';
+            document.getElementById('email').value = currentUser.email || '';
+            document.getElementById('phone').value = currentUser.phone || '';
+
+            const sidebarTitle = document.querySelector('.sidebar h1');
+            if (sidebarTitle) {
+                sidebarTitle.textContent = `Hi, ${currentUser.firstName}!`;
+            }
+        }
+        
       // Check if user is signed in
 function checkAuth() {
     const currentUser = localStorage.getItem('currentUser');
@@ -1055,3 +1077,4 @@ window.addEventListener('DOMContentLoaded', function() {
 </body>
 
 </html?
+

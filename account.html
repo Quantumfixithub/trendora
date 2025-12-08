@@ -882,6 +882,57 @@
     <div class="toast" id="toast"></div>
 
     <script>
+      // Check if user is signed in
+function checkAuth() {
+    const currentUser = localStorage.getItem('currentUser');
+    if (!currentUser) {
+        // Redirect to signin with return URL
+        window.location.href = 'signin.html?redirect=account.html';
+        return false;
+    }
+    return true;
+}
+
+// Load user data
+function loadUserData() {
+    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    if (!currentUser) return;
+
+    // Update profile form
+    document.getElementById('firstName').value = currentUser.firstName || '';
+    document.getElementById('lastName').value = currentUser.lastName || '';
+    document.getElementById('email').value = currentUser.email || '';
+    document.getElementById('phone').value = currentUser.phone || '';
+
+    // Update sidebar greeting
+    const sidebarTitle = document.querySelector('.sidebar h1');
+    if (sidebarTitle) {
+        sidebarTitle.textContent = `Hi, ${currentUser.firstName}!`;
+    }
+}
+
+// Update sign out function
+function signOut() {
+    if (!confirm('Are you sure you want to sign out?')) return;
+    
+    // Clear user session
+    localStorage.removeItem('currentUser');
+    localStorage.removeItem('rememberMe');
+    
+    showToast('Signed out successfully', 'success');
+    
+    // Redirect to signin page
+    setTimeout(() => {
+        window.location.href = 'signin.html';
+    }, 800);
+}
+
+// Check authentication on page load
+window.addEventListener('DOMContentLoaded', function() {
+    if (!checkAuth()) return;
+    loadUserData();
+    updateCartCount();
+});        
         // Toast notification function
         const toast = document.getElementById('toast');
         
@@ -1002,4 +1053,5 @@
         });
     </script>
 </body>
+
 </html?

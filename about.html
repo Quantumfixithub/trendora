@@ -672,21 +672,69 @@
 
 
   <script>
-    // Mobile menu toggle
-    function toggleMobileMenu() {
-      const menu = document.getElementById('mobileMenu');
-      const overlay = document.getElementById('menuOverlay');
-      const isActive = menu.classList.contains('active');
-      if (isActive) {
-        menu.classList.remove('active');
-        overlay.classList.remove('active');
-        menu.setAttribute('aria-hidden', 'true');
-      } else {
-        menu.classList.add('active');
-        overlay.classList.add('active');
-        menu.setAttribute('aria-hidden', 'false');
-      }
-    }
+
+// Header interactions: desktop dropdown and mobile drawer
+    (function(){
+        const shopCaret = document.getElementById('shopCaret');
+        const shopDropdown = document.getElementById('shopDropdown');
+        const mobileBtn = document.getElementById('mobileMenuBtn');
+        const mobileBackdrop = document.getElementById('mobileBackdrop');
+        const mobileClose = document.getElementById('mobileCloseBtn');
+        const mobileShopToggle = document.getElementById('mobileShopToggle');
+        const mobileShopSub = document.getElementById('mobileShopSub');
+
+        // Toggle desktop dropdown on caret click (does not prevent navigation on sublinks)
+        if (shopCaret && shopDropdown){
+            shopCaret.addEventListener('click', function(e){
+                e.stopPropagation();
+                const open = shopDropdown.style.display === 'block';
+                shopDropdown.style.display = open ? 'none' : 'block';
+                shopCaret.setAttribute('aria-expanded', String(!open));
+            });
+        }
+
+        // Close desktop dropdown when clicking outside
+        document.addEventListener('click', function(e){
+            if (shopDropdown && !shopDropdown.contains(e.target) && e.target !== shopCaret){
+                shopDropdown.style.display = 'none';
+                if (shopCaret) shopCaret.setAttribute('aria-expanded', 'false');
+            }
+        });
+
+        // Mobile drawer open
+        if (mobileBtn && mobileBackdrop){
+            mobileBtn.addEventListener('click', function(){ mobileBackdrop.style.display = 'block'; mobileBackdrop.setAttribute('aria-hidden','false'); });
+            mobileClose.addEventListener('click', closeMobile);
+            mobileBackdrop.addEventListener('click', function(e){ if (e.target === mobileBackdrop) closeMobile(); });
+        }
+        function closeMobile(){ mobileBackdrop.style.display = 'none'
+.mobileBackdrop.setAttribute('aria-hidden','true'); }
+
+      // Mobile shop toggle
+        if (mobileShopToggle && mobileShopSub){
+            mobileShopToggle.addEventListener('click', function(){
+                const open = mobileShopSub.style.display === 'block';
+                mobileShopSub.style.display = open ? 'none' : 'block';
+                mobileShopToggle.setAttribute('aria-expanded', String(!open));
+            });
+        }
+
+        // Close menus with Escape
+        document.addEventListener('keydown', function(e){
+            if (e.key === 'Escape'){
+                if (shopDropdown) shopDropdown.style.display = 'none';
+                closeMobile();
+            }
+        });
+    })();
+
+
+
+
+
+
+
+      
 
 // Highlight active nav link based on file name
 (function highlightActiveNav() {
@@ -747,3 +795,4 @@ function subscribeNewsletter(e) {
 </body>
 
 </html>
+

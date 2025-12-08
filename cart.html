@@ -698,6 +698,12 @@
     <div class="toast" id="toast"></div>
 
     <script>
+
+// Protect cart page - require authentication
+        if (!requireAuth('cart.html')) {
+            // User will be redirected
+        }
+        
 // Update account link based on auth status
 function updateAuthLink() {
     const currentUser = localStorage.getItem('currentUser');
@@ -1018,3 +1024,4 @@ document.addEventListener('DOMContentLoaded', updateAuthLink);
 </body>
 
 </html>
+

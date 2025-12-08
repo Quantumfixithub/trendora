@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>About Us - Trendora</title>
     <style>
-        * {
+        {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
@@ -17,75 +17,33 @@
             color: #333;
         }
 
-        /* Header Styles */
-        header {
-            background: #fff;
-            padding: 1rem 5%;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-        }
+      { margin:0; padding:0; box-sizing:border-box; }
+    body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Ubuntu,Cantarell,sans-serif; color:#333; background:#f8f9fa; line-height:1.6; }
+    header{ background:#fff; padding:1rem 5%; box-shadow:0 2px 5px rgba(0,0,0,.1); position:sticky; top:0; z-index:1000 }
+    nav{ display:flex; justify-content:space-between; align-items:center; max-width:1400px; margin:0 auto; gap:1rem; }
+    .logo{ font-size:1.8rem; font-weight:700; color:#2c3e50; text-decoration:none; }
+    .nav-links{ display:flex; gap:2rem; list-style:none; align-items:center; }
+    .nav-links a{ text-decoration:none; color:#555; font-weight:500; transition:color .25s; padding:.35rem .5rem; border-radius:6px; }
+    .nav-links a:hover, .nav-links a.active{ color:#e74c3c; background: rgba(231,76,60,0.04); }
+    .nav-icons{ display:flex; gap:1.5rem; align-items:center; }
+    .nav-icons a{ color:#555; font-size:1.2rem; text-decoration:none; position:relative; transition:transform .2s; }
+    .nav-icons a:hover{ transform:scale(1.05); }
+    .cart-count{ position:absolute; top:-8px; right:-8px; background:#e74c3c; color:#fff; font-size:.7rem; padding:2px 6px; border-radius:999px; min-width:18px; text-align:center; display:inline-block; }
+    .mobile-menu-btn{ display:none; background:none; border:none; font-size:1.5rem; cursor:pointer; color:#555; }
 
-        nav {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            max-width: 1400px;
-            margin: 0 auto;
-            width: 100%;
-        }
+    /* Dropdown styles */
+    .nav-item { position:relative; }
+    .shop-caret { background:transparent; border:none; cursor:pointer; color:#555; font-size:1rem; padding:.3rem .45rem; border-radius:6px; }
+    .shop-dropdown { position:absolute; top:calc(100% + 8px); left:0; background:#fff; border-radius:8px; box-shadow: 0 8px 24px rgba(0,0,0,0.12); min-width:200px; display:none; padding:.4rem; z-index:1200; }
+    .shop-dropdown a{ display:block; padding:.6rem .8rem; color:#2c3e50; text-decoration:none; border-radius:6px; }
+    .shop-dropdown a:hover{ background:#f7f9fb; }
 
-        .logo {
-            font-size: 1.8rem;
-            font-weight: bold;
-            color: #2c3e50;
-            text-decoration: none;
-        }
+    /* Mobile drawer */
+    .mobile-drawer-backdrop { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.4); z-index:1500; }
+    .mobile-drawer { position:fixed; left:0; top:0; bottom:0; width:300px; max-width:86%; background:#fff; padding:1rem; box-shadow:0 20px 60px rgba(0,0,0,0.25); transform:translateX(-8px); z-index:1600; overflow:auto; }
+    .mobile-drawer .nav-links{ display:block; }
+    .mobile-shop-sub { margin-left:0.5rem; margin-top:.5rem; display:none; }
 
-        .nav-links {
-            display: flex;
-            gap: 2rem;
-            list-style: none;
-        }
-
-        .nav-links a {
-            text-decoration: none;
-            color: #555;
-            font-weight: 500;
-            transition: color 0.3s;
-        }
-
-        .nav-links a:hover,
-        .nav-links a.active {
-            color: #e74c3c;
-        }
-
-        .nav-icons {
-            display: flex;
-            gap: 1.5rem;
-            align-items: center;
-        }
-
-        .nav-icons a {
-            color: #555;
-            font-size: 1.2rem;
-            text-decoration: none;
-            position: relative;
-        }
-
-        .cart-count {
-            position: absolute;
-            top: -8px;
-            right: -8px;
-            background: #e74c3c;
-            color: white;
-            font-size: 0.7rem;
-            padding: 2px 6px;
-            border-radius: 50%;
-            min-width: 18px;
-            text-align: center;
-        }
 
         /* Mobile Menu */
         .mobile-menu-btn {
@@ -496,28 +454,44 @@
 <body>
     <!-- Header -->
     <header>
-        <nav aria-label="Main navigation">
-            <a href="home.html" class="logo">Trendora</a>
+        <nav>
+            <a href="index.html" class="logo">Trendora</a>
 
-            <ul class="nav-links" role="menubar" id="primaryNav">
-                <li role="none"><a role="menuitem" href="index.html" data-nav="home">Home</a></li>
-                <li role="none"><a role="menuitem" href="shop.html" data-nav="shop">Shop</a></li>
-                <li role="none"><a role="menuitem" href="about.html" data-nav="about">About Us</a></li>
-                <li role="none"><a role="menuitem" href="contact.html" data-nav="contact">Contact</a></li>
-            </ul>
+        <!-- Desktop nav -->
+        <ul class="nav-links" id="desktopNav">
+            <li><a href="index.html">Home</a></li>
 
+            <li class="nav-item" style="display:flex;align-items:center;gap:.25rem">
+                <a href="shop.html" class="nav-link">Shop</a>
+                <button class="shop-caret" id="shopCaret" aria-expanded="false" aria-controls="shopDropdown">▾</button>
+
+                <div class="shop-dropdown" id="shopDropdown" role="menu" aria-label="Shop categories">
+                    <a href="women.html">Women</a>
+                    <a href="men.html">Men</a>
+                    <a href="accessories.html">Accessories</a>
+                    <a href="shoes.html">Shoes</a>
+                </div>
+            </li>
+
+            <li><a href="about.html">About Us</a></li>
+            <li><a href="contact.html">Contact</a></li>
+        </ul>
+
+        <!-- Icons + mobile button -->
+        <div style="display:flex;align-items:center;gap:1rem">
             <div class="nav-icons" aria-hidden="false">
-                <a href="search.html" title="Search" aria-label="Search">🔍</a>
-                <a href="account.html" title="My Account" aria-label="My Account">👤</a>
-                <a href="cart.html" title="Shopping Cart" aria-label="Shopping Cart">
+                <a href="search.html" title="Search">🔍</a>
+                <a href="account.html" title="My Account">👤</a>
+                <a href="cart.html" title="Shopping Cart" aria-current="page">
                     🛒
                     <span class="cart-count" id="cartCount">0</span>
                 </a>
             </div>
 
-            <button class="mobile-menu-btn" aria-label="Open menu" onclick="toggleMobileMenu()">☰</button>
-        </nav>
-    </header>
+            <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Open menu">☰</button>
+        </div>
+    </nav>
+</header>
 
     <!-- Mobile Menu -->
     <div class="menu-overlay" id="menuOverlay" onclick="toggleMobileMenu()"></div>
@@ -771,4 +745,5 @@ function subscribeNewsletter(e) {
 </script
 
 </body>
+
 </html>

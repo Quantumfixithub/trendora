@@ -920,6 +920,69 @@ function loadUserData() {
     const currentUser = JSON.parse(localStorage.getItem('currentUser'));
     if (!currentUser) return;
 
+    // Load orders from localStorage
+function loadOrders() {
+    const ordersContainer = document.getElementById('ordersContainer');
+    const orders = JSON.parse(localStorage.getItem('orders')) || [];
+
+    if (orders.length === 0) {
+        ordersContainer.innerHTML = `
+            <div class="empty-state">
+                <div class="empty-state-icon">📦</div>
+                <h3>No Orders Yet</h3>
+                <p>You haven't placed any orders yet.</p>
+                <a href="shop.html" class="empty-state-btn">Start Shopping</a>
+            </div>
+        `;
+        return;
+    }
+
+    // Sort orders by date (newest first)
+    orders.sort((a, b) => new Date(b.paymentDate) - new Date(a.paymentDate));
+
+    ordersContainer.innerHTML = orders.map(order => {
+        const orderDate = new Date(order.paymentDate).toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
+
+        const statusClass = order.status.toLowerCase().replace(' ', '-');
+
+        return `
+            <div class="order-card">
+                <div class="order-header">
+                    <div>
+                        <div class="order-number">Order #${order.id.substring(0, 10)}</div>
+                        <small style="color: #666;">Placed on ${orderDate}</small>
+                    </div>
+                    <span class="order-status ${statusClass}">${order.status}</span>
+                </div>
+                <div class="order-items">
+                    ${order.cart.map(item => `
+                        <div class="order-item">
+                            <span>${item.name} (x${item.quantity})</span>
+                            <span>$${(item.price * item.quantity).toFixed(2)}</span>
+                        </div>
+                    `).join('')}
+                </div>
+                <div class="order-total">
+                    <span>Total:</span>
+                    <span>$${order.total.toFixed(2)}</span>
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
+// Call this function in the DOMContentLoaded event
+window.addEventListener('DOMContentLoaded', function() {
+    if (!checkAuth()) return;
+    loadUserData();
+    loadOrders(); // Add this line
+    updateCartCount();
+});
+    
     // Update profile form
     document.getElementById('firstName').value = currentUser.firstName || '';
     document.getElementById('lastName').value = currentUser.lastName || '';
@@ -1077,4 +1140,5 @@ window.addEventListener('DOMContentLoaded', function() {
 </body>
 
 </html?
+
 

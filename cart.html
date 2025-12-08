@@ -698,6 +698,24 @@
     <div class="toast" id="toast"></div>
 
     <script>
+// Update account link based on auth status
+function updateAuthLink() {
+    const currentUser = localStorage.getItem('currentUser');
+    const accountLink = document.querySelector('a[href="account.html"]');
+    
+    if (!accountLink) return;
+    
+    if (currentUser) {
+        accountLink.title = 'My Account';
+    } else {
+        accountLink.href = 'signin.html';
+        accountLink.title = 'Sign In';
+    }
+}
+
+// Call on page load
+document.addEventListener('DOMContentLoaded', updateAuthLink);
+        
         // Initialize cart from localStorage or use sample data
         function getCart() {
             try {
@@ -998,4 +1016,5 @@
         });
     </script>
 </body>
+
 </html>

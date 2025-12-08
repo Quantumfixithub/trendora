@@ -497,7 +497,19 @@ document.addEventListener('DOMContentLoaded', updateAuthLink);
             cartCount = cart.length;
         });
     </script>
+	<script src="auth.js"></script>
+<script>
+    // Protect shop page
+    window.addEventListener('DOMContentLoaded', function() {
+        if (!isAuthenticated()) {
+            showAuthModal();
+        }
+    });
+    
+    // Your existing shop.js code...
+</script>
 </body>
 
 </html>
+
 

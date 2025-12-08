@@ -362,6 +362,13 @@
     </div>
 
     <script>
+// Redirect to account page or previous page
+setTimeout(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const redirectUrl = urlParams.get('redirect') || 'account.html';
+    window.location.href = redirectUrl;
+}, 1500);
+        
         // Toggle password visibility
         function togglePassword(fieldId) {
             const field = document.getElementById(fieldId);

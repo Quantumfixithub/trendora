@@ -376,6 +376,11 @@
             height: 50px;
             object-fit: cover;
             border-radius: 6px;
+            background: #f3f4f6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
         }
 
         .status-badge {
@@ -398,6 +403,11 @@
         .status-badge.pending {
             background: #fef3c7;
             color: #d97706;
+        }
+
+        .status-badge.processing {
+            background: #dbeafe;
+            color: #1e40af;
         }
 
         .status-badge.completed {
@@ -437,18 +447,6 @@
         .action-btn.view {
             background: #e9d5ff;
             color: #7c3aed;
-        }
-
-        /* Chart Container */
-        .chart-container {
-            height: 300px;
-            margin: 20px 0;
-            background: #f9fafb;
-            border-radius: 6px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #9ca3af;
         }
 
         /* Search and Filter */
@@ -527,30 +525,6 @@
             color: #6b7280;
         }
 
-        /* Responsive */
-        @media (max-width: 768px) {
-            .sidebar {
-                width: 70px;
-            }
-
-            .sidebar .logo p,
-            .sidebar .nav-item span {
-                display: none;
-            }
-
-            .main-content {
-                margin-left: 70px;
-            }
-
-            .form-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .stats-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
         .analytics-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -590,14 +564,104 @@
             font-weight: 600;
             color: #1f2937;
         }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #9ca3af;
+        }
+
+        .empty-state-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+        }
+
+        .empty-state h3 {
+            font-size: 20px;
+            color: #6b7280;
+            margin-bottom: 10px;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: #1f2937;
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 6px;
+            box-shadow: 0 10px25px rgba(0,0,0,0.3);
+            transform: translateX(400px);
+            transition: transform 0.3s;
+            z-index: 3000;
+        }
+        
+        .toast.show {
+            transform: translateX(0);
+        }
+        
+        .toast.success {
+            background: #059669;
+        }
+        
+        .toast.error {
+            background: #dc2626;
+        }
+
+        /* Responsive */
+        @media (max-width: 968px) {
+            .sidebar {
+                width: 70px;
+            }
+
+            .sidebar .logo p,
+            .sidebar .nav-item span {
+                display: none;
+            }
+
+            .main-content {
+                margin-left: 70px;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .analytics-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .main-content {
+                padding: 15px;
+            }
+
+            .header {
+                flex-direction: column;
+                gap: 15px;
+                align-items: flex-start;
+            }
+
+            .controls {
+                flex-direction: column;
+            }
+
+            .search-box {
+                width: 100%;
+            }
+        }
     </style>
 </head>
 <body>
     <div class="dashboard">
         <!-- Sidebar -->
         <aside class="sidebar">
-           
-<div class="logo">
+            <div class="logo">
                 <h2>TRENDORA</h2>
                 <p>Admin Panel</p>
             </div>
@@ -634,7 +698,7 @@
                     <span class="icon">⚙️</span>
                     <span>Settings</span>
                 </li>
-                <li class="nav-item" data-section="logout">
+                <li class="nav-item" onclick="logout()">
                     <span class="icon">🚪</span>
                     <span>Logout</span>
                 </li>
@@ -658,33 +722,33 @@
                     <div class="stat-card revenue">
                         <div class="icon">💵</div>
                         <h3>Total Revenue</h3>
-                        <div class="value">$124,563</div>
+                        <div class="value" id="totalRevenue">$0</div>
                         <div class="change">↑ 12.5% from last month</div>
                     </div>
                     <div class="stat-card orders">
                         <div class="icon">🛍️</div>
                         <h3>Total Orders</h3>
-                        <div class="value">1,847</div>
+                        <div class="value" id="totalOrders">0</div>
                         <div class="change">↑ 8.3% from last month</div>
                     </div>
                     <div class="stat-card users">
                         <div class="icon">👤</div>
                         <h3>Total Users</h3>
-                        <div class="value">3,462</div>
+                        <div class="value" id="totalUsers">0</div>
                         <div class="change">↑ 15.2% from last month</div>
                     </div>
                     <div class="stat-card products">
                         <div class="icon">📦</div>
                         <h3>Total Products</h3>
-                        <div class="value">287</div>
+                        <div class="value" id="totalProducts">0</div>
                         <div class="change">↑ 5.1% from last month</div>
                     </div>
                 </div>
 
-                <div class="content-section active">
+                <div style="background: white; padding: 30px; border-radius: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
                     <div class="section-header">
                         <h2>Recent Orders</h2>
-                        <button class="btn btn-secondary">View All</button>
+                        <button class="btn btn-secondary" onclick="switchSection('orders')">View All</button>
                     </div>
                     <div class="table-container">
                         <table>
@@ -698,74 +762,17 @@
                                     <th>Actions</th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody id="recentOrdersTable">
                                 <tr>
-                                    <td>#ORD-1001</td>
-                                    <td>John Smith</td>
-                                    <td>Jan 15, 2025</td>
-                                    <td>$299.00</td>
-                                    <td><span class="status-badge completed">Completed</span></td>
-                                    <td>
-                                        <div class="action-buttons">
-                                            <button class="action-btn view">View</button>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>#ORD-1002</td>
-                                    <td>Emma Wilson</td>
-                                    <td>Jan 15, 2025</td>
-                                    <td>$459.00</td>
-                                    <td><span class="status-badge pending">Pending</span></td>
-                                    <td>
-                                        <div class="action-buttons">
-                                            <button class="action-btn view">View</button>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>#ORD-1003</td>
-                                    <td>Michael Brown</td>
-                                    <td>Jan 14, 2025</td>
-                                    <td>$189.00</td>
-                                    <td><span class="status-badge completed">Completed</span></td>
-                                    <td>
-                                        <div class="action-buttons">
-                                            <button class="action-btn view">View</button>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>#ORD-1004</td>
-                                    <td>Sarah Davis</td>
-                                    <td>Jan 14, 2025</td>
-                                    <td>$679.00</td>
-                                    <td><span class="status-badge cancelled">Cancelled</span></td>
-                                    <td>
-                                        <div class="action-buttons">
-                                            <button class="action-btn view">View</button>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>#ORD-1005</td>
-                                    <td>James Taylor</td>
-                                    <td>Jan 13, 2025</td>
-                                    <td>$329.00</td>
-                                    <td><span class="status-badge pending">Pending</span></td>
-                                    <td>
-                                        <div class="action-buttons">
-                                            <button class="action-btn view">View</button>
-                                        </div>
+                                    <td colspan="6" class="empty-state">
+                                        <div class="empty-state-icon">📦</div>
+                                        <h3>No orders yet</h3>
+                                        <p>Orders will appear here once customers make purchases</p>
                                     </td>
                                 </tr>
                             </tbody>
                         </table>
                     </div>
-                </div>
-
-                <div class="chart-container">
-                    <p>📊 Sales Chart - Integration with Chart.js recommended</p>
                 </div>
             </section>
 
@@ -773,24 +780,19 @@
             <section class="content-section" id="products">
                 <div class="section-header">
                     <h2>Products Management</h2>
-                    <button class="btn btn-primary" onclick="openModal('addProductModal')">+ Add New Product</button>
+                    <button class="btn btn-primary" onclick="openModal('addProduct')">+ Add Product</button>
                 </div>
 
                 <div class="controls">
                     <div class="search-box">
-                        <input type="text" placeholder="🔍 Search products..." id="productSearch">
+                        <input type="text" placeholder="Search products..." id="productSearch" onkeyup="searchProducts()">
                     </div>
-                    <select class="filter-select" id="categoryFilter">
-                        <option value="">All Categories</option>
-                        <option value="men">Men's Fashion</option>
-                        <option value="women">Women's Fashion</option>
+                    <select class="filter-select" id="productFilter" onchange="filterProducts()">
+                        <option value="all">All Categories</option>
+                        <option value="clothing">Clothing</option>
                         <option value="accessories">Accessories</option>
                         <option value="shoes">Shoes</option>
-                    </select>
-                    <select class="filter-select" id="statusFilter">
-                        <option value="">All Status</option>
-                        <option value="active">Active</option>
-                        <option value="inactive">Inactive</option>
+                        <option value="bags">Bags</option>
                     </select>
                 </div>
 
@@ -806,97 +808,8 @@
                                 <th>Actions</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <tr>
-                                <td>
-                                    <div class="product-cell">
-                                        <img src="https://via.placeholder.com/50" alt="Product" class="product-image">
-                                        <span>Classic White Sneakers</span>
-                                    </div>
-                                </td>
-                                <td>Shoes</td>
-                                <td>$89.99</td>
-                                <td>145</td>
-                                <td><span class="status-badge active">Active</span></td>
-                                <td>
-                                    <div class="action-buttons">
-                                        <button class="action-btn edit" onclick="editProduct(1)">Edit</button>
-                                        <button class="action-btn delete" onclick="deleteProduct(1)">Delete</button>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <div class="product-cell">
-                                        <img src="https://via.placeholder.com/50" alt="Product" class="product-image">
-                                        <span>Leather Jacket</span>
-                                    </div>
-                                </td>
-                                <td>Men's Fashion</td>
-                                <td>$249.99</td>
-                                <td>28</td>
-                                <td><span class="status-badge active">Active</span></td>
-                                <td>
-                                    <div class="action-buttons">
-                                        <button class="action-btn edit" onclick="editProduct(2)">Edit</button>
-                                        <button class="action-btn delete" onclick="deleteProduct(2)">Delete</button>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <div class="product-cell">
-                                        <img src="https://via.placeholder.com/50" alt="Product" class="product-image">
-                                        <span>Summer Dress</span>
-                                    </div>
-                                </td>
-                                <td>Women's Fashion</td>
-                                <td>$129.99</td>
-                                <td>0</td>
-                                <td><span class="status-badge inactive">Inactive</span></td>
-                                <td>
-                                    <div class="action-buttons">
-                                        <button class="action-btn edit" onclick="editProduct(3)">Edit</button>
-                                        <button class="action-btn delete" onclick="deleteProduct(3)">Delete</button>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <div class="product-cell">
-                                        <img src="https://via.placeholder.com/50" alt="Product" class="product-image">
-                                        <span>Designer Handbag</span>
-                                    </div>
-                                </td>
-                                <td>Accessories</td>
-                                <td>$349.99</td>
-                                <td>52</td>
-                                <td><span class="status-badge active">Active</span></td>
-                                <td>
-                                    <div class="action-buttons">
-                                        <button class="action-btn edit" onclick="editProduct(4)">Edit</button>
-                                        <button class="action-btn delete" onclick="deleteProduct(4)">Delete</button>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <div class="product-cell">
-                                        <img src="https://via.placeholder.com/50" alt="Product" class="product-image">
-                                        <span>Running Shoes</span>
-                                    </div>
-                                </td>
-                                <td>Shoes</td>
-                                <td>$119.99</td>
-                                <td>87</td>
-                                <td><span class="status-badge active">Active</span></td>
-                                <td>
-                                    <div class="action-buttons">
-                                        <button class="action-btn edit" onclick="editProduct(5)">Edit</button>
-                                        <button class="action-btn delete" onclick="deleteProduct(5)">Delete</button>
-                                    </div>
-                                </td>
-                            </tr>
+                        <tbody id="productsTable">
+                            <!-- Products will be loaded here -->
                         </tbody>
                     </table>
                 </div>
@@ -906,20 +819,19 @@
             <section class="content-section" id="orders">
                 <div class="section-header">
                     <h2>Orders Management</h2>
-                    <button class="btn btn-secondary">Export Orders</button>
+                    <select class="filter-select" id="orderStatusFilter" onchange="filterOrders()">
+                        <option value="all">All Orders</option>
+                        <option value="pending">Pending</option>
+                        <option value="processing">Processing</option>
+                        <option value="completed">Completed</option>
+                        <option value="cancelled">Cancelled</option>
+                    </select>
                 </div>
 
                 <div class="controls">
                     <div class="search-box">
-                        <input type="text" placeholder="🔍 Search orders..." id="orderSearch">
+                        <input type="text" placeholder="Search orders..." id="orderSearch" onkeyup="searchOrders()">
                     </div>
-                    <select class="filter-select">
-                        <option value="">All Status</option>
-                        <option value="pending">Pending</option>
-                        <option value="completed">Completed</option>
-                        <option value="cancelled">Cancelled</option>
-                    </select>
-                    <input type="date" class="filter-select">
                 </div>
 
                 <div class="table-container">
@@ -928,99 +840,15 @@
                             <tr>
                                 <th>Order ID</th>
                                 <th>Customer</th>
-                                <th>Email</th>
                                 <th>Date</th>
+                                <th>Items</th>
                                 <th>Total</th>
                                 <th>Status</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <tr>
-                                <td>#ORD-1001</td>
-                                <td>John Smith</td>
-                                <td>john@email.com</td>
-                                <td>Jan 15, 2025</td>
-                                <td>$299.00</td>
-                                <td><span class="status-badge completed">Completed</span></td>
-                                <td>
-                                    <div class="action-buttons">
-                                        <button class="action-btn view" onclick="viewOrder(1001)">View</button>
-                                        <button class="action-btn edit">Update</button>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>#ORD-1002</td>
-                                <td>Emma Wilson</td>
-                                <td>emma@email.com</td>
-                                <td>Jan 15, 2025</td>
-                                <td>$459.00</td>
-                                <td><span class="status-badge pending">Pending</span></td>
-
-<td>
-                                    <div class="action-buttons">
-                                        <button class="action-btn view" onclick="viewOrder(1002)">View</button>
-                                        <button class="action-btn edit">Update</button>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>#ORD-1003</td>
-                                <td>Michael Brown</td>
-                                <td>michael@email.com</td>
-                                <td>Jan 14, 2025</td>
-                                <td>$189.00</td>
-                                <td><span class="status-badge completed">Completed</span></td>
-                                <td>
-                                    <div class="action-buttons">
-                                        <button class="action-btn view" onclick="viewOrder(1003)">View</button>
-                                        <button class="action-btn edit">Update</button>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>#ORD-1004</td>
-                                <td>Sarah Davis</td>
-                                <td>sarah@email.com</td>
-                                <td>Jan 14, 2025</td>
-                                <td>$679.00</td>
-                                <td><span class="status-badge cancelled">Cancelled</span></td>
-                                <td>
-                                    <div class="action-buttons">
-                                        <button class="action-btn view" onclick="viewOrder(1004)">View</button>
-                                        <button class="action-btn edit">Update</button>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>#ORD-1005</td>
-                                <td>James Taylor</td>
-                                <td>james@email.com</td>
-                                <td>Jan 13, 2025</td>
-                                <td>$329.00</td>
-                                <td><span class="status-badge pending">Pending</span></td>
-                                <td>
-                                    <div class="action-buttons">
-                                        <button class="action-btn view" onclick="viewOrder(1005)">View</button>
-                                        <button class="action-btn edit">Update</button>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>#ORD-1006</td>
-                                <td>Lisa Anderson</td>
-                                <td>lisa@email.com</td>
-                                <td>Jan 13, 2025</td>
-                                <td>$549.00</td>
-                                <td><span class="status-badge completed">Completed</span></td>
-                                <td>
-                                    <div class="action-buttons">
-                                        <button class="action-btn view" onclick="viewOrder(1006)">View</button>
-                                        <button class="action-btn edit">Update</button>
-                                    </div>
-                                </td>
-                            </tr>
+                        <tbody id="ordersTable">
+                            <!-- Orders will be loaded here -->
                         </tbody>
                     </table>
                 </div>
@@ -1030,140 +858,29 @@
             <section class="content-section" id="users">
                 <div class="section-header">
                     <h2>Users Management</h2>
-                    <button class="btn btn-primary" onclick="openModal('addUserModal')">+ Add New User</button>
+                    <button class="btn btn-primary" onclick="openModal('addUser')">+ Add User</button>
                 </div>
 
                 <div class="controls">
                     <div class="search-box">
-                        <input type="text" placeholder="🔍 Search users..." id="userSearch">
+                        <input type="text" placeholder="Search users..." id="userSearch" onkeyup="searchUsers()">
                     </div>
-                    <select class="filter-select">
-                        <option value="">All Roles</option>
-                        <option value="customer">Customer</option>
-                        <option value="admin">Admin</option>
-                        <option value="moderator">Moderator</option>
-                    </select>
-                    <select class="filter-select">
-                        <option value="">All Status</option>
-                        <option value="active">Active</option>
-                        <option value="inactive">Inactive</option>
-                    </select>
                 </div>
 
                 <div class="table-container">
                     <table>
                         <thead>
                             <tr>
-                                <th>User</th>
+                                <th>Name</th>
                                 <th>Email</th>
                                 <th>Phone</th>
-                                <th>Role</th>
                                 <th>Joined Date</th>
-                                <th>Status</th>
+                                <th>Orders</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <tr>
-                                <td>
-                                    <div class="product-cell">
-                                        <div class="user-avatar" style="width: 35px; height: 35px; font-size: 14px;">JS</div>
-                                        <span>John Smith</span>
-                                    </div>
-                                </td>
-                                <td>john.smith@email.com</td>
-                                <td>+1 (555) 123-4567</td>
-                                <td>Customer</td>
-                                <td>Dec 10, 2024</td>
-                                <td><span class="status-badge active">Active</span></td>
-                                <td>
-                                    <div class="action-buttons">
-                                        <button class="action-btn view" onclick="viewUser(1)">View</button>
-                                        <button class="action-btn edit" onclick="editUser(1)">Edit</button>
-                                        <button class="action-btn delete" onclick="deleteUser(1)">Delete</button>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <div class="product-cell">
-                                        <div class="user-avatar" style="width: 35px; height: 35px; font-size: 14px;">EW</div>
-                                        <span>Emma Wilson</span>
-                                    </div>
-                                </td>
-                                <td>emma.wilson@email.com</td>
-                                <td>+1 (555) 234-5678</td>
-                                <td>Customer</td>
-                                <td>Dec 15, 2024</td>
-                                <td><span class="status-badge active">Active</span></td>
-                                <td>
-                                    <div class="action-buttons">
-                                        <button class="action-btn view" onclick="viewUser(2)">View</button>
-                                        <button class="action-btn edit" onclick="editUser(2)">Edit</button>
-                                        <button class="action-btn delete" onclick="deleteUser(2)">Delete</button>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <div class="product-cell">
-                                        <div class="user-avatar" style="width: 35px; height: 35px; font-size: 14px; background: #7c3aed;">MB</div>
-                                        <span>Michael Brown</span>
-                                    </div>
-                                </td>
-                                <td>michael.brown@email.com</td>
-                                <td>+1 (555) 345-6789</td>
-                                <td>Admin</td>
-                                <td>Nov 5, 2024</td>
-                                <td><span class="status-badge active">Active</span></td>
-                                <td>
-                                    <div class="action-buttons">
-                                        <button class="action-btn view" onclick="viewUser(3)">View</button>
-                                        <button class="action-btn edit" onclick="editUser(3)">Edit</button>
-                                        <button class="action-btn delete" onclick="deleteUser(3)">Delete</button>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <div class="product-cell">
-                                        <div class="user-avatar" style="width: 35px; height: 35px; font-size: 14px;">SD</div>
-                                        <span>Sarah Davis</span>
-                                    </div>
-                                </td>
-                                <td>sarah.davis@email.com</td>
-                                <td>+1 (555) 456-7890</td>
-                                <td>Customer</td>
-                                <td>Jan 2, 2025</td>
-                                <td><span class="status-badge inactive">Inactive</span></td>
-                                <td>
-                                    <div class="action-buttons">
-                                        <button class="action-btn view" onclick="viewUser(4)">View</button>
-                                        <button class="action-btn edit" onclick="editUser(4)">Edit</button>
-                                        <button class="action-btn delete" onclick="deleteUser(4)">Delete</button>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <div class="product-cell">
-                                        <div class="user-avatar" style="width: 35px; height: 35px; font-size: 14px;">JT</div>
-                                        <span>James Taylor</span>
-                                    </div>
-                                </td>
-                                <td>james.taylor@email.com</td>
-                                <td>+1 (555) 567-8901</td>
-                                <td>Customer</td>
-                                <td>Dec 20, 2024</td>
-                                <td><span class="status-badge active">Active</span></td>
-                                <td>
-                                    <div class="action-buttons">
-                                        <button class="action-btn view" onclick="viewUser(5)">View</button>
-                                        <button class="action-btn edit" onclick="editUser(5)">Edit</button>
-                                        <button class="action-btn delete" onclick="deleteUser(5)">Delete</button>
-                                    </div>
-                                </td>
-                            </tr>
+                        <tbody id="usersTable">
+                            <!-- Users will be loaded here -->
                         </tbody>
                     </table>
                 </div>
@@ -1172,142 +889,71 @@
             <!-- Analytics Section -->
             <section class="content-section" id="analytics">
                 <div class="section-header">
-                    <h2>Analytics & Insights</h2>
+                    <h2>Analytics Overview</h2>
                     <select class="filter-select">
-                        <option value="7days">Last 7 Days</option>
-                        <option value="30days">Last 30 Days</option>
-                        <option value="90days">Last 90 Days</option>
-                        <option value="year">This Year</option>
+                        <option>Last 7 Days</option>
+                        <option>Last 30 Days</option>
+                        <option>Last 90 Days</option>
+                        <option>This Year</option>
                     </select>
-                </div>
-
-                <div class="stats-grid">
-                    <div class="stat-card revenue">
-                        <div class="icon">📊</div>
-                        <h3>Conversion Rate</h3>
-                        <div class="value">3.24%</div>
-                        <div class="change">↑ 0.8% from last period</div>
-                    </div>
-                    <div class="stat-card orders">
-                        <div class="icon">⏱️</div>
-                        <h3>Avg Order Value</h3>
-                        <div class="value">$157.32</div>
-                        <div class="change">↑ 5.2% from last period</div>
-                    </div>
-                    <div class="stat-card users">
-                        <div class="icon">👁️</div>
-                        <h3>Page Views</h3>
-                        <div class="value">45,672</div>
-                        <div class="change">↑ 18.4% from last period</div>
-                    </div>
-                    <div class="stat-card products">
-                        <div class="icon">🎯</div>
-                        <h3>Bounce Rate</h3>
-                        <div class="value">42.1%</div>
-                        <div class="change negative">↓ 3.2% from last period</div>
-                    </div>
                 </div>
 
                 <div class="analytics-grid">
                     <div class="analytics-card">
                         <h4>Top Selling Products</h4>
-                        <div class="metric-item">
-                            <span class="metric-label">Classic White Sneakers</span>
-                            <span class="metric-value">342 sales</span>
-                        </div>
-                        <div class="metric-item">
-                            <span class="metric-label">Leather Jacket</span>
-                            <span class="metric-value">289 sales</span>
-                        </div>
-                        <div class="metric-item">
-                            <span class="metric-label">Designer Handbag</span>
-                            <span class="metric-value">256 sales</span>
-                        </div>
-                        <div class="metric-item">
-                            <span class="metric-label">Running Shoes</span>
-                            <span class="metric-value">234 sales</span>
-                        </div>
-                        <div class="metric-item">
-                            <span class="metric-label">Summer Dress</span>
-                            <span class="metric-value">198 sales</span>
+                        <div id="topProducts">
+                            <div class="metric-item">
+                                <span class="metric-label">No data available</span>
+                                <span class="metric-value">-</span>
+                            </div>
                         </div>
                     </div>
 
                     <div class="analytics-card">
                         <h4>Revenue by Category</h4>
-                        <div class="metric-item">
-                            <span class="metric-label">Shoes</span>
-                            <span class="metric-value">$45,230</span>
-                        </div>
-                        <div class="metric-item">
-                            <span class="metric-label">Men's Fashion</span>
-                            <span class="metric-value">$38,450</span>
-                        </div>
-                        <div class="metric-item">
-                            <span class="metric-label">Women's Fashion</span>
-                            <span class="metric-value">$32,890</span>
-                        </div>
-                        <div class="metric-item">
-                            <span class="metric-label">Accessories</span>
-                            <span class="metric-value">$28,340</span>
-                        </div>
-                        <div class="metric-item">
-                            <span class="metric-label">Others</span>
-                            <span class="metric-value">$12,560</span>
+                        <div id="revenueByCategory">
+                            <div class="metric-item">
+                                <span class="metric-label">No data available</span>
+                                <span class="metric-value">-</span>
+                            </div>
                         </div>
                     </div>
 
                     <div class="analytics-card">
-                        <h4>Traffic Sources</h4>
-                        <div class="metric-item">
-                            <span class="metric-label">Direct</span>
-                            <span class="metric-value">42.3%</span>
-                        </div>
-                        <div class="metric-item">
-                            <span class="metric-label">Social Media</span>
-                            <span class="metric-value">28.7%</span>
-                        </div>
-                        <div class="metric-item">
-                            <span class="metric-label">Search Engines</span>
-                            <span class="metric-value">18.5%</span>
-                        </div>
-                        <div class="metric-item">
-                            <span class="metric-label">Referrals</span>
-                            <span class="metric-value">7.2%</span>
-                        </div>
-                        <div class="metric-item">
-                            <span class="metric-label">Email</span>
-                            <span class="metric-value">3.3%</span>
+                        <h4>Customer Insights</h4>
+                        <div>
+                            <div class="metric-item">
+                                <span class="metric-label">New Customers</span>
+                                <span class="metric-value" id="newCustomers">0</span>
+                            </div>
+                            <div class="metric-item">
+                                <span class="metric-label">Returning Customers</span>
+                                <span class="metric-value" id="returningCustomers">0</span>
+                            </div>
+                            <div class="metric-item">
+                                <span class="metric-label">Avg. Order Value</span>
+                                <span class="metric-value" id="avgOrderValue">$0</span>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="analytics -card">
-                        <h4>Customer Demographics</h4>
-                        <div class="metric-item">
-                            <span class="metric-label">Age 18-24</span>
-                            <span class="metric-value">23.4%</span>
-                        </div>
-                        <div class="metric-item">
-                            <span class="metric-label">Age 25-34</span>
-                            <span class="metric-value">38.9%</span>
-                        </div>
-                        <div class="metric-item">
-                            <span class="metric-label">Age 35-44</span>
-                            <span class="metric-value">22.1%</span>
-                        </div>
-                        <div class="metric-item">
-                            <span class="metric-label">Age 45-54</span>
-                            <span class="metric-value">11.3%</span>
-                        </div>
-                        <div class="metric-item">
-                            <span class="metric-label">Age 55+</span>
-                            <span class="metric-value">4.3%</span>
+                    <div class="analytics-card">
+                        <h4>Performance Metrics</h4>
+                        <div>
+                            <div class="metric-item">
+                                <span class="metric-label">Conversion Rate</span>
+                                <span class="metric-value">0%</span>
+                            </div>
+                            <div class="metric-item">
+                                <span class="metric-label">Cart Abandonment</span>
+                                <span class="metric-value">0%</span>
+                            </div>
+                            <div class="metric-item">
+                                <span class="metric-label">Customer Satisfaction</span>
+                                <span class="metric-value">N/A</span>
+                            </div>
                         </div>
                     </div>
-                </div>
-
-                <div class="chart-container">
-                    <p>📈 Revenue Chart - Integration with Chart.js or similar library recommended</p>
                 </div>
             </section>
 
@@ -1316,160 +962,48 @@
                 <div class="section-header">
                     <h2>Sales Report</h2>
                     <div style="display: flex; gap: 10px;">
-                        <button class="btn btn-secondary">Download PDF</button>
-                        <button class="btn btn-secondary">Export Excel</button>
+                        <select class="filter-select">
+                            <option>This Month</option>
+                            <option>Last Month</option>
+                            <option>This Quarter</option>
+                            <option>This Year</option>
+                        </select>
+                        <button class="btn btn-primary">Export Report</button>
                     </div>
                 </div>
 
-                <div class="controls">
-                    <input type="date" class="filter-select" id="startDate">
-                    <input type="date" class="filter-select" id="endDate">
-                    <button class="btn btn-primary">Generate Report</button>
-                </div>
-
-                <div class="stats-grid" style="margin-top: 20px;">
-                    <div class="stat-card revenue">
-                        <div class="icon">💰</div>
-                        <h3>Total Sales</h3>
-                        <div class="value">$124,563</div>
-                        <div class="change">This Month</div>
-                    </div>
-                    <div class="stat-card orders">
-                        <div class="icon">🛍️</div>
-                        <h3>Orders Count</h3>
-                        <div class="value">1,847</div>
-                        <div class="change">This Month</div>
-                    </div>
-                    <div class="stat-card users">
-                        <div class="icon">💵</div>
-                        <h3>Net Profit</h3>
-                        <div class="value">$87,194</div>
-                        <div class="change">70% Margin</div>
-                    </div>
-                    <div class="stat-card products">
-                        <div class="icon">📦</div>
-                        <h3>Products Sold</h3>
-                        <div class="value">3,245</div>
-                        <div class="change">Total Units</div>
-                    </div>
-                </div>
-
-                <div class="analytics-grid" style="margin-top: 30px;">
+                <div class="stats-grid">
                     <div class="analytics-card">
-                        <h4>Daily Sales Breakdown</h4>
+                        <h4>Total Sales</h4>
                         <div class="metric-item">
-                            <span class="metric-label">Monday</span>
-                            <span class="metric-value">$18,450</span>
-                        </div>
-                        <div class="metric-item">
-                            <span class="metric-label">Tuesday</span>
-                            <span class="metric-value">$22,340</span>
-                        </div>
-                        <div class="metric-item">
-                            <span class="metric-label">Wednesday</span>
-                            <span class="metric-value">$19,870</span>
-                        </div>
-                        <div class="metric-item">
-                            <span class="metric-label">Thursday</span>
-                            <span class="metric-value">$21,560</span>
-                        </div>
-                        <div class="metric-item">
-                            <span class="metric-label">Friday</span>
-                            <span class="metric-value">$25,890</span>
-                        </div>
-                        <div class="metric-item">
-                            <span class="metric-label">Saturday</span>
-                            <span class="metric-value">$28,340</span>
-                        </div>
-                        <div class="metric-item">
-                            <span class="metric-label">Sunday</span>
-                            <span class="metric-value">$24,230</span>
+                            <span class="metric-value" id="totalSales">$0</span>
                         </div>
                     </div>
-
                     <div class="analytics-card">
-                        <h4>Payment Methods</h4>
+                        <h4>Orders Count</h4>
                         <div class="metric-item">
-                            <span class="metric-label">Credit Card</span>
-                            <span class="metric-value">$68,450 (55%)</span>
+                            <span class="metric-value" id="salesOrderCount">0</span>
                         </div>
+                    </div>
+                    <div class="analytics-card">
+                        <h4>Average Order</h4>
                         <div class="metric-item">
-                            <span class="metric-label">PayPal</span>
-                            <span class="metric-value">$32,890 (26%)</span>
+                            <span class="metric-value" id="salesAvgOrder">$0</span>
                         </div>
+                    </div>
+                    <div class="analytics-card">
+                        <h4>Profit Margin</h4>
                         <div class="metric-item">
-                            <span class="metric-label">Bank Transfer</span>
-                            <span class="metric-value">$18,340 (15%)</span>
-                        </div>
-                        <div class="metric-item">
-                            <span class="metric-label">Cash on Delivery</span>
-                            <span class="metric-value">$4,883 (4%)</span>
+                            <span class="metric-value">0%</span>
                         </div>
                     </div>
                 </div>
 
-                <div class="table-container" style="margin-top: 30px;">
-                    <h3 style="margin-bottom: 15px;">Recent Transactions</h3>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Transaction ID</th>
-                                <th>Date</th>
-                                <th>Customer</th>
-                                <th>Product</th>
-                                <th>Quantity</th>
-                                <th>Amount</th>
-                                <th>Payment Method</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>#TXN-5678</td>
-                                <td>Jan 15, 2025</td>
-                                <td>John Smith</td>
-                                <td>Classic White Sneakers</td>
-                                <td>2</td>
-                                <td>$179.98</td>
-                                <td>Credit Card</td>
-                            </tr>
-                            <tr>
-                                <td>#TXN-5679</td>
-                                <td>Jan 15, 2025</td>
-                                <td>Emma Wilson</td>
-                                <td>Leather Jacket</td>
-                                <td>1</td>
-                                <td>$249.99</td>
-                                <td>PayPal</td>
-                            </tr>
-                            <tr>
-                                <td>#TXN-5680</td>
-                                <td>Jan 14, 2025</td>
-                                <td>Michael Brown</td>
-                                <td>Designer Handbag</td>
-                                <td>1</td>
-                                <td>$349.99</td>
-                                <td>Credit Card</td>
-                            </tr>
-                            <tr>
-                                <td>#TXN-5681</td>
-                                <td>Jan 14, 2025</td>
-                                <td>Sarah Davis</td>
-                                <td>Summer Dress</td>
-                                <td>3</td>
-                                <td>$389.97</td>
-                                <td>Bank Transfer</td>
-                            </tr>
-                            <tr>
-                                <td>#TXN-5682</td>
-                                <td>Jan 13, 2025</td>
-                                <td>James Taylor</td>
-                                <td>Running Shoes</td>
-                                <td>1</td>
-                                <td>$119.99</td>
-                                <td>Cash on Delivery</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <div style="background: white; padding: 30px; border-radius: 10px; margin-top: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                    <h3 style="margin-bottom: 20px;">Daily Sales Chart</h3>
+                    <div style="height: 300px; background: #f9fafb; border-radius: 6px; display: flex; align-items: center; justify-content: center; color: #9ca3af;">
+                        📊 Sales chart visualization will be displayed here
+                    </div>
                 </div>
             </section>
 
@@ -1477,7 +1011,7 @@
             <section class="content-section" id="categories">
                 <div class="section-header">
                     <h2>Categories Management</h2>
-                    <button class="btn btn-primary" onclick="openModal('addCategoryModal')">+ Add New Category</button>
+                    <button class="btn btn-primary" onclick="openModal('addCategory')">+ Add Category</button>
                 </div>
 
                 <div class="table-container">
@@ -1485,81 +1019,13 @@
                         <thead>
                             <tr>
                                 <th>Category Name</th>
-                                <th>Products Count</th>
-                                <th>Total Sales</th>
+                                <th>Products</th>
                                 <th>Status</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <tr>
-                                <td>
-                                    <div class="product-cell">
-                                        <span>👟</span>
-                                        <span>Shoes</span>
-                                    </div>
-                                </td>
-                                <td>87</td>
-                                <td>$45,230</td>
-                                <td><span class="status-badge active">Active</span></td>
-                                <td>
-                                    <div class="action-buttons">
-                                        <button class="action-btn edit" onclick="editCategory(1)">Edit</button>
-                                        <button class="action-btn delete" onclick="deleteCategory(1)">Delete</button>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <div class="product-cell">
-                                        <span>👔</span>
-                                        <span>Men's Fashion</span>
-                                    </div>
-                                </td>
-                                <td>64</td>
-                                <td>$38,450</td>
-                                <td><span class="status-badge active">Active</span></td>
-                                <td>
-                                    <div class="action-buttons">
-                                        <button class="action-btn edit" onclick="editCategory(2)">Edit</button>
-                                        <button class="action-btn delete" onclick="deleteCategory(2)">Delete</button>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <div class="product-cell">
-                                        <span>👗</span>
-                                        <span>Women's Fashion</span>
-                                    </div>
-                                </td>
-                                <td>92</td>
-                                <td>$52,890</td>
-                                <td><span class="status-badge active">Active</span></td>
-                                <td>
-                                    <div class="action-buttons">
-                                        <button class="action-btn edit" onclick="editCategory(3)">Edit</button>
-                                        <button class="action-btn delete" onclick="deleteCategory(3)">Delete</button>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <div class="product-cell">
-                                        <span>👜</span>
-                                        <span>Accessories</span>
-                                    </div>
-                                </td>
-                                <td>44</td>
-                                <td>$28,340</td>
-                                <td><span class="status-badge active">Active</span></td>
-                                <td>
-                                    <div class="action-buttons">
-                                        <button class="action-btn edit" onclick="editCategory(4)">Edit</button>
-                                        <button class="action-btn delete" onclick="deleteCategory(4)">Delete</button>
-                                    </div>
-                                </td>
-                            </tr>
+                        <tbody id="categoriesTable">
+                            <!-- Categories will be loaded here -->
                         </tbody>
                     </table>
                 </div>
@@ -1571,118 +1037,60 @@
                     <h2>Settings</h2>
                 </div>
 
-                <div style="background: white; padding: 30px; border-radius: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
-                    <h3 style="margin-bottom: 20px;">General Settings</h3>
-                    <div class="form-grid">
-                        <div class="form-group full-width">
-                            <label>Store Name</label>
-                            <input type="text" value="Trendora">
-                        </div>
-                        <div class="form-group">
-                            <label>Contact Email</label>
-                            <input type="email" value="admin@trendora.com">
-                        </div>
-                        <div class="form-group">
-                            <label>Contact Phone</label>
-                            <input type="tel" value="+1 (555) 000-0000">
-                        </div>
-                        <div class="form-group full-width">
-                            <label>Store Address</label>
-                            <textarea>123 Fashion Street, New York, NY 10001</textarea>
-                        </div>
-                        <div class="form-group">
-                            <label>Currency</label>
-                            <select>
-                                <option value="USD">USD ($)</option>
-                                <option value="EUR">EUR (€)</option>
-                                <option value="GBP">GBP (£)</option>
-                                <option value="NGN">NGN (₦)</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label>Timezone</label>
-                            <select>
-                                <option value="UTC">UTC</option>
-                                <option value="EST">Eastern Time</option>
-                                <option value="PST">Pacific Time</option>
-                                <option value="WAT">West Africa Time</option>
-                            </select>
-                        </div>
+                <div class="form-grid">
+                    <div class="form-group full-width">
+                        <label>Store Name</label>
+                        <input type="text" value="Trendora" id="storeName">
                     </div>
 
-                    <h3 style="margin: 30px 0 20px;">Email Notifications</h3>
                     <div class="form-group">
-                        <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
-                            <input type="checkbox" checked>
-                            <span>New Order Notifications</span>
-                        </label>
-                    </div>
-                    <div class="form-group">
-                        <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
-                            <input type="checkbox" checked>
-                            <span>Low Stock Alerts</span>
-                        </label>
-                    </div>
-                    <div class="form-group">
-                        <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
-                            <input type="checkbox">
-                            <span>Customer Sign-up Notifications</span>
-                        </label>
-                    </div>
-                    <div class="form-group">
-                        <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
-                            <input type="checkbox" checked>
-                            <span>Daily Sales Report</span>
-                        </label>
+                        <label>Store Email</label>
+                        <input type="email" value="admin@trendora.com" id="storeEmail">
                     </div>
 
-                    <h3 style="margin: 30px 0 20px;">Payment Settings</h3>
                     <div class="form-group">
-                        <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
-                            <input type="checkbox" checked>
-                            <span>Enable Credit Card Payments</span>
-                        </label>
-                    </div>
-                    <div class="form-group">
-                        <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
-                            <input type="checkbox" checked>
-                            <span>Enable PayPal</span>
-                        </label>
-                    </div>
-                    <div class="form-group">
-                        <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
-                            <input type="checkbox" checked>
-                            <span>Enable Bank Transfer</span>
-                        </label>
-                    </div>
-                    <div class="form-group">
-                        <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
-                            <input type="checkbox">
-                            <span>Enable Cash on Delivery</span>
-                        </label>
+                        <label>Store Phone</label>
+                        <input type="tel" value="+1 (555) 123-4567" id="storePhone">
                     </div>
 
-                    <h3 style="margin: 30px 0 20px;">Shipping Settings</h3>
-                    <div class="form-grid">
-                        <div class="form-group">
-                            <label>Standard Shipping Fee</label>
-                            <input type="number" value="9.99" step="0.01">
-                        </div>
-                        <div class="form-group">
-                            <label>Express Shipping Fee</label>
-                            <input type="number" value="19.99" step="0.01">
-                        </div>
-                        <div class="form-group">
-                            <label>Free Shipping Threshold</label>
-                            <input type="number" value="100.00" step="0.01">
-                        </div>
-                        <div class="form-group">
-                            <label>Processing Time (Days)</label>
-                            <input type="number" value="2" min="1">
-                        </div>
+                    <div class="form-group full-width">
+                        <label>Store Address</label>
+                        <textarea id="storeAddress">123 Fashion Street, Style City, SC 12345</textarea>
                     </div>
 
-                    <button class="btn btn-primary" style="margin-top: 30px;">Save All Settings</button>
+                    <div class="form-group">
+                        <label>Currency</label>
+                        <select id="storeCurrency">
+                            <option>USD ($)</option>
+                            <option>EUR (€)</option>
+                            <option>GBP (£)</option>
+                            <option>NGN (₦)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Tax Rate (%)</label>
+                        <input type="number" value="8" id="taxRate" step="0.1">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Shipping Fee</label>
+                        <input type="number" value="9.99" id="shippingFee" step="0.01">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Free Shipping Threshold</label>
+                        <input type="number" value="100" id="freeShippingThreshold">
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label>Paystack Public Key</label>
+                        <input type="text" placeholder="pk_test_xxxxxxxxxxxx" id="paystackKey">
+                    </div>
+
+                    <div class="form-group full-width">
+                        <button class="btn btn-primary" onclick="saveSettings()">Save Settings</button>
+                    </div>
                 </div>
             </section>
         </main>
@@ -1693,117 +1101,63 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h3>Add New Product</h3>
-                <button class="close-modal" onclick="closeModal('addProductModal')">&times;</button>
+                <button class="close-modal" onclick="closeModal('addProduct')">&times;</button>
             </div>
-            <form onsubmit="addProduct(event)">
+            <form id="addProductForm">
                 <div class="form-grid">
                     <div class="form-group full-width">
                         <label>Product Name *</label>
-                        <input type="text" required placeholder="Enter product name">
+                        <input type="text" id="productName" required>
                     </div>
+
                     <div class="form-group">
                         <label>Category *</label>
-                        <select required>
+                        <select id="productCategory" required>
                             <option value="">Select Category</option>
-                            <option value="shoes">Shoes</option>
-                            <option value="men">Men's Fashion</option>
-                            <option value="women">Women's Fashion</option>
+                            <option value="clothing">Clothing</option>
                             <option value="accessories">Accessories</option>
+                            <option value="shoes">Shoes</option>
+                            <option value="bags">Bags</option>
                         </select>
                     </div>
+
                     <div class="form-group">
                         <label>Price *</label>
-                        <input type="number" required placeholder="0.00" step="0.01" min="0">
+                        <input type="number" id="productPrice" step="0.01" required>
                     </div>
+
                     <div class="form-group">
                         <label>Stock Quantity *</label>
-                        <input type="number" required placeholder="0" min="0">
+                        <input type="number" id="productStock" required>
                     </div>
-                    <div class="form-group">
-                        <label>SKU</label>
-                        <input type="text" placeholder="Product SKU">
-                    </div>
-                    <div class="form-group full-width">
-                        <label>Description</label>
-                        <textarea placeholder="Enter product description"></textarea>
-                    </div>
-                    <div class="form-group full-width">
-                        <label>Product Images</label>
-                        <div class="image-upload" onclick="document.getElementById('productImages').click()">
-                            <p>📷 Click to upload images</p>
-                            <p style="font-size: 12px; color: #6b7280; margin-top: 5px;">PNG, JPG up to 5MB</p>
-                            <input type="file" id="productImages" multiple accept="image/*" onchange="previewImages(event)">
-                        </div>
-                        <div class="image-preview" id="imagePreview"></div>
-                    </div>
+
                     <div class="form-group">
                         <label>Status</label>
-                        <select>
+                        <select id="productStatus">
                             <option value="active">Active</option>
                             <option value="inactive">Inactive</option>
                         </select>
                     </div>
-                    <div class="form-group">
-                        <label>Featured Product</label>
-                        <select>
-                            <option value="no">No</option>
-                            <option value="yes">Yes</option>
-                        </select>
-                    </div>
-                </div>
-                <div style="display: flex; gap: 10px; margin-top: 20px;">
-                    <button type="submit" class="btn btn-primary">Add Product</button>
-                    <button type="button" class="btn btn-secondary" onclick="closeModal('addProductModal')">Cancel</button>
-                </div>
-            </form>
-        </div>
-    </div>
 
-    <!-- Add User Modal -->
-    <div class="modal" id="addUserModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>Add New User</h3>
-                <button class="close-modal" onclick="closeModal('addUserModal')">&times;</button>
-            </div>
-            <form onsubmit="addUser(event)">
-                <div class="form-grid">
-                    <div class="form-group">
-                        <label>First Name *</label>
-                        <input type="text" required placeholder="Enter first name">
-                    </div>
-                    <div class="form-group">
-                        <label>Last Name *</label>
-                        <input type="text" required placeholder="Enter last name">
-                    </div>
                     <div class="form-group full-width">
-                        <label>Email *</label>
-                        <input type="email" required placeholder="user@email.com">
+                        <label>Description</label>
+                        <textarea id="productDescription" rows="4"></textarea>
                     </div>
-                    <div class="form-group">
-                        <label>Phone</label>
-                        <input type="tel" placeholder="+1 (555) 000-0000">
+
+                    <div class="form-group full-width">
+                        <label>Product Image</label>
+                        <div class="image-upload" onclick="document.getElementById('productImage').click()">
+                            <input type="file" id="productImage" accept="image/*" onchange="previewImage(this)">
+                            <p>📷 Click to upload image</p>
+                            <small>PNG, JPG, GIF up to 5MB</small>
+                        </div>
+                        <div class="image-preview" id="productImagePreview"></div>
                     </div>
-                    <div class="form-group">
-                        <label>Role *</label>
-                        <select required>
-                            <option value="customer">Customer</option>
-                            <option value="admin">Admin</option>
-                            <option value="moderator">Moderator</option>
-                        </select>
+
+                    <div class="form-group full-width">
+                        <button type="submit" class="btn btn-primary">Add Product</button>
+                        <button type="button" class="btn btn-secondary" onclick="closeModal('addProduct')">Cancel</button>
                     </div>
-                    <div class="form-group">
-                        <label>Password *</label>
-                        <input type="password" required placeholder="Enter password">
-                    </div>
-                    <div class="form-group">
-                        <label>Confirm Password *</label>
-                        <input type="password" required placeholder="Confirm password">
-                    </div>
-                </div>
-                <div style="display: flex; gap: 10px; margin-top: 20px;">
-                    <button type="submit" class="btn btn-primary">Add User</button>
-                    <button type="button" class="btn btn-secondary" onclick="closeModal('addUserModal')">Cancel</button>
                 </div>
             </form>
         </div>
@@ -1814,213 +1168,896 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h3>Add New Category</h3>
-                <button class="close-modal" onclick="closeModal('addCategoryModal')">&times;</button>
+                <button class="close-modal" onclick="closeModal('addCategory')">&times;</button>
             </div>
-            <form onsubmit="addCategory(event)">
-                <div class="form-grid">
-                    <div class="form-group full-width">
-                        <label>Category Name *</label>
-                        <input type="text" required placeholder="Enter category name">
-                    </div>
-                    <div class="form-group full-width">
-                        <label>Description</label>
-                        <textarea placeholder="Enter category description"></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label>Icon (Emoji)</label>
-                        <input type="text" placeholder="👕">
-                    </div>
-                    <div class="form-group">
-                        <label>Status</label>
-                        <select>
-                            <option value="active">Active</option>
-                            <option value="inactive">Inactive</option>
-                        </select>
-                    </div>
+            <form id="addCategoryForm">
+                <div class="form-group">
+                    <label>Category Name *</label>
+                    <input type="text" id="categoryName" required>
                 </div>
-                <div style="display: flex; gap: 10px; margin-top: 20px;">
+                <div class="form-group">
+                    <label>Status</label>
+                    <select id="categoryStatus">
+                        <option value="active">Active</option>
+                        <option value="inactive">Inactive</option>
+                    </select>
+                </div>
+                <div class="form-group">
                     <button type="submit" class="btn btn-primary">Add Category</button>
-                    <button type="button" class="btn btn-secondary" onclick="closeModal('addCategoryModal')">Cancel</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('addCategory')">Cancel</button>
                 </div>
             </form>
         </div>
     </div>
 
+    <!-- Toast Notification -->
+    <div class="toast" id="toast"></div>
+
     <script>
+        // Initialize data from localStorage
+        let products = JSON.parse(localStorage.getItem('adminProducts')) || [];
+        let categories = JSON.parse(localStorage.getItem('adminCategories')) || [
+            { id: 1, name: 'Clothing', products: 0, status: 'active' },
+            { id: 2, name: 'Accessories', products: 0, status: 'active' },
+            { id: 3, name: 'Shoes', products: 0, status: 'active' },
+            { id: 4, name: 'Bags', products: 0, status: 'active' }
+        ];
+
+        // Toast notification
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.className = `toast ${type} show`;
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
         // Navigation
         document.querySelectorAll('.nav-item').forEach(item => {
             item.addEventListener('click', function() {
-                const section = this.dataset.section;
+                if (this.getAttribute('onclick')) return; // Skip logout button
                 
-                if (section === 'logout') {
-                    if (confirm('Are you sure you want to logout?')) {
-                        alert('Logging out...');
-                        window.location.href = 'login.html';
-                    }
-                    return;
-                }
-                
-                // Remove active class from all nav items and sections
-                document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
-                document.querySelectorAll('.content-section').forEach(sec => sec.classList.remove('active'));
-                
-                // Add active class to clicked nav item and corresponding section
-                this.classList.add('active');
-                document.getElementById(section).classList.add('active');
+                const section = this.getAttribute('data-section');
+                switchSection(section);
             });
         });
+
+        function switchSection(section) {
+            // Update active nav item
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+                if (item.getAttribute('data-section') === section) {
+                    item.classList.add('active');
+                }
+            });
+
+            // Show selected section
+            document.querySelectorAll('.content-section').forEach(sec => {
+                sec.classList.remove('active');
+            });
+            document.getElementById(section).classList.add('active');
+        }
+
+        // Load Dashboard Stats
+        function loadDashboardStats() {
+            const orders = JSON.parse(localStorage.getItem('orders')) || [];
+            const users = JSON.parse(localStorage.getItem('users')) || [];
+
+            // Calculate total revenue
+            const totalRevenue = orders.reduce((sum, order) => sum + (order.total || 0), 0);
+            document.getElementById('totalRevenue').textContent = `$${totalRevenue.toFixed(2)}`;
+
+            // Total orders
+            document.getElementById('totalOrders').textContent = orders.length;
+
+            // Total users
+            document.getElementById('totalUsers').textContent = users.length;
+
+            // Total products
+            document.getElementById('totalProducts').textContent = products.length;
+
+            // Load recent orders
+            loadRecentOrders(orders.slice(0, 5));
+        }
+
+        // Load Recent Orders
+        function loadRecentOrders(orders) {
+            const table = document.getElementById('recentOrdersTable');
+            
+            if (orders.length === 0) {
+                table.innerHTML = `
+                    <tr>
+                        <td colspan="6" style="text-align: center; padding: 40px; color: #9ca3af;">
+                            <div style="font-size: 48px; margin-bottom: 10px;">📦</div>
+                            <div style="font-size: 16px; color: #6b7280;">No orders yet</div>
+                            <div style="font-size: 14px;">Orders will appear here once customers make purchases</div>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            table.innerHTML = orders.map(order => {
+                const orderDate = new Date(order.paymentDate).toLocaleDateString('en-US', {
+                    month: 'short',
+                    day: 'numeric',
+                    year: 'numeric'
+                });
+
+                return `
+                    <tr>
+                        <td>#${order.id.substring(0, 8)}</td>
+                        <td>${order.customer.name}</td>
+                        <td>${orderDate}</td>
+                        <td>$${order.total.toFixed(2)}</td>
+                        <td><span class="status-badge ${order.status.toLowerCase()}">${order.status}</span></td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="action-btn view" onclick="viewOrder('${order.id}')">View</button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        // Load Products
+        function loadProducts() {
+            const table = document.getElementById('productsTable');
+            
+            if (products.length === 0) {
+                table.innerHTML = `
+                    <tr>
+                        <td colspan="6" style="text-align: center; padding: 40px; color: #9ca3af;">
+                            <div style="font-size: 48px; margin-bottom: 10px;">📦</div>
+                            <div style="font-size: 16px; color: #6b7280;">No products yet</div>
+                            <div style="font-size: 14px;">Click "Add Product" to create your first product</div>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            table.innerHTML = products.map(product => `
+                <tr>
+                    <td>
+                        <div class="product-cell">
+                            <div class="product-image">${product.image || '📦'}</div>
+                            <span>${product.name}</span>
+                        </div>
+                    </td>
+                    <td>${product.category}</td>
+                    <td>$${parseFloat(product.price).toFixed(2)}</td>
+                    <td>${product.stock}</td>
+                    <td><span class="status-badge ${product.status}">${product.status}</span></td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="action-btn edit" onclick="editProduct(${product.id})">Edit</button>
+                            <button class="action-btn delete" onclick="deleteProduct(${product.id})">Delete</button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // Load Orders
+        function loadOrders() {
+            const orders = JSON.parse(localStorage.getItem('orders')) || [];
+            const table = document.getElementById('ordersTable');
+            
+            if (orders.length === 0) {
+                table.innerHTML = `
+                    <tr>
+                        <td colspan="7" style="text-align: center; padding: 40px; color: #9ca3af;">
+                            <div style="font-size: 48px; margin-bottom: 10px;">🛒</div>
+                            <div style="font-size: 16px; color: #6b7280;">No orders yet</div>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            table.innerHTML = orders.map(order => {
+                const orderDate = new Date(order.paymentDate).toLocaleDateString('en-US', {
+                    month: 'short',
+                    day: 'numeric',
+                    year: 'numeric'
+                });
+
+                return `
+                    <tr>
+                        <td>#${order.id.substring(0, 10)}</td>
+                        <td>${order.customer.name}</td>
+                        <td>${orderDate}</td>
+                        <td>${order.cart.length} items</td>
+                        <td>$${order.total.toFixed(2)}</td>
+                        <td><span class="status-badge ${order.status.toLowerCase()}">${order.status}</span></td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="action-btn view" onclick="viewOrder('${order.id}')">View</button>
+                                <button class="action-btn edit" onclick="updateOrderStatus('${order.id}')">Update</button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        // Load Users
+        function loadUsers() {
+            const users = JSON.parse(localStorage.getItem('users')) || [];
+            const table = document.getElementById('usersTable');
+            
+            if (users.length === 0) {
+                table.innerHTML = `
+                    <tr>
+                        <td colspan="6" style="text-align: center; padding: 40px; color: #9ca3af;">
+                            <div style="font-size: 48px; margin-bottom: 10px;">👥</div>
+                            <div style="font-size: 16px; color: #6b7280;">No users yet</div>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            // Count orders per user
+            const orders = JSON.parse(localStorage.getItem('orders')) || [];
+            const ordersByUser = {};
+            orders.forEach(order => {
+                const email = order.customer.email;
+                ordersByUser[email] = (ordersByUser[email] || 0) + 1;
+            });
+
+            table.innerHTML = users.map((user, index) => {
+                const joinDate = new Date(user.joinDate || Date.now()).toLocaleDateString('en-US', {
+                    month: 'short',
+                    day: 'numeric',
+                    year: 'numeric'
+                });
+
+                return `
+                    <tr>
+                        <td>${user.firstName} ${user.lastName}</td>
+                        <td>${user.email}</td>
+                        <td>${user.phone || 'N/A'}</td>
+                        <td>${joinDate}</td>
+                        <td>${ordersByUser[user.email] || 0}</td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="action-btn view" onclick="viewUser('${user.email}')">View</button>
+                                <button class="action-btn delete" onclick="deleteUser('${user.email}')">Delete</button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        // Load Categories
+        function loadCategories() {
+            const table = document.getElementById('categoriesTable');
+            
+            // Update product counts
+            categories.forEach(category => {
+                category.products = products.filter(p => p.category.toLowerCase() === category.name.toLowerCase()).length;
+            });
+
+            table.innerHTML = categories.map(category => `
+                <tr>
+                    <td>${category.name}</td>
+                    <td>${category.products} products</td>
+                    <td><span class="status-badge ${category.status}">${category.status}</span></td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="action-btn edit" onclick="editCategory(${category.id})">Edit</button>
+                            <button class="action-btn delete" onclick="deleteCategory(${category.id})">Delete</button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+
+            localStorage.setItem('adminCategories', JSON.stringify(categories));
+        }
+
+        // Load Analytics
+        function loadAnalytics() {
+            const orders = JSON.parse(localStorage.getItem('orders')) || [];
+            const users = JSON.parse(localStorage.getItem('users')) || [];
+
+            // Calculate metrics
+            const totalRevenue = orders.reduce((sum, order) => sum + (order.total || 0), 0);
+            const avgOrderValue = orders.length > 0 ? totalRevenue / orders.length : 0;
+
+            document.getElementById('newCustomers').textContent = users.length;
+            document.getElementById('avgOrderValue').textContent = `$${avgOrderValue.toFixed(2)}`;
+
+            // Top selling products
+            const productSales = {};
+            orders.forEach(order => {
+                order.cart.forEach(item => {
+                    if (!productSales[item.name]) {
+                        productSales[item.name] = { quantity: 0, revenue: 0 };
+                    }
+                    productSales[item.name].quantity += item.quantity;
+                    productSales[item.name].revenue += item.price * item.quantity;
+                });
+            });
+
+            const topProductsDiv = document.getElementById('topProducts');
+            const sortedProducts = Object.entries(productSales)
+                .sort((a, b) => b[1].quantity - a[1].quantity)
+                .slice(0, 5);
+
+            if (sortedProducts.length > 0) {
+                topProductsDiv.innerHTML = sortedProducts.map(([name, data]) => `
+                    <div class="metric-item">
+                        <span class="metric-label">${name}</span>
+                        <span class="metric-value">${data.quantity} sold</span>
+                    </div>
+                `).join('');
+            }
+
+            // Revenue by category
+            const categoryRevenue = {};
+            orders.forEach(order => {
+                order.cart.forEach(item => {
+                    const product = products.find(p => p.name === item.name);
+                    const category = product ? product.category : 'Other';
+                    if (!categoryRevenue[category]) {
+                        categoryRevenue[category] = 0;
+                    }
+                    categoryRevenue[category] += item.price * item.quantity;
+                });
+            });
+
+            const revenueByCategoryDiv = document.getElementById('revenueByCategory');
+            const sortedCategories = Object.entries(categoryRevenue)
+                .sort((a, b) => b[1] - a[1]);
+
+            if (sortedCategories.length > 0) {
+                revenueByCategoryDiv.innerHTML = sortedCategories.map(([category, revenue]) => `
+                    <div class="metric-item">
+                        <span class="metric-label">${category}</span>
+                        <span class="metric-value">$${revenue.toFixed(2)}</span>
+                    </div>
+                `).join('');
+            }
+        }
+
+        // Load Sales Report
+        function loadSalesReport() {
+            const orders = JSON.parse(localStorage.getItem('orders')) || [];
+            const totalRevenue = orders.reduce((sum, order) => sum + (order.total || 0), 0);
+            const avgOrder = orders.length > 0 ? totalRevenue / orders.length : 0;
+
+            document.getElementById('totalSales').textContent = `$${totalRevenue.toFixed(2)}`;
+            document.getElementById('salesOrderCount').textContent = orders.length;
+            document.getElementById('salesAvgOrder').textContent = `$${avgOrder.toFixed(2)}`;
+        }
 
         // Modal Functions
-        function openModal(modalId) {
-            document.getElementById(modalId).classList.add('active');
+        function openModal(type) {
+            document.getElementById(`${type}Modal`).classList.add('active');
         }
 
-        function closeModal(modalId) {
-            document.getElementById(modalId).classList.remove('active');
+        function closeModal(type) {
+            document.getElementById(`${type}Modal`).classList.remove('active');
         }
-
-        // Close modal when clicking outside
-        document.querySelectorAll('.modal').forEach(modal => {
-            modal.addEventListener('click', function(e) {
-                if (e.target === this) {
-                    this.classList.remove('active');
-                }
-            });
-        });
 
         // Image Preview
-        function previewImages(event) {
-            const preview = document.getElementById('imagePreview');
+        function previewImage(input) {
+            const preview = document.getElementById('productImagePreview');
             preview.innerHTML = '';
-            const files = event.target.files;
-            
-            for (let i = 0; i < files.length; i++) {
-                const file = files[i];
+
+            if (input.files && input.files[0]) {
                 const reader = new FileReader();
-                
                 reader.onload = function(e) {
                     const img = document.createElement('img');
                     img.src = e.target.result;
                     preview.appendChild(img);
-                }
-                
-                reader.readAsDataURL(file);
+                };
+                reader.readAsDataURL(input.files[0]);
             }
         }
 
-        // Product Functions
-        function addProduct(event) {
-            event.preventDefault();
-            alert('Product added successfully!');
-            closeModal('addProductModal');
-            event.target.reset();
-            document.getElementById('imagePreview').innerHTML = '';
-        }
+        // Add Product Form
+        document.getElementById('addProductForm').addEventListener('submit', function(e) {
+            e.preventDefault();
 
-        function editProduct(id) {
-            alert('Editing product #' + id);
-            // Implement edit functionality
-        }
+            const newProduct = {
+                id: Date.now(),
+                name: document.getElementById('productName').value,
+                category: document.getElementById('productCategory').value,
+                price: parseFloat(document.getElementById('productPrice').value),
+                stock: parseInt(document.getElementById('productStock').value),
+                status: document.getElementById('productStatus').value,
+                description: document.getElementById('productDescription').value,
+                image: null,
+                createdAt: new Date().toISOString()
+            };
 
+            products.push(newProduct);
+            localStorage.setItem('adminProducts', JSON.stringify(products));
+
+            showToast('Product added successfully!', 'success');
+            closeModal('addProduct');
+            this.reset();
+            loadProducts();
+            loadDashboardStats();
+        });
+
+        // Add Category Form
+        document.getElementById('addCategoryForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const newCategory = {
+                id: Date.now(),
+                name: document.getElementById('categoryName').value,
+                products: 0,
+                status: document.getElementById('categoryStatus').value
+            };
+
+            categories.push(newCategory);
+            localStorage.setItem('adminCategories', JSON.stringify(categories));
+
+            showToast('Category added successfully!', 'success');
+            closeModal('addCategory');
+            this.reset();
+            loadCategories();
+        });
+
+        // Delete Product
         function deleteProduct(id) {
             if (confirm('Are you sure you want to delete this product?')) {
-                alert('Product #' + id + ' deleted successfully!');
-                // Implement delete functionality
+                products = products.filter(p => p.id !== id);
+                localStorage.setItem('adminProducts', JSON.stringify(products));
+                showToast('Product deleted successfully!', 'success');
+                loadProducts();
+                loadDashboardStats();
             }
         }
 
-        // User Functions
-        function addUser(event) {
-            event.preventDefault();
-            alert('User added successfully!');
-            closeModal('addUserModal');
-            event.target.reset();
-        }
-
-        function viewUser(id) {
-            alert('Viewing user details for user #' + id);
-            // Implement view functionality
-        }
-
-        function editUser(id) {
-            alert('Editing user #' + id);
-            // Implement edit functionality
-        }
-
-        function deleteUser(id) {
-            if (confirm('Are you sure you want to delete this user?')) {
-                alert('User #' + id + ' deleted successfully!');
-                // Implement delete functionality
-            }
-        }
-
-        // Order Functions
-        function viewOrder(orderId) {
-            alert('Viewing order details for #ORD-' + orderId);
-            // Implement view order functionality
-        }
-
-        // Category Functions
-        function addCategory(event) {
-            event.preventDefault();
-            alert('Category added successfully!');
-            closeModal('addCategoryModal');
-            event.target.reset();
-        }
-
-        function editCategory(id) {
-            alert('Editing category #' + id);
-            // Implement edit functionality
-        }
-
+        // Delete Category
         function deleteCategory(id) {
             if (confirm('Are you sure you want to delete this category?')) {
-                alert('Category #' + id + ' deleted successfully!');
-                // Implement delete functionality
+                categories = categories.filter(c => c.id !== id);
+                localStorage.setItem('adminCategories', JSON.stringify(categories));
+                showToast('Category deleted successfully!', 'success');
+                loadCategories();
             }
         }
 
-        // Search Functionality
-        document.getElementById('productSearch')?.addEventListener('input', function(e) {
-            const searchTerm = e.target.value.toLowerCase();
-            // Implement search logic
-            console.log('Searching for:', searchTerm);
+        // Delete User
+        function deleteUser(email) {
+            if (confirm('Are you sure you want to delete this user?')) {
+                let users = JSON.parse(localStorage.getItem('users')) || [];
+                users = users.filter(u => u.email !== email);
+                localStorage.setItem('users', JSON.stringify(users));
+                showToast('User deleted successfully!', 'success');
+                loadUsers();
+                loadDashboardStats();
+            }
+        }
+
+        // View Order Details
+        function viewOrder(orderId) {
+            const orders = JSON.parse(localStorage.getItem('orders')) || [];
+            const order = orders.find(o => o.id === orderId);
+            
+            if (order) {
+                alert(`Order Details:\n\nOrder ID: ${order.id}\nCustomer: ${order.customer.name}\nEmail: ${order.customer.email}\nTotal: $${order.total.toFixed(2)}\nStatus: ${order.status}\n\nItems:\n${order.cart.map(item => `- ${item.name} (x${item.quantity}) - $${(item.price * item.quantity).toFixed(2)}`).join('\n')}`);
+            }
+        }
+
+        // Update Order Status
+        function updateOrderStatus(orderId) {
+            const newStatus = prompt('Enter new status (Pending/Processing/Completed/Cancelled):');
+            
+            if (newStatus) {
+                const validStatuses = ['pending', 'processing', 'completed', 'cancelled'];
+                const status = newStatus.toLowerCase();
+                
+                if (!validStatuses.includes(status)) {
+                    showToast('Invalid status!', 'error');
+                    return;
+                }
+
+                let orders = JSON.parse(localStorage.getItem('orders')) || [];
+                const orderIndex = orders.findIndex(o => o.id === orderId);
+                
+                if (orderIndex !== -1) {
+                    orders[orderIndex].status = status.charAt(0).toUpperCase() + status.slice(1);
+                    localStorage.setItem('orders', JSON.stringify(orders));
+                    showToast('Order status updated!', 'success');
+                    loadOrders();
+                    loadRecentOrders(orders.slice(0, 5));
+                }
+            }
+        }
+
+        // View User Details
+        function viewUser(email) {
+            const users = JSON.parse(localStorage.getItem('users')) || [];
+            const user = users.find(u => u.email === email);
+            
+            if (user) {
+                alert(`User Details:\n\nName: ${user.firstName} ${user.lastName}\nEmail: ${user.email}\nPhone: ${user.phone || 'N/A'}`);
+            }
+        }
+
+        // Search Functions
+        function searchProducts() {
+            const searchTerm = document.getElementById('productSearch').value.toLowerCase();
+            const filteredProducts = products.filter(p => 
+                p.name.toLowerCase().includes(searchTerm) ||
+                p.category.toLowerCase().includes(searchTerm)
+            );
+            displayFilteredProducts(filteredProducts);
+        }
+
+        function searchOrders() {
+            const searchTerm = document.getElementById('orderSearch').value.toLowerCase();
+            const orders = JSON.parse(localStorage.getItem('orders')) || [];
+            const filteredOrders = orders.filter(o => 
+                o.id.toLowerCase().includes(searchTerm) ||
+                o.customer.name.toLowerCase().includes(searchTerm) ||
+                o.customer.email.toLowerCase().includes(searchTerm)
+            );
+            displayFilteredOrders(filteredOrders);
+        }
+
+        function searchUsers() {
+            const searchTerm = document.getElementById('userSearch').value.toLowerCase();
+            const users = JSON.parse(localStorage.getItem('users')) || [];
+            const filteredUsers = users.filter(u => 
+                `${u.firstName} ${u.lastName}`.toLowerCase().includes(searchTerm) ||
+                u.email.toLowerCase().includes(searchTerm)
+            );
+            displayFilteredUsers(filteredUsers);
+        }
+
+        // Filter Functions
+        function filterProducts() {
+            const category = document.getElementById('productFilter').value;
+            const filteredProducts = category === 'all' ? products : products.filter(p => p.category === category);
+            displayFilteredProducts(filteredProducts);
+        }
+
+        function filterOrders() {
+            const status = document.getElementById('orderStatusFilter').value;
+            const orders = JSON.parse(localStorage.getItem('orders')) || [];
+            const filteredOrders = status === 'all' ? orders : orders.filter(o => o.status.toLowerCase() === status);
+            displayFilteredOrders(filteredOrders);
+        }
+
+        // Display Filtered Data
+        function displayFilteredProducts(filteredProducts) {
+            const table = document.getElementById('productsTable');
+            
+            if (filteredProducts.length === 0) {
+                table.innerHTML = `
+                    <tr>
+                        <td colspan="6" style="text-align: center; padding: 40px; color: #9ca3af;">
+                            <div style="font-size: 48px; margin-bottom: 10px;">🔍</div>
+                            <div style="font-size: 16px; color: #6b7280;">No products found</div>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            table.innerHTML = filteredProducts.map(product => `
+                <tr>
+                    <td>
+                        <div class="product-cell">
+                            <div class="product-image">${product.image || '📦'}</div>
+                            <span>${product.name}</span>
+                        </div>
+                    </td>
+                    <td>${product.category}</td>
+                    <td>$${parseFloat(product.price).toFixed(2)}</td>
+                    <td>${product.stock}</td>
+                    <td><span class="status-badge ${product.status}">${product.status}</span></td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="action-btn edit" onclick="editProduct(${product.id})">Edit</button>
+                            <button class="action-btn delete" onclick="deleteProduct(${product.id})">Delete</button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function displayFilteredOrders(filteredOrders) {
+            const table = document.getElementById('ordersTable');
+            
+            if (filteredOrders.length === 0) {
+                table.innerHTML = `
+                    <tr>
+                        <td colspan="7" style="text-align: center; padding: 40px; color: #9ca3af;">
+                            <div style="font-size: 48px; margin-bottom: 10px;">🔍</div>
+                            <div style="font-size: 16px; color: #6b7280;">No orders found</div>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            table.innerHTML = filteredOrders.map(order => {
+                const orderDate = new Date(order.paymentDate).toLocaleDateString('en-US', {
+                    month: 'short',
+                    day: 'numeric',
+                    year: 'numeric'
+                });
+
+                return `
+                    <tr>
+                        <td>#${order.id.substring(0, 10)}</td>
+                        <td>${order.customer.name}</td>
+                        <td>${orderDate}</td>
+                        <td>${order.cart.length} items</td>
+                        <td>$${order.total.toFixed(2)}</td>
+                        <td><span class="status-badge ${order.status.toLowerCase()}">${order.status}</span></td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="action-btn view" onclick="viewOrder('${order.id}')">View</button>
+                                <button class="action-btn edit" onclick="updateOrderStatus('${order.id}')">Update</button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function displayFilteredUsers(filteredUsers) {
+            const table = document.getElementById('usersTable');
+            
+            if (filteredUsers.length === 0) {
+                table.innerHTML = `
+                    <tr>
+                        <td colspan="6" style="text-align: center; padding: 40px; color: #9ca3af;">
+                            <div style="font-size: 48px; margin-bottom: 10px;">🔍</div>
+                            <div style="font-size: 16px; color: #6b7280;">No users found</div>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            const orders = JSON.parse(localStorage.getItem('orders')) || [];
+            const ordersByUser = {};
+            orders.forEach(order => {
+                const email = order.customer.email;
+                ordersByUser[email] = (ordersByUser[email] || 0) + 1;
+            });
+
+            table.innerHTML = filteredUsers.map(user => {
+                const joinDate = new Date(user.joinDate || Date.now()).toLocaleDateString('en-US', {
+                    month: 'short',
+                    day: 'numeric',
+                    year: 'numeric'
+                });
+
+                return `
+                    <tr>
+                        <td>${user.firstName} ${user.lastName}</td>
+                        <td>${user.email}</td>
+                        <td>${user.phone || 'N/A'}</td>
+                        <td>${joinDate}</td>
+                        <td>${ordersByUser[user.email] || 0}</td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="action-btn view" onclick="viewUser('${user.email}')">View</button>
+                                <button class="action-btn delete" onclick="deleteUser('${user.email}')">Delete</button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        // Edit Product
+        function editProduct(id) {
+            const product = products.find(p => p.id === id);
+            if (!product) return;
+
+            const newName = prompt('Product Name:', product.name);
+            if (!newName) return;
+
+            const newPrice = prompt('Price:', product.price);
+            if (!newPrice) return;
+
+            const newStock = prompt('Stock:', product.stock);
+            if (!newStock) return;
+
+            const productIndex = products.findIndex(p => p.id === id);
+            products[productIndex] = {
+                ...product,
+                name: newName,
+                price: parseFloat(newPrice),
+                stock: parseInt(newStock)
+            };
+
+            localStorage.setItem('adminProducts', JSON.stringify(products));
+            showToast('Product updated successfully!', 'success');
+            loadProducts();
+        }
+
+        // Edit Category
+        function editCategory(id) {
+            const category = categories.find(c => c.id === id);
+            if (!category) return;
+
+            const newName = prompt('Category Name:', category.name);
+            if (!newName) return;
+
+            const categoryIndex = categories.findIndex(c => c.id === id);
+            categories[categoryIndex].name = newName;
+
+            localStorage.setItem('adminCategories', JSON.stringify(categories));
+            showToast('Category updated successfully!', 'success');
+            loadCategories();
+        }
+
+        // Save Settings
+        function saveSettings() {
+            const settings = {
+                storeName: document.getElementById('storeName').value,
+                storeEmail: document.getElementById('storeEmail').value,
+                storePhone: document.getElementById('storePhone').value,
+                storeAddress: document.getElementById('storeAddress').value,
+                currency: document.getElementById('storeCurrency').value,
+                taxRate: parseFloat(document.getElementById('taxRate').value),
+                shippingFee: parseFloat(document.getElementById('shippingFee').value),
+                freeShippingThreshold: parseFloat(document.getElementById('freeShippingThreshold').value),
+                paystackKey: document.getElementById('paystackKey').value
+            };
+
+            localStorage.setItem('storeSettings', JSON.stringify(settings));
+            showToast('Settings saved successfully!', 'success');
+        }
+
+        // Load Settings
+        function loadSettings() {
+            const settings = JSON.parse(localStorage.getItem('storeSettings'));
+            
+            if (settings) {
+                document.getElementById('storeName').value = settings.storeName || 'Trendora';
+                document.getElementById('storeEmail').value = settings.storeEmail || 'admin@trendora.com';
+                document.getElementById('storePhone').value = settings.storePhone || '+1 (555) 123-4567';
+                document.getElementById('storeAddress').value = settings.storeAddress || '123 Fashion Street, Style City, SC 12345';
+                document.getElementById('storeCurrency').value = settings.currency || 'USD ($)';
+                document.getElementById('taxRate').value = settings.taxRate || 8;
+                document.getElementById('shippingFee').value = settings.shippingFee || 9.99;
+                document.getElementById('freeShippingThreshold').value = settings.freeShippingThreshold || 100;
+                document.getElementById('paystackKey').value = settings.paystackKey || '';
+            }
+        }
+
+        // Logout
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                // Clear admin session
+                localStorage.removeItem('adminLoggedIn');
+                showToast('Logged out successfully', 'success');
+                
+                // Redirect to admin login page (if you have one) or home
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 1000);
+            }
+        }
+
+        // Check Admin Authentication
+        function checkAdminAuth() {
+            const isAdminLoggedIn = localStorage.getItem('adminLoggedIn');
+            
+            if (!isAdminLoggedIn) {
+                // Simple admin login prompt (you can create a proper login page)
+                const username = prompt('Admin Username:');
+                const password = prompt('Admin Password:');
+                
+                // Default credentials (change these in production!)
+                if (username === 'admin' && password === 'admin123') {
+                    localStorage.setItem('adminLoggedIn', 'true');
+                    showToast('Welcome Admin!', 'success');
+                } else {
+                    alert('Invalid credentials! Default: admin/admin123');
+                    window.location.href = 'index.html';
+                }
+            }
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modals = document.querySelectorAll('.modal');
+            modals.forEach(modal => {
+                if (event.target === modal) {
+                    modal.classList.remove('active');
+                }
+            });
+        }
+
+        // Sync products to shop page
+        function syncProductsToShop() {
+            // Get active products
+            const activeProducts = products.filter(p => p.status === 'active');
+            
+            // Format for shop page
+            const shopProducts = activeProducts.map(p => ({
+                id: p.id,
+                name: p.name,
+                price: p.price,
+                category: p.category,
+                description: p.description || 'Quality product from Trendora',
+                image: p.image,
+                rating: 4.5,
+                reviews: Math.floor(Math.random() * 100) + 10
+            }));
+
+            // Save to localStorage for shop page
+            localStorage.setItem('products', JSON.stringify(shopProducts));
+            showToast('Products synced to shop successfully!', 'success');
+        }
+
+        // Add sync button to products section
+        function addSyncButton() {
+            const productsSection = document.getElementById('products');
+            const sectionHeader = productsSection.querySelector('.section-header');
+            
+            const syncBtn = document.createElement('button');
+            syncBtn.className = 'btn btn-success';
+            syncBtn.textContent = '🔄 Sync to Shop';
+            syncBtn.style.marginLeft = '10px';
+            syncBtn.onclick = syncProductsToShop;
+            
+            sectionHeader.appendChild(syncBtn);
+        }
+
+        // Initialize on page load
+        window.addEventListener('DOMContentLoaded', function() {
+            // Check admin authentication
+            checkAdminAuth();
+            
+            // Load all data
+            loadDashboardStats();
+            loadProducts();
+            loadOrders();
+            loadUsers();
+            loadCategories();
+            loadAnalytics();
+            loadSalesReport();
+            loadSettings();
+            
+            // Add sync button
+            addSyncButton();
+
+            // Show welcome message
+            setTimeout(() => {
+                showToast('Admin Dashboard loaded successfully!', 'success');
+            }, 500);
         });
 
-        document.getElementById('orderSearch')?.addEventListener('input', function(e) {
-            const searchTerm = e.target.value.toLowerCase();
-            // Implement search logic
-            console.log('Searching for:', searchTerm);
-        });
+        // Auto-refresh dashboard stats every 30 seconds
+        setInterval(() => {
+            if (document.querySelector('#dashboard.active')) {
+                loadDashboardStats();
+            }
+        }, 30000);
 
-        document.getElementById('userSearch')?.addEventListener('input', function(e) {
-            const searchTerm = e.target.value.toLowerCase();
-            // Implement search logic
-            console.log('Searching for:', searchTerm);
-        });
-
-        // Filter Functionality
-        document.getElementById('categoryFilter')?.addEventListener('change', function(e) {
-            const category = e.target.value;
-            console.log('Filtering by category:', category);
-            // Implement filter logic
-        });
-
-        document.getElementById('statusFilter')?.addEventListener('change', function(e) {
-            const status = e.target.value;
-            console.log('Filtering by status:', status);
-            // Implement filter logic
-        });
-
-        // Initialize
-        console.log('Trendora Admin Dashboard Loaded');
-        console.log('Welcome, ADETUTU OLUWATOBI!');
+        // Export functions for console access
+        window.adminFunctions = {
+            loadDashboardStats,
+            loadProducts,
+            loadOrders,
+            loadUsers,
+            loadCategories,
+            loadAnalytics,
+            loadSalesReport,
+            syncProductsToShop
+        };
     </script>
 </body>
 </html>
-
-
-
-
-
-

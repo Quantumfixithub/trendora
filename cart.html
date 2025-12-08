@@ -1076,8 +1076,17 @@ if (checkoutBtn) {
             }
         });
     </script>
+    // Protect cart page
+window.addEventListener('DOMContentLoaded', function() {
+    if (!requireAuth('cart.html')) {
+        showAuthModal();
+    }
+    
+    // Your existing cart code...
+});
 </body>
 
 </html>
+
 
 

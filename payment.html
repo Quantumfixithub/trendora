@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment - Trendora</title>
+    <!-- Add auth script -->
+    <script src="auth.js"></script>
+    <!-- Paystack Integration -->
+    <script src="https://js.paystack.co/v1/inline.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Ubuntu, Cantarell, sans-serif;
+            color: #333;
+            background-color: #f8f9fa;
+            line-height: 1.6;
+        }
+
+        /* Header */
+        header {
+            background: #fff;
+            padding: 1rem 5%;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #2c3e50;
+            text-decoration: none;
+        }
+        
+        .nav-icons {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+        }
+        
+        .nav-icons a {
+            color: #555;
+            font-size: 1.2rem;
+            text-decoration: none;
+        }
+
+        /* Payment Container */
+        .payment-container {
+            max-width: 1200px;
+            margin: 4rem auto;
+            padding: 0 5%;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+        }
+
+        .page-title {
+            grid-column: 1 / -1;
+            font-size: 2rem;
+            color: #2c3e50;
+            margin-bottom: 1rem;
+        }
+
+        .breadcrumb {
+            grid-column: 1 / -1;
+            display: flex;
+            gap: 0.5rem;
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 2rem;
+        }
+
+        .breadcrumb a {
+            color: #667eea;
+            text-decoration: none;
+        }
+
+        /* Order Summary Section */
+        .order-summary-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            height: fit-content;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            color: #2c3e50;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .customer-info {
+            margin-bottom: 2rem;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.8rem 0;
+            border-bottom: 1px solid #f5f5f5;
+        }
+
+        .info-label {
+            color: #666;
+            font-weight: 500;
+        }
+
+        .info-value {
+            color: #333;
+            font-weight: 600;
+        }
+
+        .order-items {
+            margin-bottom: 2rem;
+        }
+
+        .order-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .item-details {
+            flex: 1;
+        }
+
+        .item-name {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 0.3rem;
+        }
+
+        .item-meta {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .item-price {
+            font-weight: bold;
+            color: #e74c3c;
+            font-size: 1.1rem;
+        }
+
+        .price-summary {
+            margin-top: 2rem;
+        }
+
+        .price-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.8rem 0;
+            font-size: 1rem;
+        }
+
+        .price-row.total {
+            border-top: 2px solid #f0f0f0;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .price-row.total .amount {
+            color: #e74c3c;
+        }
+
+        /* Payment Section */
+        .payment-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .payment-methods {
+            margin-bottom: 2rem;
+        }
+
+        .payment-method {
+            display: flex;
+            align-items: center;
+            padding: 1.2rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .payment-method:hover {
+            border-color: #667eea;
+            background: #f8f9ff;
+        }
+
+        .payment-method.active {
+            border-color: #667eea;
+            background: #f8f9ff;
+        }
+
+        .payment-method input[type="radio"] {
+            margin-right: 1rem;
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .payment-method-info {
+            flex: 1;
+        }
+
+        .payment-method-name {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 0.3rem;
+        }
+
+        .payment-method-desc {
+            font-size: 0.85rem;
+            color: #666;
+        }
+
+        .payment-method-logo {
+            font-size: 2rem;
+        }
+
+        .security-info {
+            background: #e7f3ff;
+            border-left: 4px solid #667eea;
+            padding: 1rem;
+            border-radius: 5px;
+            margin-bottom: 2rem;
+            font-size: 0.9rem;
+            color: #555;
+        }
+
+        .security-info strong {
+            color: #2c3e50;
+        }
+
+        .pay-button {
+            width: 100%;
+            padding: 1.2rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .pay-button:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.6);
+        }
+
+        .pay-button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        .back-to-cart {
+            display: block;
+            text-align: center;
+            margin-top: 1rem;
+            color: #666;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .back-to-cart:hover {
+            color: #667eea;
+        }
+
+        .powered-by {
+            text-align: center;
+            margin-top: 2rem;
+            font-size: 0.85rem;
+            color: #999;
+        }
+
+        .powered-by img {
+            width: 100px;
+            vertical-align: middle;
+            margin-left: 0.5rem;
+        }
+
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: #2c3e50;
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 5px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            transform: translateX(400px);
+            transition: transform 0.3s;
+            z-index: 3000;
+        }
+        
+        .toast.show {
+            transform: translateX(0);
+        }
+        
+        .toast.success {
+            background: #27ae60;
+        }
+        
+        .toast.error {
+            background: #e74c3c;
+        }
+
+        /* Loading Overlay */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.7);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+
+        .loading-overlay.show {
+            display: flex;
+        }
+
+        .loading-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Responsive */
+        @media (max-width: 968px) {
+            .payment-container {
+                grid-template-columns: 1fr;
+                padding: 0 3%;
+                margin: 3rem auto;
+            }
+
+            .page-title {
+                font-size: 1.5rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .payment-container {
+                margin: 2rem auto;
+            }
+
+            .order-summary-section,
+            .payment-section {
+                padding: 1.5rem;
+            }
+
+            .section-title {
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="index.html" class="logo">Trendora</a>
+            <div class="nav-icons">
+                <a href="account.html" title="My Account">👤</a>
+            </div>
+        </nav>
+    </header>
+
+    <div class="payment-container">
+        <h1 class="page-title">Complete Your Payment</h1>
+        
+        <div class="breadcrumb">
+            <a href="shop.html">Shop</a> / 
+            <a href="cart.html">Cart</a> / 
+            <span>Payment</span>
+        </div>
+
+        <!-- Order Summary -->
+        <div class="order-summary-section">
+            <h2 class="section-title">Order Summary</h2>
+            
+            <div class="customer-info">
+                <h3 style="font-size: 1.1rem; margin-bottom: 1rem; color: #2c3e50;">Customer Information</h3>
+                <div class="info-row">
+                    <span class="info-label">Name:</span>
+                    <span class="info-value" id="customerName">-</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Email:</span>
+                    <span class="info-value" id="customerEmail">-</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Phone:</span>
+                    <span class="info-value" id="customerPhone">-</span>
+                </div>
+            </div>
+
+            <div class="order-items">
+                <h3 style="font-size: 1.1rem; margin-bottom: 1rem; color: #2c3e50;">Items</h3>
+                <div id="orderItemsList">
+                    <!-- Items will be loaded here -->
+                </div>
+            </div>
+
+            <div class="price-summary">
+                <div class="price-row">
+                    <span>Subtotal:</span>
+                    <span id="subtotalAmount">$0.00</span>
+                </div>
+                <div class="price-row">
+                    <span>Tax:</span>
+                    <span id="taxAmount">$0.00</span>
+                </div>
+                <div class="price-row">
+                    <span>Shipping:</span>
+                    <span id="shippingAmount">Free</span>
+                </div>
+                <div class="price-row total">
+                    <span>Total:</span>
+                    <span class="amount" id="totalAmount">$0.00</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Payment Method -->
+        <div class="payment-section">
+            <h2 class="section-title">Payment Method</h2>
+
+            <div class="security-info">
+                🔒 <strong>Secure Payment:</strong> Your payment information is encrypted and secure. We use Paystack for safe and reliable transactions.
+            </div>
+
+            <div class="payment-methods">
+                <label class="payment-method active">
+                    <input type="radio" name="payment" value="paystack" checked>
+                    <div class="payment-method-info">
+                        <div class="payment-method-name">Paystack</div>
+                        <div class="payment-method-desc">Pay with card, bank transfer, or USSD</div>
+                    </div>
+                    <div class="payment-method-logo">💳</div>
+                </label>
+
+                <label class="payment-method">
+                    <input type="radio" name="payment" value="bank" disabled>
+                    <div class="payment-method-info">
+                        <div class="payment-method-name">Direct Bank Transfer</div>
+                        <div class="payment-method-desc">Coming soon</div>
+                    </div>
+                    <div class="payment-method-logo">🏦</div>
+                </label>
+            </div>
+
+            <button class="pay-button" id="payButton" onclick="initiatePayment()">
+                Pay Now - <span id="paymentTotal">$0.00</span>
+            </button>
+
+            <a href="cart.html" class="back-to-cart">← Back to Cart</a>
+
+            <div class="powered-by">
+                Secured by <strong>Paystack</strong>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-content">
+            <div class="spinner"></div>
+            <p>Processing your payment...</p>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast"></div>
+
+    <script>
+        // Protect payment page
+        if (!requireAuth('payment.html')) {
+            // User will be redirected
+        }
+
+        let checkoutData = null;
+        let paystackPublicKey = 'pk_test_YOUR_PAYSTACK_PUBLIC_KEY'; // Replace with your actual Paystack public key
+
+        // Toast notification
+        const toast = document.getElementById('toast');
+        
+        function showToast(message, type = 'success') {
+            toast.textContent = message || 'Action completed';
+            toast.className = `toast ${type} show`;
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // Show/hide loading overlay
+        function showLoading(show = true) {
+            const overlay = document.getElementById('loadingOverlay');
+            if (show) {
+                overlay.classList.add('show');
+            } else {
+                overlay.classList.remove('show');
+            }
+        }
+
+        // Load checkout data
+        function loadCheckoutData() {
+            const data = localStorage.getItem('checkoutData');
+            
+            if (!data) {
+                showToast('No order data found. Redirecting to cart...', 'error');
+                setTimeout(() => {
+                    window.location.href = 'cart.html';
+                }, 2000);
+                return null;
+            }
+
+            try {
+                checkoutData = JSON.parse(data);
+                return checkoutData;
+            } catch (e) {
+                console.error('Error parsing checkout data:', e);
+                showToast('Invalid order data. Redirecting to cart...', 'error');
+                setTimeout(() => {
+                    window.location.href = 'cart.html';
+                }, 2000);
+                return null;
+            }
+        }
+
+        // Display order summary
+        function displayOrderSummary() {
+            if (!checkoutData) return;
+
+            // Display customer info
+            document.getElementById('customerName').textContent = checkoutData.customer.name;
+            document.getElementById('customerEmail').textContent = checkoutData.customer.email;
+            document.getElementById('customerPhone').textContent = checkoutData.customer.phone;
+
+            // Display items
+            const itemsList = document.getElementById('orderItemsList');
+            itemsList.innerHTML = checkoutData.cart.map(item => `
+                <div class="order-item">
+                    <div class="item-details">
+                        <div class="item-name">${item.name}</div>
+                        <div class="item-meta">
+                            Quantity: ${item.quantity}
+                            ${item.size ? ` • Size: ${item.size}` : ''}
+                        </div>
+                    </div>
+                    <div class="item-price">$${(item.price * item.quantity).toFixed(2)}</div>
+                </div>
+            `).join('');
+
+            // Display price summary
+            document.getElementById('subtotalAmount').textContent = `$${checkoutData.subtotal.toFixed(2)}`;
+            document.getElementById('taxAmount').textContent = `$${checkoutData.tax.toFixed(2)}`;
+            
+            if (checkoutData.shipping > 0) {
+                document.getElementById('shippingAmount').textContent = `$${checkoutData.shipping.toFixed(2)}`;
+            } else {
+                document.getElementById('shippingAmount').textContent = 'Free';
+            }
+            
+            document.getElementById('totalAmount').textContent = `$${checkoutData.total.toFixed(2)}`;
+            document.getElementById('paymentTotal').textContent = `$${checkoutData.total.toFixed(2)}`;
+        }
+
+        // Convert USD to Kobo (Paystack uses Kobo for NGN)
+        // Note: You should handle currency conversion on your backend
+        function convertToKobo(usdAmount) {
+            // Example conversion rate (1 USD = 800 NGN)
+            // In production, use real-time exchange rates from your backend
+            const exchangeRate = 800;
+            const ngnAmount = usdAmount * exchangeRate;
+            const koboAmount = Math.round(ngnAmount * 100); // Convert to kobo
+            return koboAmount;
+        }
+
+        // Initiate Paystack payment
+        function initiatePayment() {
+            if (!checkoutData) {
+                showToast('Order data not found', 'error');
+                return;
+            }
+
+            // Check if Paystack is loaded
+            if (typeof PaystackPop === 'undefined') {
+                showToast('Payment system not loaded. Please refresh the page.', 'error');
+                return;
+            }
+
+            showLoading(true);
+
+            // Convert total to kobo (for NGN payments)
+            const amountInKobo = convertToKobo(checkoutData.total);
+
+            // Initialize Paystack payment
+            const handler = PaystackPop.setup({
+                key: paystackPublicKey, // Replace with your public key
+                email: checkoutData.customer.email,
+                amount: amountInKobo, // Amount in kobo
+                currency: 'NGN', // Change to your preferred currency
+                ref: 'TRD-' + Math.floor((Math.random() * 1000000000) + 1), // Generate unique reference
+                metadata: {
+                    custom_fields: [
+                        {
+                            display_name: "Customer Name",
+                            variable_name: "customer_name",
+                            value: checkoutData.customer.name
+                        },
+                        {
+                            display_name: "Phone Number",
+                            variable_name: "phone_number",
+                            value: checkoutData.customer.phone
+                        }
+                    ]
+                },
+                callback: function(response) {
+                    showLoading(false);
+                    handlePaymentSuccess(response);
+                },
+                onClose: function() {
+                    showLoading(false);
+                    showToast('Payment cancelled', 'error');
+                }
+            });
+
+            handler.openIframe();
+        }
+
+        // Handle successful payment
+        function handlePaymentSuccess(response) {
+            console.log('Payment successful:', response);
+
+            // Save order to localStorage
+            const orders = JSON.parse(localStorage.getItem('orders')) || [];
+            const newOrder = {
+                id: response.reference,
+                ...checkoutData,
+                status: 'Processing',
+                paymentReference: response.reference,
+                paymentDate: new Date().toISOString()
+            };
+            
+            orders.push(newOrder);
+            localStorage.setItem('orders', JSON.stringify(orders));
+
+            // Clear cart and checkout data
+            localStorage.removeItem('cart');
+            localStorage.removeItem('checkoutData');
+
+            // Show success message
+            showToast('Payment successful! Redirecting...', 'success');
+
+            // Redirect to success page
+            setTimeout(() => {
+                window.location.href = `success.html?ref=${response.reference}`;
+            }, 2000);
+        }
+
+        // Initialize payment method selection
+        function initializePaymentMethods() {
+            const paymentMethods = document.querySelectorAll('.payment-method');
+            
+            paymentMethods.forEach(method => {
+                method.addEventListener('click', function() {
+                    if (this.querySelector('input[type="radio"]').disabled) {
+                        showToast('This payment method is not available yet', 'error');
+                        return;
+                    }
+
+                    paymentMethods.forEach(m => m.classList.remove('active'));
+                    this.classList.add('active');
+                    this.querySelector('input[type="radio"]').checked = true;
+                });
+            });
+        }
+
+        // Initialize page
+        window.addEventListener('DOMContentLoaded', function() {
+            checkoutData = loadCheckoutData();
+            
+            if (checkoutData) {
+                displayOrderSummary();
+                initializePaymentMethods();
+            }
+        });
+    </script>
+</body>
+</html>

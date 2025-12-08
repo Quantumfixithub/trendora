@@ -1136,18 +1136,115 @@ window.addEventListener('DOMContentLoaded', function() {
             loadProfile();
             updateCartCount();
         });
-    </script>
-    // Protect account page
-window.addEventListener('DOMContentLoaded', function() {
-    if (!requireAuth('account.html')) {
-        showAuthModal();
+
+
+        
+            
+    // Client-side Paystack + server verification flow
+  const PAYSTACK_PUBLIC_KEY = 'pk_test_xxxxxxxxxxxxxxxxxxxxxxxxx'; // replace
+  const VERIFY_ENDPOINT = 'http://localhost:4000/verify'; // change to your server URL
+
+  function loadPaystackScript(callback){
+    if (window.PaystackPop) return callback();
+    const s = document.createElement('script');
+    s.src = 'https://js.paystack.co/v1/inline.js';
+    s.onload = callback;
+    s.onerror = ()=> { alert('Failed to load Paystack script'); };
+    document.head.appendChild(s);
+  }
+
+  function amountToKobo(amountFloat){
+    return Math.round(amountFloat * 100);
+  }
+
+  function createReference(){
+    return 'TRX-' + Date.now() + '-' + Math.floor(Math.random() * 100000);
+  }
+
+  async function verifyOnServer(reference){
+    try {
+      const resp = await fetch(VERIFY_ENDPOINT, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ reference })
+      });
+      return await resp.json();
+    } catch (err) {
+      console.error('Verify request failed', err);
+      return { status: 'error', message: 'Network error' };
     }
-    
-    // Your existing account code...
-});
+  }
+
+  function proceedToCheckout(){
+    const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+    if (!cart.length){ alert('Your cart is empty'); return; }
+
+    const name = (document.getElementById('custName')||{}).value || '';
+    const email = (document.getElementById('custEmail')||{}).value || '';
+    if (!name.trim() || !email.trim()){ alert('Please enter name and email'); return; }
+
+    let subtotal = 0;
+    cart.forEach(i => { subtotal += (parseFloat(i.price) || 0) * (parseInt(i.quantity) || 1); });
+    const tax = subtotal * 0.08;
+    const shipping = subtotal > 100 ? 0 : 9.99;
+    const total = subtotal + tax + shipping;
+
+    loadPaystackScript(()=> {
+      if (!window.PaystackPop){ alert('Paystack failed to load'); return; }
+
+      const reference = createReference();
+      const handler = window.PaystackPop.setup({
+        key: PAYSTACK_PUBLIC_KEY,
+        email: email,
+        amount: amountToKobo(total), // NGN
+        currency: 'NGN',
+        ref: reference,
+        metadata: { custom_fields: [{ display_name: "Customer Name", variable_name: "customer_name", value: name }] },
+        callback: async function(response){
+          // Response from Paystack client
+          console.log('Paystack callback', response);
+
+          // Verify on server
+          const verification = await verifyOnServer(response.reference);
+
+          if (verification && verification.status === 'success' && verification.data && verification.data.status === 'success'){
+            // Server verified transaction as successful
+            // Save order and clear cart safely
+            const orders = JSON.parse(localStorage.getItem('orders') || '[]');
+            orders.push({
+              id: 'ORD-' + Date.now(),
+              name, email, items: cart,
+              total: total.toFixed(2), currency: 'NGN',
+              paystackReference: response.reference,
+              verified: true,
+              verifiedAt: new Date().toISOString()
+            });
+            localStorage.setItem('orders', JSON.stringify(orders));
+            localStorage.removeItem('cart');
+            if (typeof renderCart === 'function') renderCart();
+            if (typeof updateCartCount === 'function') updateCartCount();
+
+            // Redirect to success page with reference
+            window.location.href = 'order-success.html?ref=' + encodeURIComponent(response.reference);
+          } else {
+            alert('Payment could not be verified. Please contact support.');
+            console.error('Verification failed:', verification);
+          }
+        },
+        onClose: function(){
+          alert('Payment cancelled.');
+        }
+      });
+      handler.openIframe();
+    });
+  }
+</script>
+
+
 </body>
 
 </html?
+
 
 
 

@@ -862,6 +862,96 @@
     <div class="toast" id="toast"></div>
 
     <script>
+
+// Protect the page - redirect to signin if not authenticated
+        window.addEventListener('DOMContentLoaded', function() {
+            // Check if user is authenticated
+            if (!isAuthenticated()) {
+                // Show a message or redirect
+                const heroSection = document.querySelector('.hero');
+                if (heroSection) {
+                    // Create overlay
+                    const overlay = document.createElement('div');
+                    overlay.style.cssText = `
+                        position: fixed;
+                        top: 0;
+                        left: 0;
+                        right: 0;
+                        bottom: 0;
+                        background: rgba(0,0,0,0.8);
+                        z-index: 9999;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                    `;
+                    
+                    const modal = document.createElement('div');
+                    modal.style.cssText = `
+                        background: white;
+                        padding: 3rem;
+                        border-radius: 15px;
+                        text-align: center;
+                        max-width: 500px;
+                        margin: 20px;
+                    `;
+                    
+                    modal.innerHTML = `
+                        <h2 style="color: #2c3e50; margin-bottom: 1rem; font-size: 1.8rem;">Welcome to Trendora! 🛍️</h2>
+                        <p style="color: #666; margin-bottom: 2rem; line-height: 1.6;">
+                            Please sign in or create an account to start shopping and discover amazing products.
+                        </p>
+                        <div style="display: flex; gap: 1rem; justify-content: center;">
+                            <a href="signin.html" style="
+                                padding: 1rem 2rem;
+                                background: #2c3e50;
+                                color: white;
+                                text-decoration: none;
+                                border-radius: 8px;
+                                font-weight: 600;
+                                transition: all 0.3s;
+                            ">Sign In</a>
+                            <a href="signup.html" style="
+                                padding: 1rem 2rem;
+                                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                                color: white;
+                                text-decoration: none;
+                                border-radius: 8px;
+                                font-weight: 600;
+                                transition: all 0.3s;
+                            ">Sign Up</a>
+                        </div>
+                        <p style="color: #999; margin-top: 1.5rem; font-size: 0.9rem;">
+                            Already have an account? Sign in to continue.
+                        </p>
+                    `;
+                    
+                    overlay.appendChild(modal);
+                    document.body.appendChild(overlay);
+                    
+                    // Prevent scrolling
+                    document.body.style.overflow = 'hidden';
+                    
+                    // Redirect after 5 seconds
+                    setTimeout(() => {
+                        window.location.href = 'signin.html?redirect=index.html';
+                    }, 5000);
+                }
+            }
+        });
+
+        // Make all "Shop Now" buttons check authentication
+        document.addEventListener('DOMContentLoaded', function() {
+            const shopButtons = document.querySelectorAll('a[href="shop.html"], .shop-btn, .cta-button');
+            shopButtons.forEach(button => {
+                button.addEventListener('click', function(e) {
+                    if (!isAuthenticated()) {
+                        e.preventDefault();
+                        window.location.href = 'signin.html?redirect=shop.html';
+                    }
+                });
+            });
+        });
+        
        // Update account link based on auth status
 function updateAuthLink() {
     const currentUser = localStorage.getItem('currentUser');
@@ -1172,4 +1262,5 @@ document.addEventListener('DOMContentLoaded', updateAuthLink);
 </body>
 
 </html>
+
 

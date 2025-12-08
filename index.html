@@ -1259,8 +1259,34 @@ document.addEventListener('DOMContentLoaded', updateAuthLink);
             sessionStorage.setItem('csrf_token', csrfToken);
         })();
     </script>
+    <script src="auth.js"></script>
+<script>
+    // Check authentication and show modal
+    window.addEventListener('DOMContentLoaded', function() {
+        if (!isAuthenticated()) {
+            // Show auth modal after a short delay
+            setTimeout(() => {
+                showAuthModal();
+            }, 1000);
+        }
+
+        // Protect all "Shop Now" and navigation buttons
+        const protectedLinks = document.querySelectorAll('a[href="shop.html"], a[href*="women.html"], a[href*="men.html"], a[href*="accessories.html"], a[href*="shoes.html"], .cta-button, .shop-btn');
+        
+        protectedLinks.forEach(link => {
+            link.addEventListener('click', function(e) {
+                if (!isAuthenticated()) {
+                    e.preventDefault();
+                    const destination = this.getAttribute('href') || 'shop.html';
+                    window.location.href = `signin.html?redirect=${destination}`;
+                }
+            });
+        });
+    });
+</script>
 </body>
 
 </html>
+
 
 

@@ -476,6 +476,30 @@ footer {
 @media (prefers-reduced-motion: reduce) {
   .icon-link, .nav-link, .dropdown-toggle { transition: none; }
 }
+		.image-container {
+  position: relative;
+  width: 100%;
+  max-width: 100%; /* keeps it responsive */
+}
+
+.responsive-img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.image-text {
+  position: absolute;
+  top: 50%;        /* vertically center */
+  left: 50%;       /* horizontally center */
+  transform: translate(-50%, -50%);
+  color: white;    /* text color */
+  text-align: center;
+  background: rgba(0,0,0,0.4); /* optional semi-transparent background */
+  padding: 1rem 2rem;
+  border-radius: 8px;
+}
+
 </style>
 </head>
 <body>
@@ -549,7 +573,18 @@ footer {
     </div>
 </div>
   <!-- Hero Section -->
-  <section class="relative h-[500px] overflow-hidden">
+
+	<div class="image-container">
+  <img src="https://img.freepik.com/premium-photo/women-s-fashion-store-shopping-center-mall-clothes-store-with-mannequin-shopping-day_326694-23931.jpg" 
+       alt="About Trendora — team showcasing styles" 
+       class="responsive-img">
+  <div class="image-text">
+    <h1 class="text-5xl md:text-6xl font-bold mb-4 font-['Playfair_Display']">Our Story</h1>
+    <p>Defining style, celebrating identity</p>
+  </div>
+</div>
+
+ <!-- <section class="relative h-[500px] overflow-hidden">
 
 <div class="absolute inset-0 w-full h-full">
 
@@ -835,6 +870,7 @@ footer {
 
 </body>
 </html>
+
 
 
 

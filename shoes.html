@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shoes Collection - Trendora</title>
+    <script src="auth.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Ubuntu, Cantarell, sans-serif;
+            color: #333;
+            background-color: #f8f9fa;
+        }
+
+        header {
+            background: #fff;
+            padding: 1rem 5%;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-decoration: none;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+        
+        .nav-links a {
+            text-decoration: none;
+            color: #555;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        
+        .nav-links a:hover {
+            color: #667eea;
+        }
+        
+        .nav-icons {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+        }
+        
+        .nav-icons a {
+            color: #555;
+            font-size: 1.2rem;
+            text-decoration: none;
+            position: relative;
+        }
+
+        .cart-count {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #e74c3c;
+            color: white;
+            font-size: 0.7rem;
+            padding: 2px 6px;
+            border-radius: 10px;
+            display: none;
+        }
+
+        .hero {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            color: white;
+            padding: 4rem 5%;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .filter-section {
+            background: white;
+            padding: 2rem 5%;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .filter-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .filter-group {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .filter-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #555;
+        }
+
+        .filter-group select,
+        .filter-group input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+
+        .products-section {
+            max-width: 1400px;
+            margin: 3rem auto;
+            padding: 0 5%;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .section-header h2 {
+            font-size: 2rem;
+            color: #2c3e50;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .product-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        }
+
+        .product-image {
+            width: 100%;
+            height: 350px;
+            object-fit: cover;
+            background: #f0f0f0;
+        }
+
+        .product-info {
+            padding: 1.5rem;
+        }
+
+        .product-name {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+        }
+
+        .product-category {
+            font-size: 0.9rem;
+            color: #7f8c8d;
+            margin-bottom: 0.5rem;
+        }
+
+        .product-price {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #e74c3c;
+            margin-bottom: 1rem;
+        }
+
+        .product-rating {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .stars {
+            color: #f39c12;
+        }
+
+        .reviews {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+
+        .add-to-cart-btn {
+            width: 100%;
+            padding: 0.75rem;
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .add-to-cart-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(231, 76, 60, 0.4);
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: #2c3e50;
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            transform: translateX(400px);
+            transition: transform 0.3s;
+            z-index: 3000;
+        }
+        
+        .toast.show {
+            transform: translateX(0);
+        }
+        
+        .toast.success {
+            background: #27ae60;
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .products-grid {
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+                gap: 1rem;
+            }
+
+            .product-image {
+                height: 250px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="index.html" class="logo">Trendora</a>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="shop.html">Shop</a></li>
+                <li><a href="women.html">Women</a></li>
+                <li><a href="men.html">Men</a></li>
+                <li><a href="accessories.html">Accessories</a></li>
+                <li><a href="shoes.html">Shoes</a></li>
+            </ul>
+            <div class="nav-icons">
+                <a href="account.html" title="My Account">👤</a>
+                <a href="cart.html" title="Shopping Cart">
+                    🛒
+                    <span class="cart-count" id="cartCount">0</span>
+                </a>
+            </div>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <h1>Shoes Collection 👟</h1>
+        <p>Step into style with our curated collection of footwear. From sneakers to heels, find your perfect pair.</p>
+    </section>
+
+    <div class="filter-section">
+        <div class="filter-container">
+            <div class="filter-group">
+                <label>Search</label>
+                <input type="text" id="searchInput" placeholder="Search products..." onkeyup="filterProducts()">
+            </div>
+            <div class="filter-group">
+                <label>Sort By</label>
+                <select id="sortSelect" onchange="filterProducts()">
+                    <option value="featured">Featured</option>
+                    <option value="price-low">Price: Low to High</option>
+                    <option value="price-high">Price: High to Low</option>
+                    <option value="name">Name: A-Z</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label>Price Range</label>
+                <select id="priceRange" onchange="filterProducts()">
+                    <option value="all">All Prices</option>
+                    <option value="0-50">Under $50</option>
+                    <option value="50-100">$50 - $100</option>
+                    <option value="100-200">$100 - $200</option>
+                    <option value="200-plus">$200+</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <section class="products-section">
+        <div class="section-header">
+            <h2>Shoes</h2>
+            <span id="productCount">0 products</span>
+        </div>
+
+        <div class="products-grid" id="productsGrid">
+            <!-- Products will be loaded here -->
+        </div>
+    </section>
+
+    <div class="toast" id="toast"></div>
+
+    <script src="auth.js"></script>
+    <script>
+        window.addEventListener('DOMContentLoaded', function() {
+            if (!isAuthenticated()) {
+                showAuthModal();
+                return;
+            }
+        });
+
+        const shoesProducts = [
+            {
+                id: 4001,
+                name: "Running Sneakers",
+                category: "Athletic",
+                price: 89.99,
+                image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400",
+                rating: 4.8,
+                reviews: 312,
+                description: "Comfortable running shoes with great support"
+            },
+            {
+                id: 4002,
+                name: "Classic White Sneakers",
+                category: "Casual",
+                price: 79.99,
+                image: "https://images.unsplash.com/photo-1549298916-b41d501d3772?w=400",
+                rating: 4.9,
+                reviews: 467,
+                description: "Timeless white sneakers for everyday wear"
+            },
+            {
+                id: 4003,
+                name: "High Heels",
+                category: "Formal",
+                price: 129.99,
+                image: "https://images.unsplash.com/photo-1543163521-1bf539c55dd2?w=400",
+                rating: 4.7,
+                reviews: 198,
+                description: "Elegant high heels for special occasions"
+            },
+            {
+                id: 4004,
+                name: "Leather Boots",
+                category: "Boots",
+                price: 159.99,
+                image: "https://images.unsplash.com/photo-1608256246200-53e635b5b65f?w=400",
+                rating: 4.8,
+                reviews: 234,
+                description: "Durable leather boots for all seasons"
+            },
+            {
+                id: 4005,
+                name: "Canvas Slip-Ons",
+                category: "Casual",
+                price: 49.99,
+                image: "https://images.unsplash.com/photo-1525966222134-fcfa99b8ae77?w=400",
+                rating: 4.6,
+                reviews: 289,
+                description: "Easy slip-on canvas shoes"
+            },
+            {
+                id: 4006,
+                name: "Hiking Boots",
+                category: "Outdoor",
+                price: 139.99,
+                image: "https://images.unsplash.com/photo-1520639888713-7851133b1ed0?w=400",
+                rating: 4.9,
+                reviews: 176,
+                description: "Rugged hiking boots for outdoor adventures"
+            },
+            {
+                id: 4007,
+                name: "Ballet Flats",
+                category: "Casual",
+                price: 64.99,
+                image: "https://images.unsplash.com/photo-1603808033587-7d8e5075e45e?w=400",
+                rating: 4.5,
+                reviews: 223,
+                description: "Comfortable ballet flats for daily wear"
+            },
+            {
+                id: 4008,
+                name: "Basketball Shoes",
+                category: "Athletic",
+                price: 119.99,
+                image: "https://images.unsplash.com/photo-1551107696-a4b0c5a0d9a2?w=400",
+                rating: 4.8,
+                reviews: 345,
+                description: "High-performance basketball shoes"
+            },
+            {
+                id: 4009,
+                name: "Sandals",
+                category: "Summer",
+                price: 44.99,
+                image: "https://images.unsplash.com/photo-1603487742131-4160ec999306?w=400",
+                rating: 4.6,
+                reviews: 267,
+                description: "Comfortable sandals for warm weather"
+            },
+            {
+                id: 4010,
+                name: "Oxford Dress Shoes",
+                category: "Formal",
+                price: 149.99,
+                image: "https://images.unsplash.com/photo-1533867617858-e7b97e060509?w=400",
+                rating: 4.7,
+                reviews: 189,
+                description: "Classic oxford shoes for formal events"
+            },
+            {
+                id: 4011,
+                name: "Loafers",
+                category: "Casual",
+                price: 94.99,
+                image: "https://images.unsplash.com/photo-1582897085656-c21e7a0a57e5?w=400",
+                rating: 4.7,
+                reviews: 212,
+                description: "Stylish loafers for smart casual look"
+            },
+            {
+                id: 4012,
+                name: "Winter Snow Boots",
+                category: "Boots",
+                price: 124.99,
+                image: "https://images.unsplash.com/photo-1605812860427-4024433a70fd?w=400",
+                rating: 4.8,
+                reviews: 178,
+                description: "Warm snow boots for winter weather"
+            }
+        ];
+
+        let filteredProducts = [...shoesProducts];
+
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.className = `toast ${type} show`;
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+
+        function addToCart(product) {
+            let cart = JSON.parse(localStorage.getItem('cart')) || [];
+            
+            const existingItem = cart.find(item => item.id === product.id);
+            
+            if (existingItem) {
+                existingItem.quantity++;
+            } else {
+                cart.push({
+                    ...product,
+                    quantity: 1
+                });
+            }
+            
+            localStorage.setItem('cart', JSON.stringify(cart));
+            updateCartCount();
+            showToast(`${product.name} added to cart!`, 'success');
+        }
+
+        function displayProducts() {
+            const grid = document.getElementById('productsGrid');
+            const countElement = document.getElementById('productCount');
+            
+            countElement.textContent = `${filteredProducts.length} products`;
+            
+            grid.innerHTML = filteredProducts.map(product => `
+                <div class="product-card">
+                    <img src="${product.image}" alt="${product.name}" class="product-image" onerror="this.style.display='flex'; this.innerHTML='👟';">
+                    <div class="product-info">
+                        <div class="product-category">${product.category}</div>
+                        <div class="product-name">${product.name}</div>
+                        <div class="product-rating">
+                            <span class="stars">${'⭐'.repeat(Math.floor(product.rating))}</span>
+                            <span class="reviews">(${product.reviews})</span>
+                        </div>
+                        <div class="product-price">$${product.price.toFixed(2)}</div>
+                        <button class="add-to-cart-btn" onclick='addToCart(${JSON.stringify(product)})'>
+                            Add to Cart
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function filterProducts() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const sortBy = document.getElementById('sortSelect').value;
+            const priceRange = document.getElementById('priceRange').value;
+            
+            filteredProducts = shoesProducts.filter(product => 
+                product.name.toLowerCase().includes(searchTerm) ||
+                product.category.toLowerCase().includes(searchTerm)
+            );
+            
+            if (priceRange !== 'all') {
+                const [min, max] = priceRange.split('-').map(v => v === 'plus' ? Infinity : parseInt(v));
+                filteredProducts = filteredProducts.filter(product => 
+                    product.price >= min && (max ? product.price <= max : true)
+                );
+            }
+            
+            switch(sortBy) {
+                case 'price-low':
+                    filteredProducts.sort((a, b) => a.price - b.price);
+                    break;
+                case 'price-high':
+                    filteredProducts.sort((a, b) => b.price - a.price);
+                    break;
+                case 'name':
+                    filteredProducts.sort((a, b) => a.name.localeCompare(b.name));
+                    break;
+            }
+            
+            displayProducts();
+        }
+
+        window.addEventListener('DOMContentLoaded', function() {
+            displayProducts();
+            updateCartCount();
+        });
+    </script>
+</body>
+</html>

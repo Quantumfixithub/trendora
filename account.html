@@ -82,9 +82,8 @@ nav { display:flex; justify-content:space-between; align-items:center; max-width
   .sidebar { width:100%; position:static; }
   .form-row { grid-template-columns:1fr; }
 }
-  
 
-</style
+  </style>
 </head>
 <body>
   <header>
@@ -95,25 +94,22 @@ nav { display:flex; justify-content:space-between; align-items:center; max-width
         <a href="index.html" class="back-home" id="backHomeDesktop">Back to Home</a>
       </div>
 
+      <ul class="nav-links" role="navigation" aria-label="Primary">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="shop.html">Shop</a></li>
+        <li><a href="about.html">About Us</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
 
-  <ul class="nav-links" role="navigation" aria-label="Primary">
-    <li><a href="index.html">Home</a></li>
-    <li><a href="shop.html">Shop</a></li>
-    <li><a href="about.html">About Us</a></li>
-    <li><a href="contact.html">Contact</a></li>
-  </ul>
+      <div class="nav-icons" aria-hidden="false">
+        <a href="search.html" title="Search">🔍</a>
+        <a href="account.html" title="My Account" class="active">👤</a>
+        <a href="cart.html" title="Shopping Cart">🛒<span class="cart-count" id="cartCount" style="display:none">0</span></a>
+      </div>
 
-  <div class="nav-icons" aria-hidden="false">
-    <a href="search.html" title="Search">🔍</a>
-    <a href="account.html" title="My Account" class="active">👤</a>
-    <a href="cart.html" title="Shopping Cart">🛒<span class="cart-count" id="cartCount" style="display:none">0</span></a>
-  </div>
-
-  <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Open menu">☰</button>
-</nav>
-  
-
-</header
+      <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Open menu">☰</button>
+    </nav>
+  </header>
 
   <!-- Mobile overlay + menu -->
   <div id="menuOverlay" class="menu-overlay" aria-hidden="true" onclick="closeMobileMenu()"></div>
@@ -121,17 +117,15 @@ nav { display:flex; justify-content:space-between; align-items:center; max-width
   <aside id="mobileMenu" class="mobile-menu" aria-hidden="true" aria-label="Mobile menu">
     <button class="close" aria-label="Close menu" id="mobileMenuClose">✕</button>
 
-<nav class="mobile-links" aria-label="Mobile primary">
-  <a href="index.html" id="backHomeMobile">← Back to Home</a>
-  <a href="shop.html">Shop</a>
-  <a href="about.html">About Us</a>
-  <a href="contact.html">Contact</a>
-  <a href="account.html" class="active">My Account</a>
-  <a href="cart.html">Shopping Cart</a>
-</nav>
-  
-
-</aside
+    <nav class="mobile-links" aria-label="Mobile primary">
+      <a href="index.html" id="backHomeMobile">← Back to Home</a>
+      <a href="shop.html">Shop</a>
+      <a href="about.html">About Us</a>
+      <a href="contact.html">Contact</a>
+      <a href="account.html" class="active">My Account</a>
+      <a href="cart.html">Shopping Cart</a>
+    </nav>
+  </aside>
 
   <div class="account-page" id="accountPage">
     <aside class="sidebar" aria-label="Account sidebar">
@@ -145,98 +139,96 @@ nav { display:flex; justify-content:space-between; align-items:center; max-width
       </ul>
     </aside>
 
-<main class="main-content">
-  <!-- Profile -->
-  <section id="profile" class="content-section active" aria-labelledby="profileTitle">
-    <h2 id="profileTitle">Profile Information</h2>
-    <form id="profileForm">
-      <div class="form-row">
-        <div class="form-group">
-          <label for="firstName">First Name</label>
-          <input id="firstName" name="firstName" type="text" value="Sarah" required>
+    <main class="main-content">
+      <!-- Profile -->
+      <section id="profile" class="content-section active" aria-labelledby="profileTitle">
+        <h2 id="profileTitle">Profile Information</h2>
+        <form id="profileForm">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="firstName">First Name</label>
+              <input id="firstName" name="firstName" type="text" value="Sarah" required>
+            </div>
+            <div class="form-group">
+              <label for="lastName">Last Name</label>
+              <input id="lastName" name="lastName" type="text" value="Johnson" required>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="email">Email</label>
+              <input id="email" name="email" type="email" value="sarah.johnson@email.com" required>
+            </div>
+            <div class="form-group">
+              <label for="phone">Phone</label>
+              <input id="phone" name="phone" type="tel" value="+1 555-123-4567">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group full-width">
+              <label for="bio">Bio</label>
+              <textarea id="bio" name="bio" placeholder="Tell us about yourself...">Style lover & coffee enthusiast.</textarea>
+            </div>
+          </div>
+
+          <button class="save-btn" type="submit">Save Profile</button>
+        </form>
+      </section>
+
+      <!-- Orders (kept minimal for demo) -->
+      <section id="orders" class="content-section" aria-labelledby="ordersTitle">
+        <h2 id="ordersTitle">Your Orders</h2>
+        <div id="ordersList"></div>
+        <div id="noOrders" class="empty-state" style="display:none">
+          <div class="empty-state-icon">📭</div>
+          <h3>No orders yet</h3>
+          <p>Looks like you haven't placed any orders yet.</p>
+          <a class="empty-state-btn" href="shop.html">Start Shopping</a>
         </div>
-        <div class="form-group">
-          <label for="lastName">Last Name</label>
-          <input id="lastName" name="lastName" type="text" value="Johnson" required>
+      </section>
+
+      <!-- Wishlist (kept minimal for demo) -->
+      <section id="wishlist" class="content-section" aria-labelledby="wishlistTitle">
+        <h2 id="wishlistTitle">Your Wishlist</h2>
+        <div id="wishlistGrid" class="wishlist-grid"></div>
+        <div id="noWishlist" class="empty-state" style="display:none">
+          <div class="empty-state-icon">💔</div>
+          <h3>Your wishlist is empty</h3>
+          <p>Add items you love to save them for later.</p>
+          <a class="empty-state-btn" href="shop.html">Browse Collections</a>
         </div>
-      </div>
+      </section>
 
-      <div class="form-row">
-        <div class="form-group">
-          <label for="email">Email</label>
-          <input id="email" name="email" type="email" value="sarah.johnson@email.com" required>
-        </div>
-        <div class="form-group">
-          <label for="phone">Phone</label>
-          <input id="phone" name="phone" type="tel" value="+1 555-123-4567">
-        </div>
-      </div>
+      <!-- Settings -->
+      <section id="settings" class="content-section" aria-labelledby="settingsTitle">
+        <h2 id="settingsTitle">Account Settings</h2>
+        <form id="settingsForm">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="language">Language</label>
+              <select id="language" name="language">
+                <option value="en" selected>English</option>
+                <option value="es">Español</option>
+                <option value="fr">Français</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="currency">Currency</label>
+              <select id="currency" name="currency">
+                <option value="usd" selected>USD</option>
+                <option value="eur">EUR</option>
+                <option value="ngn">NGN</option>
+              </select>
+            </div>
+          </div>
 
-      <div class="form-row">
-        <div class="form-group full-width">
-          <label for="bio">Bio</label>
-          <textarea id="bio" name="bio" placeholder="Tell us about yourself...">Style lover & coffee enthusiast.</textarea>
-        </div>
-      </div>
-
-      <button class="save-btn" type="submit">Save Profile</button>
-    </form>
-  </section>
-
-  <!-- Orders (kept minimal for demo) -->
-  <section id="orders" class="content-section" aria-labelledby="ordersTitle">
-    <h2 id="ordersTitle">Your Orders</h2>
-    <div id="ordersList"></div>
-    <div id="noOrders" class="empty-state" style="display:none">
-      <div class="empty-state-icon">📭</div>
-      <h3>No orders yet</h3>
-      <p>Looks like you haven't placed any orders yet.</p>
-      <a class="empty-state-btn" href="shop.html">Start Shopping</a>
-    </div>
-  </section>
-
-  <!-- Wishlist (kept minimal for demo) -->
-  <section id="wishlist" class="content-section" aria-labelledby="wishlistTitle">
-    <h2 id="wishlistTitle">Your Wishlist</h2>
-    <div id="wishlistGrid" class="wishlist-grid"></div>
-    <div id="noWishlist" class="empty-state" style="display:none">
-      <div class="empty-state-icon">💔</div>
-      <h3>Your wishlist is empty</h3>
-      <p>Add items you love to save them for later.</p>
-      <a class="empty-state-btn" href="shop.html">Browse Collections</a>
-    </div>
-  </section>
-
-  <!-- Settings -->
-  <section id="settings" class="content-section" aria-labelledby="settingsTitle">
-    <h2 id="settingsTitle">Account Settings</h2>
-    <form id="settingsForm">
-      <div class="form-row">
-        <div class="form-group">
-          <label for="language">Language</label>
-          <select id="language" name="language">
-            <option value="en" selected>English</option>
-            <option value="es">Español</option>
-            <option value="fr">Français</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label for="currency">Currency</label>
-          <select id="currency" name="currency">
-            <option value="usd" selected>USD</option>
-            <option value="eur">EUR</option>
-            <option value="ngn">NGN</option>
-          </select>
-        </div>
-      </div>
-
-      <button class="save-btn" type="submit">Save Settings</button>
-    </form>
-  </section>
-</main>
-  
-
-</div
+          <button class="save-btn" type="submit">Save Settings</button>
+        </form>
+      </section>
+    </main>
+  </div>
 
   <footer>
     <div class="footer-content">
@@ -256,7 +248,7 @@ nav { display:flex; justify-content:space-between; align-items:center; max-width
         <ul style="list-style:none;padding:0;margin:0">
           <li><a href="#">Help Center</a></li>
         </ul>
-      </div>
+              </div>
     </div>
     <div class="footer-bottom">
       <div>© 2025 Trendora</div>
@@ -273,229 +265,226 @@ nav { display:flex; justify-content:space-between; align-items:center; max-width
     const mobileMenuBtn = document.getElementById('mobileMenuBtn');
     const mobileMenuClose = document.getElementById('mobileMenuClose');
 
-function openMobileMenu() {
-  if (!mobileMenu || !menuOverlay) return;
-  mobileMenu.classList.add('active');
-  menuOverlay.classList.add('active');
-  mobileMenu.setAttribute('aria-hidden', 'false');
-  menuOverlay.setAttribute('aria-hidden', 'false');
-  document.body.style.overflow = 'hidden';
-}
-function closeMobileMenu() {
-  if (!mobileMenu || !menuOverlay) return;
-  mobileMenu.classList.remove('active');
-  menuOverlay.classList.remove('active');
-  mobileMenu.setAttribute('aria-hidden', 'true');
-  menuOverlay.setAttribute('aria-hidden', 'true');
-  document.body.style.overflow = '';
-}
+    function openMobileMenu() {
+      if (!mobileMenu || !menuOverlay) return;
+      mobileMenu.classList.add('active');
+      menuOverlay.classList.add('active');
+      mobileMenu.setAttribute('aria-hidden', 'false');
+      menuOverlay.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeMobileMenu() {
+      if (!mobileMenu || !menuOverlay) return;
+      mobileMenu.classList.remove('active');
+      menuOverlay.classList.remove('active');
+      mobileMenu.setAttribute('aria-hidden', 'true');
+      menuOverlay.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+    }
 
-if (mobileMenuBtn) mobileMenuBtn.addEventListener('click', openMobileMenu);
-if (mobileMenuClose) mobileMenuClose.addEventListener('click', closeMobileMenu);
-if (menuOverlay) menuOverlay.addEventListener('click', closeMobileMenu);
+    if (mobileMenuBtn) mobileMenuBtn.addEventListener('click', openMobileMenu);
+    if (mobileMenuClose) mobileMenuClose.addEventListener('click', closeMobileMenu);
+    if (menuOverlay) menuOverlay.addEventListener('click', closeMobileMenu);
 
-// close with Escape
-document.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape') closeMobileMenu();
-});
+    // close with Escape
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeMobileMenu();
+    });
 
-// Back to Home buttons: desktop & mobile already link to index.html
-// For accessibility, ensure they exist:
-const backHomeDesktop = document.getElementById('backHomeDesktop');
-const backHomeMobile = document.getElementById('backHomeMobile');
-if (backHomeDesktop) backHomeDesktop.addEventListener('click', () => { /* native link behavior */ });
-if (backHomeMobile) backHomeMobile.addEventListener('click', closeMobileMenu);
+    // Back to Home buttons: desktop & mobile already link to index.html
+    // For accessibility, ensure they exist:
+    const backHomeDesktop = document.getElementById('backHomeDesktop');
+    const backHomeMobile = document.getElementById('backHomeMobile');
+    if (backHomeDesktop) backHomeDesktop.addEventListener('click', () => { /* native link behavior */ });
+    if (backHomeMobile) backHomeMobile.addEventListener('click', closeMobileMenu);
 
-// Sidebar navigation: toggle content sections
-document.querySelectorAll('.sidebar .menu-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    // handle sign out separately
-    if (btn.id === 'signOutBtn') return;
-    document.querySelectorAll('.sidebar .menu-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
+    // Sidebar navigation: toggle content sections
+    document.querySelectorAll('.sidebar .menu-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        // handle sign out separately
+        if (btn.id === 'signOutBtn') return;
+        document.querySelectorAll('.sidebar .menu-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
 
         // show section
-    const sectionId = btn.getAttribute('data-section');
-    if (!sectionId) return;
-    document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
-    const target = document.getElementById(sectionId);
-    if (target) target.classList.add('active');
-    // close mobile menu on selection
-    closeMobileMenu();
-  });
-});
-
-// Sign out (demo)
-const signOutBtn = document.getElementById('signOutBtn');
-if (signOutBtn) {
-  signOutBtn.addEventListener('click', () => {
-    // Demo sign out behaviour: clear localStorage auth flag and redirect to home
-    try { localStorage.removeItem('auth'); } catch (e) {}
-    // show toast then redirect
-    showToast('Signed out', 'success');
-    setTimeout(() => { window.location.href = 'index.html'; }, 900);
-  });
-}
-
-// Profile save (demo)
-const profileForm = document.getElementById('profileForm');
-if (profileForm) {
-  profileForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const data = {
-      firstName: document.getElementById('firstName').value.trim(),
-      lastName: document.getElementById('lastName').value.trim(),
-      email: document.getElementById('email').value.trim(),
-      phone: document.getElementById('phone').value.trim(),
-      bio: document.getElementById('bio').value.trim()
-    };
-    // demo save to localStorage
-    try { localStorage.setItem('profile', JSON.stringify(data)); } catch (err) {}
-    showToast('Profile saved', 'success');
-  });
-}
-
-// Settings save (demo)
-const settingsForm = document.getElementById('settingsForm');
-if (settingsForm) {
-  settingsForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const settings = {
-      language: document.getElementById('language').value,
-      currency: document.getElementById('currency').value
-    };
-    try { localStorage.setItem('settings', JSON.stringify(settings)); } catch (err) {}
-    showToast('Settings saved', 'success');
-  });
-}
-
-// Demo: load sample orders & wishlist (if none, show empty state)
-function renderDemoOrders() {
-  const ordersList = document.getElementById('ordersList');
-  const noOrders = document.getElementById('noOrders');
-  const demo = JSON.parse(localStorage.getItem('demoOrders') || '[]');
-
-  if (!demo.length) {
-    ordersList.innerHTML = '';
-    noOrders.style.display = '';
-    return;
-  }
-
-  noOrders.style.display = 'none';
-  ordersList.innerHTML = demo.map(o => `
-    <div class="order-card">
-      <div class="order-header">
-        <div class="order-number">Order #${o.number}</div>
-        <div class="order-status ${o.status}">${o.statusLabel}</div>
-      </div>
-      <div class="order-items">
-        ${o.items.map(it => `<div class="order-item"><span>${it.name}</span><span>${it.qty} × ${it.price}</span></div>`).join('')}
-      </div>
-      <div class="order-total"><span>Total</span><span>${o.total}</span></div>
-    </div>
-  `).join('');
-}
-
-function renderDemoWishlist() {
-  const grid = document.getElementById('wishlistGrid');
-  const noWishlist = document.getElementById('noWishlist');
-  const demo = JSON.parse(localStorage.getItem('demoWishlist') || '[]');
-
-  if (!demo.length) {
-    grid.innerHTML = '';
-    noWishlist.style.display = '';
-    return;
-  }
-
-  noWishlist.style.display = 'none';
-  grid.innerHTML = demo.map((w, idx) => `
-    <div class="wishlist-item">
-      <div class="wishlist-image">${w.emoji || '🧥'}</div>
-      <div class="wishlist-details">
-        <h3>${w.title}</h3>
-        <div class="wishlist-price">${w.price}</div>
-        <div class="wishlist-actions">
-          <button class="wishlist-btn add-to-cart" data-idx="${idx}">Add to Cart</button>
-          <button class="wishlist-btn remove-wishlist" data-idx="${idx}">Remove</button>
-        </div>
-      </div>
-    </div>
-  `).join('');
-
-  // wire buttons
-  grid.querySelectorAll('.add-to-cart').forEach(btn => {
-    btn.addEventListener('click', (e) => {
-      const idx = parseInt(e.currentTarget.getAttribute('data-idx'), 10);
-      const item = demo[idx];
-      showToast(`${item.title} added to cart`, 'success');
-      // demo: remove from wishlist after adding
-      demo.splice(idx,1);
-      localStorage.setItem('demoWishlist', JSON.stringify(demo));
-      renderDemoWishlist();
+        const sectionId = btn.getAttribute('data-section');
+        if (!sectionId) return;
+        document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
+        const target = document.getElementById(sectionId);
+        if (target) target.classList.add('active');
+        // close mobile menu on selection
+        closeMobileMenu();
+      });
     });
-  });
 
-  grid.querySelectorAll('.remove-wishlist').forEach(btn => {
-    btn.addEventListener('click', (e) => {
-      const idx = parseInt(e.currentTarget.getAttribute('data-idx'), 10);
-      const item = demo[idx];
-      demo.splice(idx,1);
-      localStorage.setItem('demoWishlist', JSON.stringify(demo));
-      showToast(`${item.title} removed`, 'success');
-      renderDemoWishlist();
-    });
-  });
-}
-
-// Toast helper
-const toastEl = document.getElementById('toast');
-function showToast(message, type='') {
-  if (!toastEl) return;
-  toastEl.textContent = message;
-  toastEl.className = 'toast show ' + (type || '');
-  toastEl.style.display = 'block';
-  setTimeout(() => {
-    toastEl.className = 'toast';
-    toastEl.style.display = 'none';
-  }, 2000);
-}
-
-// Initialize demo data if not present (for first-time view)
-(function initDemoData(){
-  if (!localStorage.getItem('demoOrders')) {
-    const demoOrders = [
-      { number: '1001', status: 'delivered', statusLabel:'Delivered', items: [{name:'Malibu Jacket', qty:1, price:'$120'}, {name:'Sunglasses', qty:1, price:'$35'}], total:'$155' },
-      { number: '1002', status: 'processing', statusLabel:'Processing', items: [{name:'Project Tee', qty:2, price:'$40'}], total:'$40' }
-    ];
-    localStorage.setItem('demoOrders', JSON.stringify(demoOrders));
-  }
-  if (!localStorage.getItem('demoWishlist')) {
-    const demoWishlist = [
-      { title:'Classic Trench Coat', price:'$180', emoji:'🧥' },
-      { title:'Everyday Sneakers', price:'$95', emoji:'👟' },
-      { title:'Leather Crossbody', price:'$140', emoji:'👜' }
-    ];
-    localStorage.setItem('demoWishlist', JSON.stringify(demoWishlist));
-  }
-
-  renderDemoOrders();
-  renderDemoWishlist();
-
-  // restore profile if saved
-  try {
-    const saved = JSON.parse(localStorage.getItem('profile') || 'null');
-    if (saved) {
-      document.getElementById('firstName').value = saved.firstName || '';
-      document.getElementById('lastName').value = saved.lastName || '';
-      document.getElementById('email').value = saved.email || '';
-      document.getElementById('phone').value = saved.phone || '';
-      document.getElementById('bio').value = saved.bio || '';
+    // Sign out (demo)
+    const signOutBtn = document.getElementById('signOutBtn');
+    if (signOutBtn) {
+      signOutBtn.addEventListener('click', () => {
+        // Demo sign out behaviour: clear localStorage auth flag and redirect to home
+        try { localStorage.removeItem('auth'); } catch (e) {}
+        // show toast then redirect
+        showToast('Signed out', 'success');
+        setTimeout(() => { window.location.href = 'index.html'; }, 900);
+      });
     }
-  } catch(e){}
-})();
-  
 
-</script
+    // Profile save (demo)
+    const profileForm = document.getElementById('profileForm');
+    if (profileForm) {
+      profileForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const data = {
+          firstName: document.getElementById('firstName').value.trim(),
+          lastName: document.getElementById('lastName').value.trim(),
+          email: document.getElementById('email').value.trim(),
+          phone: document.getElementById('phone').value.trim(),
+          bio: document.getElementById('bio').value.trim()
+        };
+        // demo save to localStorage
+        try { localStorage.setItem('profile', JSON.stringify(data)); } catch (err) {}
+        showToast('Profile saved', 'success');
+      });
+    }
+
+    // Settings save (demo)
+    const settingsForm = document.getElementById('settingsForm');
+    if (settingsForm) {
+      settingsForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const settings = {
+          language: document.getElementById('language').value,
+          currency: document.getElementById('currency').value
+        };
+        try { localStorage.setItem('settings', JSON.stringify(settings)); } catch (err) {}
+        showToast('Settings saved', 'success');
+      });
+    }
+
+    // Demo: load sample orders & wishlist (if none, show empty state)
+    function renderDemoOrders() {
+      const ordersList = document.getElementById('ordersList');
+      const noOrders = document.getElementById('noOrders');
+      const demo = JSON.parse(localStorage.getItem('demoOrders') || '[]');
+
+      if (!demo.length) {
+        ordersList.innerHTML = '';
+        noOrders.style.display = '';
+        return;
+      }
+
+      noOrders.style.display = 'none';
+      ordersList.innerHTML = demo.map(o => `
+        <div class="order-card">
+          <div class="order-header">
+            <div class="order-number">Order #${o.number}</div>
+            <div class="order-status ${o.status}">${o.statusLabel}</div>
+          </div>
+          <div class="order-items">
+            ${o.items.map(it => `<div class="order-item"><span>${it.name}</span><span>${it.qty} × ${it.price}</span></div>`).join('')}
+          </div>
+          <div class="order-total"><span>Total</span><span>${o.total}</span></div>
+        </div>
+      `).join('');
+    }
+
+    function renderDemoWishlist() {
+      const grid = document.getElementById('wishlistGrid');
+      const noWishlist = document.getElementById('noWishlist');
+      const demo = JSON.parse(localStorage.getItem('demoWishlist') || '[]');
+
+      if (!demo.length) {
+        grid.innerHTML = '';
+        noWishlist.style.display = '';
+        return;
+      }
+
+      noWishlist.style.display = 'none';
+      grid.innerHTML = demo.map((w, idx) => `
+        <div class="wishlist-item">
+          <div class="wishlist-image">${w.emoji || '🧥'}</div>
+          <div class="wishlist-details">
+            <h3>${w.title}</h3>
+            <div class="wishlist-price">${w.price}</div>
+            <div class="wishlist-actions">
+              <button class="wishlist-btn add-to-cart" data-idx="${idx}">Add to Cart</button>
+              <button class="wishlist-btn remove-wishlist" data-idx="${idx}">Remove</button>
+            </div>
+          </div>
+        </div>
+      `).join('');
+
+      // wire buttons
+      grid.querySelectorAll('.add-to-cart').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const idx = parseInt(e.currentTarget.getAttribute('data-idx'), 10);
+          const item = demo[idx];
+          showToast(`${item.title} added to cart`, 'success');
+          // demo: remove from wishlist after adding
+          demo.splice(idx,1);
+          localStorage.setItem('demoWishlist', JSON.stringify(demo));
+          renderDemoWishlist();
+        });
+      });
+
+      grid.querySelectorAll('.remove-wishlist').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const idx = parseInt(e.currentTarget.getAttribute('data-idx'), 10);
+          const item = demo[idx];
+          demo.splice(idx,1);
+          localStorage.setItem('demoWishlist', JSON.stringify(demo));
+          showToast(`${item.title} removed`, 'success');
+          renderDemoWishlist();
+        });
+      });
+    }
+
+    // Toast helper
+    const toastEl = document.getElementById('toast');
+    function showToast(message, type='') {
+      if (!toastEl) return;
+      toastEl.textContent = message;
+      toastEl.className = 'toast show ' + (type || '');
+      toastEl.style.display = 'block';
+      setTimeout(() => {
+        toastEl.className = 'toast';
+        toastEl.style.display = 'none';
+      }, 2000);
+    }
+
+    // Initialize demo data if not present (for first-time view)
+    (function initDemoData(){
+      if (!localStorage.getItem('demoOrders')) {
+        const demoOrders = [
+          { number: '1001', status: 'delivered', statusLabel:'Delivered', items: [{name:'Malibu Jacket', qty:1, price:'$120'}, {name:'Sunglasses', qty:1, price:'$35'}], total:'$155' },
+          { number: '1002', status: 'processing', statusLabel:'Processing', items: [{name:'Project Tee', qty:2, price:'$40'}], total:'$40' }
+        ];
+        localStorage.setItem('demoOrders', JSON.stringify(demoOrders));
+      }
+      if (!localStorage.getItem('demoWishlist')) {
+        const demoWishlist = [
+          { title:'Classic Trench Coat', price:'$180', emoji:'🧥' },
+          { title:'Everyday Sneakers', price:'$95', emoji:'👟' },
+          { title:'Leather Crossbody', price:'$140', emoji:'👜' }
+        ];
+        localStorage.setItem('demoWishlist', JSON.stringify(demoWishlist));
+      }
+
+      renderDemoOrders();
+      renderDemoWishlist();
+
+      // restore profile if saved
+      try {
+        const saved = JSON.parse(localStorage.getItem('profile') || 'null');
+        if (saved) {
+          document.getElementById('firstName').value = saved.firstName || '';
+          document.getElementById('lastName').value = saved.lastName || '';
+          document.getElementById('email').value = saved.email || '';
+          document.getElementById('phone').value = saved.phone || '';
+          document.getElementById('bio').value = saved.bio || '';
+        }
+      } catch(e){}
+    })();
+  </script>
 </body>
 </html>
-      

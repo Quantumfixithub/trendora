@@ -184,6 +184,54 @@ body {
 
     .mobile-drawer .nav-links{ display:block; }
     .mobile-shop-sub { margin-left:0.5rem; margin-top:.5rem; display:none; }
+	/* Hide mobile menu button by default */
+#mobileMenuBtn {
+  display: none;
+}
+
+/* Show mobile menu button only on small screens */
+@media (max-width: 768px) {
+  #mobileMenuBtn {
+    display: block;
+    cursor: pointer;
+  }
+
+  /* Mobile menu styles */
+  #mobileMenu {
+    position: fixed;
+    top: 0;
+    right: -100%;
+    width: 80%;
+    height: 100%;
+    background: #fff;
+    transition: right 0.3s ease-in-out;
+    z-index: 1000;
+  }
+
+  #mobileMenu.active {
+    right: 0; /* slide in */
+  }
+
+  /* Overlay for mobile menu */
+  #menuOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease-in-out;
+    z-index: 999;
+  }
+
+  #menuOverlay.active {
+    opacity: 1;
+    visibility: visible;
+  }
+}
+
 
 /* Your original page styles (kept mostly unchanged) */
 
@@ -400,7 +448,7 @@ footer {
 }
 
 /* Responsive Design */
-@media (max-width: 968px) {
+@media (max-width: 768px) {
   .nav-links { display: none; }
   .mobile-menu-btn { display: block; }
   .hero { min-height: 200px; }
@@ -515,8 +563,7 @@ footer {
 </div>
   <!-- Hero Section -->
   <section class="relative h-[500px] overflow-hidden">
-   <div class="absolute inset-0 w-full h-full"><img alt="About Trendora" class="w-full h-full object-cover object-top" src="https://readdy.ai/api/search-image?query=elegant%20fashion%20design%20studio%20workspace%20with%20clothing%20racks%20and%20design%20materials%20in%20warm%20earth%20tones%20and%20natural%20lighting%20showing%20creative%20professional%20environment%20with%20minimalist%20aesthetic&amp;width=1920&amp;height=800&amp;seq=abouthero&amp;orientation=landscape"></div>
-  </section>
+   <img src="https://img.freepik.com/premium-photo/women-s-fashion-store-shopping-center-mall-clothes-store-with-mannequin-shopping-day_326694-23931.jpg" alt="About Trendora — team showcasing styles">
 
   <main>
     <!-- Our Story Section -->
@@ -754,5 +801,6 @@ footer {
 </script
 </body>
 </html>
+
 
 

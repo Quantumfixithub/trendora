@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Account - Trendora</title>
+    
     <style>
         * {
             margin: 0;
@@ -882,6 +883,129 @@
     <div class="toast" id="toast"></div>
 
     <script>
+        // Toast notification function
+        const toast = document.getElementById('toast');
+        
+        function showToast(message, type = 'success') {
+            toast.textContent = message || 'Action completed';
+            toast.className = `toast ${type} show`;
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // Menu navigation
+        const menuButtons = document.querySelectorAll('.menu-btn');
+        const contentSections = document.querySelectorAll('.content-section');
+
+        menuButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const sectionId = button.getAttribute('data-section');
+                
+                if (!sectionId) return; // Skip sign out button
+
+                // Update active menu button
+                menuButtons.forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+
+                // Show corresponding content section
+                contentSections.forEach(section => {
+                    section.classList.remove('active');
+                });
+                document.getElementById(sectionId).classList.add('active');
+            });
+        });
+
+        // Save profile
+        function saveProfile(event) {
+            event.preventDefault();
+            const firstName = document.getElementById('firstName').value;
+            const lastName = document.getElementById('lastName').value;
+            const email = document.getElementById('email').value;
+            const phone = document.getElementById('phone').value;
+
+            // Save to localStorage
+            localStorage.setItem('userProfile', JSON.stringify({
+                firstName,
+                lastName,
+                email,
+                phone
+            }));
+
+            showToast('Profile updated successfully!', 'success');
+        }
+
+        // Save settings
+        function saveSettings(event) {
+            event.preventDefault();            // For demo we just show a toast and could save preferences to localStorage
+            // Grab checkbox values (simple example)
+            const prefs = {
+                promotional: document.querySelector('input[type="checkbox"]:checked') ? true : false
+            };
+            localStorage.setItem('userSettings', JSON.stringify(prefs));
+            showToast('Settings saved', 'success');
+        }
+
+        // Sign out (simple demo)
+        function signOut() {
+            if (!confirm('Are you sure you want to sign out?')) return;
+            // Clear demo user data (adjust as needed)
+            localStorage.removeItem('userProfile');
+            showToast('Signed out', 'success');
+            // Redirect to homepage or login page
+            setTimeout(() => { window.location.href = 'index.html'; }, 800);
+        }
+
+        // Wishlist helpers (demo)
+        function addToCart(itemName) {
+            // Simple demo: push item name into cart in localStorage
+            let cart = JSON.parse(localStorage.getItem('cart')) || [];
+            cart.push({ name: itemName, price: 0, quantity: 1 });
+            localStorage.setItem('cart', JSON.stringify(cart));
+            showToast(`${itemName} added to cart`, 'success');
+        }
+
+        function removeFromWishlist(button) {
+            const item = button.closest('.wishlist-item');
+            if (!item) return;
+            item.remove();
+            showToast('Item removed from wishlist', 'success');
+        }
+
+        // Load saved profile on page load
+        function loadProfile() {
+            const saved = localStorage.getItem('userProfile');
+            if (!saved) return;
+            try {
+                const profile = JSON.parse(saved);
+                if (profile.firstName) document.getElementById('firstName').value = profile.firstName;
+                if (profile.lastName) document.getElementById('lastName').value = profile.lastName;
+                if (profile.email) document.getElementById('email').value = profile.email;
+                if (profile.phone) document.getElementById('phone').value = profile.phone;
+            } catch (e) {
+                console.error('Error parsing profile', e);
+            }
+        }
+
+        // Load cart count into header
+        function updateCartCount() {
+            const cart = JSON.parse(localStorage.getItem('cart')) || [];
+            const count = cart.reduce((s, i) => s + (i.quantity ? Number(i.quantity) : 1), 0);
+            const el = document.getElementById('cartCount');
+            if (el) el.textContent = count;
+        }
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', () => {
+            loadProfile();
+            updateCartCount();
+        });
+    </script>
+    <!-- Toast Notification -->
+    <div class="toast" id="toast"></div>
+
+    <script>
 
  // Protect account page
         if (!requireAuth('account.html')) {
@@ -1244,6 +1368,7 @@ window.addEventListener('DOMContentLoaded', function() {
 </body>
 
 </html?
+
 
 
 

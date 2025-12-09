@@ -472,7 +472,6 @@ footer {
     <nav>
       <a href="index.html" class="logo">Trendora</a>
 
-
   <!-- Desktop nav -->
   <ul class="nav-links" id="desktopNav">
     <li><a href="index.html">Home</a></li>
@@ -680,80 +679,94 @@ footer {
 </footer
 
   <script>
-    // Mobile menu toggle
-    function toggleMobileMenu() {
-      const menu = document.getElementById('mobileMenu');
-      const overlay = document.getElementById('menuOverlay');
-      const open = menu.classList.contains('active');
-      if (open) {
-        menu.classList.remove('active');
-        overlay.classList.remove('active');
-        menu.setAttribute('aria-hidden', 'true');
+  // Mobile menu toggle
+  function toggleMobileMenu() {
+    const menu = document.getElementById('mobileMenu');
+    const overlay = document.getElementById('menuOverlay');
+    const open = menu.classList.contains('active');
+
+    if (open) {
+      menu.classList.remove('active');
+      overlay.classList.remove('active');
+      menu.setAttribute('aria-hidden', 'true');
+    } else {
+      menu.classList.add('active');
+      overlay.classList.add('active');
+      menu.setAttribute('aria-hidden', 'false');
+    }
+  }
+
+  const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+  if (mobileMenuBtn) {
+    mobileMenuBtn.addEventListener('click', toggleMobileMenu);
+  }
+
+  // Shop dropdown behavior
+  (function () {
+    const shopCaret = document.getElementById('shopCaret');
+    const shopDropdown = document.getElementById('shopDropdown');
+
+    if (!shopCaret || !shopDropdown) return;
+
+    shopCaret.addEventListener('click', function (e) {
+      e.stopPropagation();
+      const open = shopDropdown.style.display === 'block';
+      shopDropdown.style.display = open ? 'none' : 'block';
+      shopCaret.setAttribute('aria-expanded', String(!open));
+    });
+
+    document.addEventListener('click', function (e) {
+      if (!shopDropdown.contains(e.target) && e.target !== shopCaret) {
+        shopDropdown.style.display = 'none';
+        shopCaret.setAttribute('aria-expanded', 'false');
+      }
+    });
+
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') {
+        shopDropdown.style.display = 'none';
+        shopCaret.setAttribute('aria-expanded', 'false');
+      }
+    });
+  })();
+
+  // Newsletter subscribe (demo)
+  const newsletterForm = document.getElementById('newsletterForm');
+  if (newsletterForm) {
+    newsletterForm.addEventListener('submit', function (e) {
+      e.preventDefault();
+      const emailInput = document.getElementById('newsletterEmail');
+      const msg = document.getElementById('newsletterMsg');
+      if (!emailInput || !msg) return;
+
+      const email = emailInput.value.trim();
+      if (!email) return;
+
+      // Simple demo store in localStorage
+      const list = JSON.parse(localStorage.getItem('newsletter') || '[]');
+      if (!list.includes(email)) {
+        list.push(email);
+        localStorage.setItem('newsletter', JSON.stringify(list));
+        msg.textContent = 'Thanks for subscribing!';
       } else {
-        menu.classList.add('active');
-        overlay.classList.add('active');
-        menu.setAttribute('aria-hidden', 'false');
+        msg.textContent = 'You are already subscribed.';
+      }
+      newsletterForm.reset();
+    });
+  }
+
+  // Accessibility: close mobile menu with Escape
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') {
+      const menu = document.getElementById('mobileMenu');
+      if (menu && menu.classList.contains('active')) {
+        toggleMobileMenu();
       }
     }
-
-document.getElementById('mobileMenuBtn').addEventListener('click', toggleMobileMenu);
-
-// Shop dropdown behavior
-(function() {
-  const shopCaret = document.getElementById('shopCaret');
-  const shopDropdown = document.getElementById('shopDropdown');
-
-  if (!shopCaret || !shopDropdown) return;
-
-  shopCaret.addEventListener('click', function(e) {
-    e.stopPropagation();
-    const open = shopDropdown.style.display === 'block';
-    shopDropdown.style.display = open ? 'none' : 'block';
-    shopCaret.setAttribute('aria-expanded', String(!open));
   });
+</script>
 
-  document.addEventListener('click', function(e) {
-    if (!shopDropdown.contains(e.target) && e.target !== shopCaret) {
-      shopDropdown.style.display = 'none';
-      shopCaret.setAttribute('aria-expanded', 'false');
-    }
-  });
-
-  document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape') {
-      shopDropdown.style.display = 'none';
-      shopCaret.setAttribute('aria-expanded', 'false');
-    }
-  });
-})();
-
-// Newsletter subscribe (demo)
-document.getElementById('newsletterForm').addEventListener('submit', function(e){
-  e.preventDefault();
-  const email = document.getElementById('newsletterEmail').value.trim();
-  if (!email) return;
-  // Simple demo store in localStorage
-  const list = JSON.parse(localStorage.getItem('newsletter') || '[]');
-  if (!list.includes(email)) {
-    list.push(email);
-    localStorage.setItem('newsletter', JSON.stringify(list));
-    document.getElementById('newsletterMsg').textContent = 'Thanks for subscribing!';
-  } else {
-    document.getElementById('newsletterMsg').textContent = 'You are already subscribed.';
-  }
-  this.reset();
-});
-
-// Accessibility: close mobile menu with Escape
-document.addEventListener('keydown', function(e) {
-  if (e.key === 'Escape') {
-    const menu = document.getElementById('mobileMenu');
-    if (menu && menu.classList.contains('active')) toggleMobileMenu();
-  }
-});
-  
-
-</script
 </body>
 </html>
+
 

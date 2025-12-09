@@ -550,8 +550,9 @@ footer {
 </div>
   <!-- Hero Section -->
   <section class="relative h-[500px] overflow-hidden">
-   <img src="https://img.freepik.com/premium-photo/women-s-fashion-store-shopping-center-mall-clothes-store-with-mannequin-shopping-day_326694-23931.jpg" alt="About Trendora — team showcasing styles">
-
+   <img src="https://img.freepik.com/premium-photo/women-s-fashion-store-shopping-center-mall-clothes-store-with-mannequin-shopping-day_326694-23931.jpg" 
+     alt="About Trendora — team showcasing styles" 
+     style="width:100%; height:auto; display:block;">
   <main>
     <!-- Our Story Section -->
     <section class="section our-story" aria-labelledby="our-story-title">
@@ -708,34 +709,33 @@ footer {
 
   <!-- Scripts: navbar toggle, dropdown, mobile drawer behavior, newsletter toast -->
   <script>
-	  <script>
 // ===== Desktop Shop Dropdown =====
 (function() {
   const shopCaret = document.getElementById('shopCaret');
   const shopDropdown = document.getElementById('shopDropdown');
 
-  if (!shopCaret || !shopDropdown) return;
+  if (shopCaret && shopDropdown) {
+    shopCaret.addEventListener('click', function(e) {
+      e.stopPropagation();
+      const open = shopDropdown.style.display === 'block';
+      shopDropdown.style.display = open ? 'none' : 'block';
+      shopCaret.setAttribute('aria-expanded', String(!open));
+    });
 
-  shopCaret.addEventListener('click', function(e) {
-    e.stopPropagation();
-    const open = shopDropdown.style.display === 'block';
-    shopDropdown.style.display = open ? 'none' : 'block';
-    shopCaret.setAttribute('aria-expanded', String(!open));
-  });
+    document.addEventListener('click', function(e) {
+      if (!shopDropdown.contains(e.target) && e.target !== shopCaret) {
+        shopDropdown.style.display = 'none';
+        shopCaret.setAttribute('aria-expanded', 'false');
+      }
+    });
 
-  document.addEventListener('click', function(e) {
-    if (!shopDropdown.contains(e.target) && e.target !== shopCaret) {
-      shopDropdown.style.display = 'none';
-      shopCaret.setAttribute('aria-expanded', 'false');
-    }
-  });
-
-  document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape') {
-      shopDropdown.style.display = 'none';
-      shopCaret.setAttribute('aria-expanded', 'false');
-    }
-  });
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        shopDropdown.style.display = 'none';
+        shopCaret.setAttribute('aria-expanded', 'false');
+      }
+    });
+  }
 })();
 
 // ===== Mobile Drawer =====
@@ -745,29 +745,29 @@ footer {
   const mobileDrawer = document.querySelector('.mobile-drawer');
   const mobileCloseBtn = document.getElementById('mobileCloseBtn');
 
-  if (!mobileMenuBtn || !mobileBackdrop || !mobileDrawer || !mobileCloseBtn) return;
+  if (mobileMenuBtn && mobileBackdrop && mobileDrawer && mobileCloseBtn) {
+    function openMobileMenu() {
+      mobileBackdrop.classList.add('active');
+      mobileDrawer.classList.add('active');
+      mobileBackdrop.setAttribute('aria-hidden', 'false');
+    }
 
-  function openMobileMenu() {
-    mobileBackdrop.classList.add('active');
-    mobileDrawer.classList.add('active');
-    mobileBackdrop.setAttribute('aria-hidden', 'false');
+    function closeMobileMenu() {
+      mobileBackdrop.classList.remove('active');
+      mobileDrawer.classList.remove('active');
+      mobileBackdrop.setAttribute('aria-hidden', 'true');
+    }
+
+    mobileMenuBtn.addEventListener('click', openMobileMenu);
+    mobileCloseBtn.addEventListener('click', closeMobileMenu);
+    mobileBackdrop.addEventListener('click', function(e) {
+      if (e.target === mobileBackdrop) closeMobileMenu();
+    });
+
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') closeMobileMenu();
+    });
   }
-
-  function closeMobileMenu() {
-    mobileBackdrop.classList.remove('active');
-    mobileDrawer.classList.remove('active');
-    mobileBackdrop.setAttribute('aria-hidden', 'true');
-  }
-
-  mobileMenuBtn.addEventListener('click', openMobileMenu);
-  mobileCloseBtn.addEventListener('click', closeMobileMenu);
-  mobileBackdrop.addEventListener('click', function(e) {
-    if (e.target === mobileBackdrop) closeMobileMenu();
-  });
-
-  document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape') closeMobileMenu();
-  });
 })();
 
 // ===== Mobile Shop Submenu =====
@@ -775,78 +775,28 @@ footer {
   const mobileShopToggle = document.getElementById('mobileShopToggle');
   const mobileShopSub = document.getElementById('mobileShopSub');
 
-  if (!mobileShopToggle || !mobileShopSub) return;
-
-  mobileShopToggle.addEventListener('click', function() {
-    const open = mobileShopSub.style.display === 'block';
-    mobileShopSub.style.display = open ? 'none' : 'block';
-    mobileShopToggle.setAttribute('aria-expanded', String(!open));
-  });
+  if (mobileShopToggle && mobileShopSub) {
+    mobileShopToggle.addEventListener('click', function() {
+      const open = mobileShopSub.style.display === 'block';
+      mobileShopSub.style.display = open ? 'none' : 'block';
+      mobileShopToggle.setAttribute('aria-expanded', String(!open));
+    });
+  }
 })();
 
-    // Header interactions: desktop dropdown and mobile drawer
-    (function(){
-        const shopCaret = document.getElementById('shopCaret');
-        const shopDropdown = document.getElementById('shopDropdown');
-        const mobileBtn = document.getElementById('mobileMenuBtn');
-        const mobileBackdrop = document.getElementById('mobileBackdrop');
-        const mobileClose = document.getElementById('mobileCloseBtn');
-        const mobileShopToggle = document.getElementById('mobileShopToggle');
-        const mobileShopSub = document.getElementById('mobileShopSub');
-
-        // Toggle desktop dropdown on caret click (does not prevent navigation on sublinks)
-        if (shopCaret && shopDropdown){
-            shopCaret.addEventListener('click', function(e){
-                e.stopPropagation();
-                const open = shopDropdown.style.display === 'block';
-                shopDropdown.style.display = open ? 'none' : 'block';
-                shopCaret.setAttribute('aria-expanded', String(!open));
-            });
-        }
-
-        // Close desktop dropdown when clicking outside
-        document.addEventListener('click', function(e){
-            if (shopDropdown && !shopDropdown.contains(e.target) && e.target !== shopCaret){
-                shopDropdown.style.display = 'none';
-                if (shopCaret) shopCaret.setAttribute('aria-expanded', 'false');
-            }
-        });
-
-        // Mobile drawer open
-        if (mobileBtn && mobileBackdrop){
-            mobileBtn.addEventListener('click', function(){ mobileBackdrop.style.display = 'block'; mobileBackdrop.setAttribute('aria-hidden','false'); });
-            mobileClose.addEventListener('click', closeMobile);
-            mobileBackdrop.addEventListener('click', function(e){ if (e.target === mobileBackdrop) closeMobile(); });
-        }
-        function closeMobile(){ mobileBackdrop.style.display = 'none'
-.mobileBackdrop.setAttribute('aria-hidden','true'); }
-
-      // Mobile shop toggle
-        if (mobileShopToggle && mobileShopSub){
-            mobileShopToggle.addEventListener('click', function(){
-                const open = mobileShopSub.style.display === 'block';
-                mobileShopSub.style.display = open ? 'none': 'block';
-                mobileShopToggle.setAttribute('aria-expanded', String(!open));
-            });
-        }
-
-        // Close menus with Escape
-        document.addEventListener('keydown', function(e){
-            if (e.key === 'Escape'){
-                if (shopDropdown) shopDropdown.style.display = 'none';
-                closeMobile();
-            }
-        });
-    })();
-
-  // Newsletter form: simple toast feedback
+// ===== Newsletter Toast =====
+(function() {
   const newsletterForm = document.getElementById('newsletterForm');
-  newsletterForm?.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const email = document.getElementById('newsletterEmail').value;
-    showToast('Thanks for subscribing!', 'success');
-    newsletterForm.reset();
-  });
+  if (newsletterForm) {
+    newsletterForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const email = document.getElementById('newsletterEmail')?.value;
+      if (email) {
+        showToast('Thanks for subscribing!', 'success');
+      }
+      newsletterForm.reset();
+    });
+  }
 
   function showToast(message, type='') {
     const t = document.createElement('div');
@@ -858,12 +808,14 @@ footer {
       t.addEventListener('transitionend', () => t.remove());
     }, 2500);
   }
-});
-  
+})();
+</script>
+
 
 </script
 </body>
 </html>
+
 
 
 

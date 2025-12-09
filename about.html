@@ -708,6 +708,82 @@ footer {
 
   <!-- Scripts: navbar toggle, dropdown, mobile drawer behavior, newsletter toast -->
   <script>
+	  <script>
+// ===== Desktop Shop Dropdown =====
+(function() {
+  const shopCaret = document.getElementById('shopCaret');
+  const shopDropdown = document.getElementById('shopDropdown');
+
+  if (!shopCaret || !shopDropdown) return;
+
+  shopCaret.addEventListener('click', function(e) {
+    e.stopPropagation();
+    const open = shopDropdown.style.display === 'block';
+    shopDropdown.style.display = open ? 'none' : 'block';
+    shopCaret.setAttribute('aria-expanded', String(!open));
+  });
+
+  document.addEventListener('click', function(e) {
+    if (!shopDropdown.contains(e.target) && e.target !== shopCaret) {
+      shopDropdown.style.display = 'none';
+      shopCaret.setAttribute('aria-expanded', 'false');
+    }
+  });
+
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+      shopDropdown.style.display = 'none';
+      shopCaret.setAttribute('aria-expanded', 'false');
+    }
+  });
+})();
+
+// ===== Mobile Drawer =====
+(function() {
+  const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+  const mobileBackdrop = document.getElementById('mobileBackdrop');
+  const mobileDrawer = document.querySelector('.mobile-drawer');
+  const mobileCloseBtn = document.getElementById('mobileCloseBtn');
+
+  if (!mobileMenuBtn || !mobileBackdrop || !mobileDrawer || !mobileCloseBtn) return;
+
+  function openMobileMenu() {
+    mobileBackdrop.classList.add('active');
+    mobileDrawer.classList.add('active');
+    mobileBackdrop.setAttribute('aria-hidden', 'false');
+  }
+
+  function closeMobileMenu() {
+    mobileBackdrop.classList.remove('active');
+    mobileDrawer.classList.remove('active');
+    mobileBackdrop.setAttribute('aria-hidden', 'true');
+  }
+
+  mobileMenuBtn.addEventListener('click', openMobileMenu);
+  mobileCloseBtn.addEventListener('click', closeMobileMenu);
+  mobileBackdrop.addEventListener('click', function(e) {
+    if (e.target === mobileBackdrop) closeMobileMenu();
+  });
+
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') closeMobileMenu();
+  });
+})();
+
+// ===== Mobile Shop Submenu =====
+(function() {
+  const mobileShopToggle = document.getElementById('mobileShopToggle');
+  const mobileShopSub = document.getElementById('mobileShopSub');
+
+  if (!mobileShopToggle || !mobileShopSub) return;
+
+  mobileShopToggle.addEventListener('click', function() {
+    const open = mobileShopSub.style.display === 'block';
+    mobileShopSub.style.display = open ? 'none' : 'block';
+    mobileShopToggle.setAttribute('aria-expanded', String(!open));
+  });
+})();
+
     // Header interactions: desktop dropdown and mobile drawer
     (function(){
         const shopCaret = document.getElementById('shopCaret');
@@ -788,6 +864,7 @@ footer {
 </script
 </body>
 </html>
+
 
 
 

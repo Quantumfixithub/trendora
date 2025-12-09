@@ -1,792 +1,774 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>About Us - Trendora</title>
-  <style>
-    /Reset/base/
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>About Us - Trendora</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-{
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+        }
 
-body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-  line-height: 1.6;
-  color: #333;
-  background: #f8f9fa;
-}
+        /* Header Styles */
+        header {
+            background: #fff;
+            padding: 1rem 5%;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
 
-header {
-  background: #fff;
-  padding: 1rem 5%;
-  box-shadow: 0 2px 5px rgba(0,0,0,.1);
-  position: sticky;
-  top: 0;
-  z-index: 1000;
-}
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+            width: 100%;
+        }
 
-nav {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  max-width: 1400px;
-  margin: 0 auto;
-  gap: 1rem;
-}
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #2c3e50;
+            text-decoration: none;
+        }
 
-.logo {
-  font-size: 1.8rem;
-  font-weight: 700;
-  color: #2c3e50;
-  text-decoration: none;
-}
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
 
-.nav-links {
-  display: flex;
-  gap: 2rem;
-  list-style: none;
-  align-items: center;
-}
+        .nav-links a {
+            text-decoration: none;
+            color: #555;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
 
-.nav-links a {
-  text-decoration: none;
-  color: #555;
-  font-weight: 500;
-  transition: color .25s;
-  padding: .35rem .5rem;
-  border-radius: 6px;
-}
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: #e74c3c;
+        }
 
-.nav-links a:hover,
-.nav-links a.active {
-  color: #e74c3c;
-  background: rgba(231,76,60,0.04);
-}
+        .nav-icons {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+        }
 
-.nav-icons {
-  display: flex;
-  gap: 1.5rem;
-  align-items: center;
-}
+        .nav-icons a {
+            color: #555;
+            font-size: 1.2rem;
+            text-decoration: none;
+            position: relative;
+        }
 
-.nav-icons a {
-  color: #555;
-  font-size: 1.2rem;
-  text-decoration: none;
-  position: relative;
-  transition: transform .2s;
-}
+        .cart-count {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #e74c3c;
+            color: white;
+            font-size: 0.7rem;
+            padding: 2px 6px;
+            border-radius: 50%;
+            min-width: 18px;
+            text-align: center;
+        }
 
-.nav-icons a:hover {
-  transform: scale(1.05);
-}
+        /* Mobile Menu */
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #555;
+        }
 
-.cart-count {
-  position: absolute;
-  top: -8px;
-  right: -8px;
-  background: #e74c3c;
-  color: #fff;
-  font-size: .7rem;
-  padding: 2px 6px;
-  border-radius: 999px;
-  min-width: 18px;
-  text-align: center;
-  display: inline-block;
-}
+        .mobile-menu {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: -100%;
+            width: 80%;
+            max-width: 300px;
+            height: 100vh;
+            background: white;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+            transition: left 0.3s ease;
+            z-index: 2000;
+            padding: 2rem;
+        }
 
-.mobile-menu-btn {
-  display: none;
-  background: none;
-  border: none;
-  font-size: 1.5rem;
-  cursor: pointer;
-  color: #555;
-}
+        .mobile-menu.active {
+            left: 0;
+        }
 
-/* Dropdown styles */
-.nav-item { position: relative; }
-.shop-caret { background: transparent; border: none; cursor: pointer; color: #555; font-size: 1rem; padding: .3rem .45rem; border-radius: 6px; }
-.shop-dropdown { position: absolute; top: calc(100% + 8px); left: 0; background: #fff; border-radius: 8px; box-shadow: 0 8px 24px rgba(0,0,0,0.12); min-width: 200px; display: none; padding: .4rem; z-index: 1200; }
-.shop-dropdown a { display: block; padding: .6rem .8rem; color: #2c3e50; text-decoration: none; border-radius: 6px; }
-.shop-dropdown a:hover { background: #f7f9fb; }
+        .mobile-menu-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
 
-/* Mobile drawer */
-.mobile-drawer-backdrop { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 1500; }
-.mobile-drawer { position: fixed; left: 0; top: 0; bottom: 0; width: 300px; max-width: 86%; background: #fff; padding: 1rem; box-shadow: 0 20px 60px rgba(0,0,0,0.25); transform: translateX(-8px); z-index: 1600; overflow: auto; }
-.mobile-drawer .nav-links { display: block; }
-.mobile-shop-sub { margin-left: .5rem; margin-top: .5rem; display: none; }
+        .mobile-nav-links {
+            list-style: none;
+            margin-top: 3rem;
+        }
 
-/* Mobile Menu alternative (used in this page) */
-.mobile-menu {
-  display: none;
-  position: fixed;
-  top: 0;
-  left: -100%;
-  width: 80%;
-  max-width: 300px;
-  height: 100vh;
-  background: white;
-  box-shadow: 2px 0 10px rgba(0,0,0,0.1);
-  transition: left 0.3s ease;
-  z-index: 2000;
-  padding: 2rem;
-}
+        .mobile-nav-links li {
+            padding: 1rem 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
 
-.mobile-menu.active { left: 0; }
+        .mobile-nav-links a {
+            text-decoration: none;
+            color: #555;
+            font-weight: 500;
+            font-size: 1.1rem;
+        }
 
-.mobile-menu-close {
-  position: absolute;
-  top: 1rem;
-  right: 1rem;
-  background: none;
-  border: none;
-  font-size: 1.5rem;
-  cursor: pointer;
-}
+        .menu-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1999;
+        }
 
-.mobile-nav-links { list-style: none; margin-top: 3rem; }
+        .menu-overlay.active {
+            display: block;
+        }
 
-.mobile-nav-links li { padding: 1rem 0; border-bottom: 1px solid #f0f0f0; }
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="600"><rect fill="%23d4c5b9" width="1600" height="600"/></svg>');
+            background-size: cover;
+            background-position: center;
+            min-height: 300px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            text-align: center;
+            padding: 2rem;
+        }
 
-.mobile-nav-links a { text-decoration: none; color: #555; font-weight: 500; font-size: 1.1rem; }
+        .hero img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        }
 
-.menu-overlay {
-  display: none;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0,0,0,0.5);
-  z-index: 1999;
-}
+        .hero h1 {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            margin-bottom: 1rem;
+            font-weight: 300;
+            letter-spacing: 2px;
+        }
 
-.menu-overlay.active { display: block; }
+        .hero p {
+            font-size: clamp(1rem, 2vw, 1.3rem);
+            margin-bottom: 2rem;
+            font-weight: 300;
+        }
 
-/* Hero Section */
-.hero {
-  background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="600"><rect fill="%23d4c5b9" width="1600" height="600"/></svg>');
-  background-size: cover;
-  background-position: center;
-  min-height: 300px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  color: white;
-  text-align: center;
-  padding: 2rem;
-}
+        .btn-primary {
+            background: white;
+            color: #333;
+            padding: 1rem 2.5rem;
+            text-decoration: none;
+            border-radius: 30px;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: inline-block;
+        }
 
-.hero img { max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.15); }
+        .btn-primary:hover {
+            background: #e74c3c;
+            color: white;
+            transform: translateY(-2px);
+        }
 
-.hero h1 { font-size: clamp(2rem, 5vw, 3.5rem); margin-bottom: 1rem; font-weight: 300; letter-spacing: 2px; }
+        /* Section Styles */
+        .section {
+            padding: 4rem 5%;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
 
-.hero p { font-size: clamp(1rem, 2vw, 1.3rem); margin-bottom: 2rem; font-weight: 300; }
+        .section h2 {
+            text-align: center;
+            font-size: clamp(1.8rem, 4vw, 2.5rem);
+            margin-bottom: 1rem;
+            color: #2c3e50;
+        }
 
-.btn-primary { background: white; color: #333; padding: 1rem 2.5rem; text-decoration: none; border-radius: 30px; font-weight: 600; transition: all 0.3s; display: inline-block; }
+        .section-subtitle {
+            text-align: center;
+            color: #777;
+            margin-bottom: 3rem;
+            font-size: clamp(0.9rem, 2vw, 1.1rem);
+        }
 
-.btn-primary:hover { background: #e74c3c; color: white; transform: translateY(-2px); }
+        .values-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.5rem;
+        }
 
-/* Section Styles */
-.section { padding: 4rem 5%; max-width: 1400px; margin: 0 auto; }
+        .value-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            text-align: center;
+        }
 
-.section h2 { text-align: center; font-size: clamp(1.8rem, 4vw, 2.5rem); margin-bottom: 1rem; color: #2c3e50; }
+        .value-card .icon {
+            font-size: 2rem;
+            margin-bottom: 0.8rem;
+        }
 
-.section-subtitle { text-align: center; color: #777; margin-bottom: 3rem; font-size: clamp(0.9rem, 2vw, 1.1rem); }
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.5rem;
+            align-items: start;
+        }
 
-.values-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.5rem; }
+        .team-member {
+            background: white;
+            padding: 1rem;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
 
-.value-card { background: white; padding: 1.5rem; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); text-align: center; }
+        .team-member img {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
 
-.value-card .icon { font-size: 2rem; margin-bottom: 0.8rem; }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 1rem;
+        }
 
-.team-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.5rem; align-items: start; }
+        .stat {
+            background: white;
+            padding: 1.2rem;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
 
-.team-member { background: white; padding: 1rem; border-radius: 10px; text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+        /* Newsletter */
+        .newsletter {
+            background: #f8f9fa;
+            padding: 4rem 5%;
+            text-align: center;
+        }
 
-.team-member img { width: 100%; height: 220px; object-fit: cover; border-radius: 8px; margin-bottom: 1rem; }
+        .newsletter-form {
+            max-width: 500px;
+            margin: 2rem auto;
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
 
-.stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 1rem; }
+        .newsletter-form input {
+            flex: 1;
+            min-width: 250px;
+            padding: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
 
-.stat { background: white; padding: 1.2rem; border-radius: 10px; text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+        .newsletter-form button {
+            padding: 1rem 2rem;
+            background: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
 
-/* Newsletter */
-.newsletter { background: #f8f9fa; padding: 4rem 5%; text-align: center; }
+        .newsletter-form button:hover {
+            background: #c0392b;
+        }
 
-.newsletter-form { max-width: 500px; margin: 2rem auto; display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; }
+        /* Footer */
+        footer {
+            background: #2c3e50;
+            color: white;
+            padding: 4rem 5% 2rem;
+        }
 
-.newsletter-form input { flex: 1; min-width: 250px; padding: 1rem; border: 1px solid #ddd; border-radius: 5px; font-size: 1rem; }
+        .footer-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 3rem;
+            margin-bottom: 3rem;
+        }
 
-.newsletter-form button { padding: 1rem 2rem; background: #e74c3c; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: 600; transition: background 0.3s; }
+        .footer-brand p {
+            color: #bdc3c7;
+            margin-top: 1rem;
+            line-height: 1.8;
+        }
 
-.newsletter-form button:hover { background: #c0392b; }
+        .footer-links h3 {
+            margin-bottom: 1rem;
+        }
 
-/* Footer */
-footer { background: #2c3e50; color: white; padding: 4rem 5% 2rem; }
+        .footer-links ul {
+            list-style: none;
+        }
 
-.footer-content { max-width: 1400px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 3rem; margin-bottom: 3rem; }
+        .footer-links a {
+            color: #bdc3c7;
+            text-decoration: none;
+            display: block;
+            padding: 0.5rem 0;
+            transition: color 0.3s;
+        }
 
-.footer-brand p { color: #bdc3c7; margin-top: 1rem; line-height: 1.8; }
+        .footer-links a:hover {
+            color: white;
+        }
 
-.footer-links h3 { margin-bottom: 1rem; }
+        .social-icons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
 
-.footer-links ul { list-style: none; }
+        .social-icons a {
+            color: white;
+            font-size: 1.5rem;
+        }
 
-.footer-links a { color: #bdc3c7; text-decoration: none; display: block; padding: 0.5rem 0; transition: color 0.3s; }
+        .footer-bottom {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding-top: 2rem;
+            border-top: 1px solid #34495e;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            font-size: 0.9rem;
+        }
 
-.footer-links a:hover { color: white; }
+        .footer-bottom a {
+            color: #bdc3c7;
+            text-decoration: none;
+            margin: 0 0.5rem;
+        }
 
-.social-icons { display: flex; gap: 1rem; margin-top: 1rem; }
+        /* Responsive Design */
+        @media (max-width: 968px) {
+            .nav-links {
+                display: none;
+            }
 
-.social-icons a { color: white; font-size: 1.5rem; }
+            .mobile-menu-btn {
+                display: block;
+            }
 
-.footer-bottom { max-width: 1400px; margin: 0 auto; padding-top: 2rem; border-top: 1px solid #34495e; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; font-size: 0.9rem; }
+            .mobile-menu {
+                display: block;
+            }
 
-.footer-bottom a { color: #bdc3c7; text-decoration: none; margin: 0 0.5rem; }
+            .hero {
+                min-height: 200px;
+            }
 
-/* Responsive Design */
-@media (max-width: 968px) {
-  .nav-links { display: none; }
-  .mobile-menu-btn { display: block; }
-  .hero { min-height: 200px; }
-  .section { padding: 3rem 5%; }
-  .values-grid, .team-grid, .stats-grid { gap: 1rem; }
-  .footer-content { grid-template-columns: 1fr; gap: 2rem; }
-  .footer-bottom { flex-direction: column; text-align: center; }
-}
+            .section {
+                padding: 3rem 5%;
+            }
 
-@media (max-width: 480px) {
-  header { padding: 1rem 3%; }
-  .logo { font-size: 1.4rem; }
-  .nav-icons a { font-size: 1rem; }
-  .section { padding: 2rem 3%; }
-  .newsletter-form { flex-direction: column; }
-  .newsletter-form input, .newsletter-form button { width: 100%; }
-}
+            .values-grid,
+            .team-grid,
+            .stats-grid {
+                gap: 1rem;
+            }
 
-/* Toast Notification */
-.toast {
-  position: fixed;
-  bottom: 2rem;
-  right: 2rem;
-  background: #2c3e50;
-  color: white;
-  padding: 1rem 1.5rem;
-  border-radius: 5px;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-  transform: translateX(400px);
-  transition: transform 0.3s ease;
-  z-index: 3000;
-}
+            .footer-content {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
 
-.toast.show { transform: translateX(0); }
-.toast.success { background: #27ae60; }
-.toast.error { background: #e74c3c; }
+            .footer-bottom {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
 
-  
+        @media (max-width: 480px) {
+            header {
+                padding: 1rem 3%;
+            }
 
-</style
+            .logo {
+                font-size: 1.4rem;
+            }
+
+            .nav-icons a {
+                font-size: 1rem;
+            }
+
+            .section {
+                padding: 2rem 3%;
+            }
+
+            .newsletter-form {
+                flex-direction: column;
+            }
+
+            .newsletter-form input,
+            .newsletter-form button {
+                width: 100%;
+            }
+        }
+
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: #2c3e50;
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 5px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+            z-index: 3000;
+        }
+
+        .toast.show {
+            transform: translateX(0);
+        }
+
+        .toast.success {
+            background: #27ae60;
+        }
+
+        .toast.error {
+            background: #e74c3c;
+        }
+    </style>
 </head>
 <body>
-  <!-- Header -->
-  <header>
-    <nav>
-      <a href="index.html" class="logo">Trendora</a>
+    <!-- Header -->
+    <header>
+        <nav aria-label="Main navigation">
+            <a href="home.html" class="logo">Trendora</a>
 
+            <ul class="nav-links" role="menubar" id="primaryNav">
+                <li role="none"><a role="menuitem" href="index.html" data-nav="home">Home</a></li>
+                <li role="none"><a role="menuitem" href="shop.html" data-nav="shop">Shop</a></li>
+                <li role="none"><a role="menuitem" href="about.html" data-nav="about">About Us</a></li>
+                <li role="none"><a role="menuitem" href="contact.html" data-nav="contact">Contact</a></li>
+            </ul>
 
-  <!-- Desktop nav -->
-  <ul class="nav-links" id="desktopNav">
-    <li><a href="index.html">Home</a></li>
+            <div class="nav-icons" aria-hidden="false">
+                <a href="search.html" title="Search" aria-label="Search">🔍</a>
+                <a href="account.html" title="My Account" aria-label="My Account">👤</a>
+                <a href="cart.html" title="Shopping Cart" aria-label="Shopping Cart">
+                    🛒
+                    <span class="cart-count" id="cartCount">0</span>
+                </a>
+            </div>
 
-<li class="nav-item" style="display:flex;align-items:center;gap:.25rem">
-  <a href="shop.html" class="nav-link">Shop</a>
-  <button class="shop-caret" id="shopCaret" aria-expanded="false" aria-controls="shopDropdown">▾</button>
+            <button class="mobile-menu-btn" aria-label="Open menu" onclick="toggleMobileMenu()">☰</button>
+        </nav>
+    </header>
 
-  <div class="shop-dropdown" id="shopDropdown" role="menu" aria-label="Shop categories">
-    <a href="women.html">Women</a>
-    <a href="men.html">Men</a>
-    <a href="accessories.html">Accessories</a>
-    <a href="shoes.html">Shoes</a>
-  </div>
-</li>
+    <!-- Mobile Menu -->
+    <div class="menu-overlay" id="menuOverlay" onclick="toggleMobileMenu()"></div>
+    <aside class="mobile-menu" id="mobileMenu" aria-hidden="true" aria-label="Mobile menu">
+        <button class="mobile-menu-close" aria-label="Close menu" onclick="toggleMobileMenu()">✕</button>
+        <ul class="mobile-nav-links" role="menu">
+            <li role="none"><a role="menuitem" href="index.html" onclick="toggleMobileMenu()">Home</a></li>
+            <li role="none"><a role="menuitem" href="shop.html" onclick="toggleMobileMenu()">Shop</a></li>
+            <li role="none"><a role="menuitem" href="about.html" onclick="toggleMobileMenu()">About Us</a></li>
+            <li role="none"><a role="menuitem" href="contact.html" onclick="toggleMobileMenu()">Contact</a></li>
+            <li role="none"><a role="menuitem" href="account.html" onclick="toggleMobileMenu()">My Account</a></li>
+            <li role="none"><a role="menuitem" href="cart.html" onclick="toggleMobileMenu()">Shopping Cart</a></li>
+        </ul>
+    </aside>
 
-<li><a href="about.html" class="active">About Us</a></li>
-<li><a href="contact.html">Contact</a></li>
-  
+    <!-- Hero Section -->
+    <section class="hero" aria-label="About hero">
+        <img src="about-hero-image.jpg" alt="About Trendora — team showcasing styles">
+    </section>
 
-</ul
+    <main>
+      <!-- Our Story Section -->
+      <section class="section our-story" aria-labelledby="our-story-title">
+        <h1 id="our-story-title">Our Story</h1>
+        <p class="section-subtitle">Defining style, celebrating identity</p>
 
-  <!-- Icons + mobile button -->
-  the user wants corrected HTML. Provide corrected full HTML. Use  tags. Keep concise.
-Thanks — I'll fix the remaining syntax issues in your updated file (CSS comment markers, missing/incorrect tag endings, stray text) and return a clean, fully-corrected HTML page.
+        <h2>Your Choice, Your Style, Your Identity</h2>
+        <p>Founded in 2020, Trendora was born from a simple belief: fashion should be personal, accessible, and empowering. We curate collections that celebrate individuality and help you express your unique identity through style. Every piece we offer is carefully selected to ensure quality, versatility, and timeless appeal.</p>
 
-Below is the corrected complete HTML. Replace your current file with this.
+        <p>Our mission is to make fashion discovery effortless and enjoyable. Through personalized recommendations and curated collections, we help you find pieces that resonate with your personal style and lifestyle needs. We believe that great style shouldn't be complicated—it should feel natural and authentic to who you are.</p>
+      </section>
 
+      <!-- Our Values Section -->
+      <section class="section our-values" aria-labelledby="our-values-title">
+        <h2 id="our-values-title">Our Values</h2>
+        <p class="section-subtitle">The principles that guide everything we do</p>
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>About Us - Trendora</title>
-  <style>
-    / Reset / base /
+        <div class="values-grid" role="list">
+          <article class="value-card" role="listitem" aria-labelledby="v1">
+            <div class="icon" aria-hidden="true">⭐</div>
+            <h3 id="v1">Quality First</h3>
+            <p>We curate only the finest pieces that meet our high standards of craftsmanship and design excellence.</p>
+          </article>
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
+          <article class="value-card" role="listitem" aria-labelledby="v2">
+            <div class="icon" aria-hidden="true">👤</div>
+            <h3 id="v2">Customer Focused</h3>
+      <p>Your satisfaction is our priority. We provide personalized service and support every step of the way.</p>
+    </article>
 
-body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-  line-height: 1.6;
-  color: #333;
-  background: #f8f9fa;
-}
+    <article class="value-card" role="listitem" aria-labelledby="v3">
+      <div class="icon" aria-hidden="true">🌱</div>
+      <h3 id="v3">Sustainable</h3>
+      <p>We are committed to ethical sourcing and sustainable practices that respect our planet and people.</p>
+    </article>
 
-header {
-  background: #fff;
-  padding: 1rem 5%;
-  box-shadow: 0 2px 5px rgba(0,0,0,.1);
-  position: sticky;
-  top: 0;
-  z-index: 1000;
-}
-
-nav {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  max-width: 1400px;
-  margin: 0 auto;
-  gap: 1rem;
-}
-
-.logo {
-  font-size: 1.8rem;
-  font-weight: 700;
-  color: #2c3e50;
-  text-decoration: none;
-}
-
-.nav-links {
-  display: flex;
-  gap: 2rem;
-  list-style: none;
-  align-items: center;
-}
-
-.nav-links a {
-  text-decoration: none;
-  color: #555;
-  font-weight: 500;
-  transition: color .25s;
-  padding: .35rem .5rem;
-  border-radius: 6px;
-}
-
-.nav-links a:hover,
-.nav-links a.active {
-  color: #e74c3c;
-  background: rgba(231,76,60,0.04);
-}
-
-.nav-icons {
-  display: flex;
-  gap: 1.5rem;
-  align-items: center;
-}
-
-.nav-icons a {
-  color: #555;
-  font-size: 1.2rem;
-  text-decoration: none;
-  position: relative;
-  transition: transform .2s;
-}
-
-.nav-icons a:hover { transform: scale(1.05); }
-
-.cart-count {
-  position: absolute;
-  top: -8px;
-  right: -8px;
-  background: #e74c3c;
-  color: #fff;
-  font-size: .7rem;
-  padding: 2px 6px;
-  border-radius: 999px;
-  min-width: 18px;
-  text-align: center;
-  display: inline-block;
-}
-
-.mobile-menu-btn {
-  display: none;
-  background: none;
-  border: none;
-  font-size: 1.5rem;
-  cursor: pointer;
-  color: #555;
-}
-
-/* Dropdown styles */
-.nav-item { position: relative; }
-.shop-caret { background: transparent; border: none; cursor: pointer; color: #555; font-size: 1rem; padding: .3rem .45rem; border-radius: 6px; }
-.shop-dropdown { position: absolute; top: calc(100% + 8px); left: 0; background: #fff; border-radius: 8px; box-shadow: 0 8px 24px rgba(0,0,0,0.12); min-width: 200px; display: none; padding: .4rem; z-index: 1200; }
-.shop-dropdown a { display: block; padding: .6rem .8rem; color: #2c3e50; text-decoration: none; border-radius: 6px; }
-.shop-dropdown a:hover { background: #f7f9fb; }
-
-/* Mobile menu & overlay */
-.mobile-menu {
-  display: none;
-  position: fixed;
-  top: 0;
-  left: -100%;
-  width: 80%;
-  max-width: 320px;
-  height: 100vh;
-  background: white;
-  box-shadow: 2px 0 10px rgba(0,0,0,0.1);
-  transition: left 0.28s ease;
-  z-index: 2000;
-  padding: 2rem;
-}
-.mobile-menu.active { left: 0; }
-.mobile-menu-close { position: absolute; top: 1rem; right: 1rem; background: none; border: none; font-size: 1.5rem; cursor: pointer; }
-.mobile-nav-links { list-style: none; margin-top: 3rem; padding: 0; }
-.mobile-nav-links li { padding: 1rem 0; border-bottom: 1px solid #f0f0f0; }
-.mobile-nav-links a { text-decoration: none; color: #555; font-weight: 500; font-size: 1.05rem; display: block; }
-
-.menu-overlay {
-  display: none;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0,0,0,0.45);
-  z-index: 1999;
-}
-.menu-overlay.active { display: block; }
-
-/* Hero */
-.hero {
-  background: linear-gradient(rgba(0,0,0,0.28), rgba(0,0,0,0.28)), url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="600"><rect fill="%23d4c5b9" width="1600" height="600"/></svg>');
-  background-size: cover;
-  background-position: center;
-  min-height: 300px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  color: white;
-  text-align: center;
-  padding: 2rem;
-  gap: .6rem;
-}
-.hero img { max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.15); }
-.hero h1 { font-size: clamp(2rem, 5vw, 3.2rem); margin: 0; font-weight: 400; letter-spacing: 1px; }
-.hero p { max-width: 820px; margin: 0; font-weight: 300; }
-
-/* Sections & grids */
-.section { padding: 4rem 5%; max-width: 1200px; margin: 0 auto; }
-.section h2 { text-align: center; font-size: clamp(1.6rem, 3.8vw, 2.2rem); margin-bottom: .75rem; color: #2c3e50; }
-.section-subtitle { text-align: center; color: #777; margin-bottom: 2rem; font-size: 1rem; }
-
-.values-grid, .team-grid, .stats-grid {
-  display: grid;
-  gap: 1.25rem;
-}
-.values-grid { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
-.team-grid { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); align-items: start; }
-.stats-grid { grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); }
-
-.value-card, .team-member, .stat {
-  background: white;
-  padding: 1.25rem;
-  border-radius: 8px;
-  box-shadow: 0 6px 18px rgba(0,0,0,0.04);
-  text-align: center;
-}
-.team-member img { width: 100%; height: 220px; object-fit: cover; border-radius: 6px; margin-bottom: .75rem; }
-.value-card .icon { font-size: 1.6rem; margin-bottom: .5rem; }
-
-/* Newsletter & footer */
-.newsletter { background: #f8f9fa; padding: 3rem 5%; text-align: center; }
-.newsletter-form { max-width: 540px; margin: 1rem auto 0; display: flex; gap: .75rem; }
-.newsletter-form input { flex: 1; padding: .9rem; border: 1px solid #ddd; border-radius: 6px; }
-.newsletter-form button { padding: .9rem 1.25rem; background: #e74c3c; color: #fff; border: none; border-radius: 6px; cursor: pointer; }
-
-footer { background: #2c3e50; color: #fff; padding: 3rem 5% 2rem; }
-.footer-content { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px,1fr)); gap: 1.25rem; max-width: 1200px; margin: 0 auto 1.25rem; }
-.footer-links a { color: #bdc3c7; text-decoration: none; display: block; padding: .25rem 0; }
-.footer-bottom { max-width: 1200px; margin: 0 auto; display:flex; justify-content:space-between; gap:1rem; align-items:center; flex-wrap:wrap; font-size:.95rem; }
-
-/* Responsive */
-@media (max-width: 980px) {
-  .nav-links { display: none; }
-  .mobile-menu-btn { display: block; }
-  .hero { min-height: 220px; }
-  .section { padding: 2.5rem 4%; }
-}
-  
-
-</style
-</head>
-<body>
-  <header>
-    <nav>
-      <a href="index.html" class="logo">Trendora</a>
-
-
-  <ul class="nav-links" id="desktopNav" aria-label="Primary">
-    <li><a href="index.html">Home</a></li>
-
-    <li class="nav-item" style="display:flex;align-items:center;gap:.25rem">
-      <a href="shop.html" class="nav-link">Shop</a>
-      <button class="shop-caret" id="shopCaret" aria-expanded="false" aria-controls="shopDropdown" aria-label="Open shop menu">▾</button>
-
-      <div class="shop-dropdown" id="shopDropdown" role="menu" aria-label="Shop categories">
-        <a href="women.html" role="menuitem">Women</a>
-        <a href="men.html" role="menuitem">Men</a>
-        <a href="accessories.html" role="menuitem">Accessories</a>
-        <a href="shoes.html" role="menuitem">Shoes</a>
-      </div>
-    </li>
-
-    <li><a href="about.html" class="active">About Us</a></li>
-    <li><a href="contact.html">Contact</a></li>
-  </ul>
-
-  <div style="display:flex;align-items:center;gap:1rem">
-    <div class="nav-icons" aria-hidden="false">
-      <a href="search.html" title="Search">🔍</a>
-      <a href="account.html" title="My Account">👤</a>
-      <a href="cart.html" title="Shopping Cart" aria-current="page">🛒<span class="cart-count" id="cartCount" style="display:none">0</span></a>
-    </div>
-
-    <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Open menu">☰</button>
-  </div>
-</nav>
-  
-
-</header
-
-  <div id="menuOverlay" class="menu-overlay" onclick="toggleMobileMenu()" aria-hidden="true"></div>
-
-  <aside id="mobileMenu" class="mobile-menu" aria-hidden="true" aria-label="Mobile menu">
-    <button class="mobile-menu-close" aria-label="Close menu" onclick="toggleMobileMenu()">✕</button>
-    <ul class="mobile-nav-links" role="menu" aria-label="Mobile primary">
-      <li><a role="menuitem" href="index.html" onclick="toggleMobileMenu()">Home</a></li>
-      <li><a role="menuitem" href="shop.html" onclick="toggleMobileMenu()">Shop</a></li>
-      <li><a role="menuitem" href="about.html" onclick="toggleMobileMenu()">About Us</a></li>
-      <li><a role="menuitem" href="contact.html" onclick="toggleMobileMenu()">Contact</a></li>
-      <li><a role="menuitem" href="account.html" onclick="toggleMobileMenu()">My Account</a></li>
-      <li><a role="menuitem" href="cart.html" onclick="toggleMobileMenu()">Shopping Cart</a></li>
-    </ul>
-  </aside>
-
-  <section class="hero" aria-label="About hero">
-    <img src="about-hero-image.jpg" alt="Team showing styles" />
-    <h1>About Trendora</h1>
-    <p>We craft thoughtful collections and experiences that help you express your style with confidence.</p>
-  </section>
-
-  <main>
-    <section class="section our-story" aria-labelledby="our-story-title">
-      <h2 id="our-story-title">Our Story</h2>
-      <p class="section-subtitle">Defining style, celebrating identity</p>
-
-  <div style="max-width:1000px;margin:0 auto;line-height:1.75;color:#444">
-    <h3 style="margin-top:1rem">Your Choice, Your Style, Your Identity</h3>
-    <p>Founded in 2020, Trendora was born from a simple belief: fashion should be personal, accessible, and empowering. We curate collections that celebrate individuality and help you express your unique identity through style. Every piece we offer is carefully selected to ensure quality, versatility, and timeless appeal.</p>
-
-    <p style="margin-top:.75rem">Our mission is to make fashion discovery effortless and enjoyable. Through personalized recommendations and curated collections, we help you find pieces that resonate with your personal style and lifestyle needs. We believe that great style shouldn't be complicated—it should feel natural and authentic to who you are.</p>
+    <article class="value-card" role="listitem" aria-labelledby="v4">
+      <div class="icon" aria-hidden="true">💡</div>
+      <h3 id="v4">Innovation</h3>
+      <p>We stay ahead of trends while honoring timeless style, bringing you the best of both worlds.</p>
+    </article>
   </div>
 </section>
 
-<section class="section our-values" aria-labelledby="our-values-title">
-  <h2 id="our-values-title">Our Values</h2>
-  <p class="section-subtitle">The principles that guide everything we do</p>
-
-  <div class="values-grid" role="list">
-    <article class="value-card" role="listitem" aria-labelledby="v1"><div class="icon" aria-hidden="true">⭐</div><h3 id="v1">Quality First</h3><p>We curate only the finest pieces that meet our high standards of craftsmanship and design excellence.</p></article>
-
-    <article class="value-card" role="listitem" aria-labelledby="v2"><div class="icon" aria-hidden="true">👤</div><h3 id="v2">Customer Focused</h3><p>Your satisfaction is our priority. We provide personalized service and support every step of the way.</p></article>
-
-    <article class="value-card" role="listitem" aria-labelledby="v3"><div class="icon" aria-hidden="true">🌱</div><h3 id="v3">Sustainable</h3><p>We are committed to ethical sourcing and sustainable practices that respect our planet and people.</p></article>
-
-    <article class="value-card" role="listitem" aria-labelledby="v4"><div class="icon" aria-hidden="true">💡</div><h3 id="v4">Innovation</h3><p>We stay ahead of trends while honoring timeless style, bringing you the best of both worlds.</p></article>
-  </div>
-</section>
-
+<!-- Meet Our Team Section -->
 <section class="section team-section" aria-labelledby="team-title">
   <h2 id="team-title">Meet Our Team</h2>
   <p class="section-subtitle">The passionate people behind Trendora</p>
 
   <div class="team-grid" role="list">
-    <div class="team-member" role="listitem"><img src="emma-richardson.jpg" alt="Emma Richardson — Founder & Creative Director"><h3>Emma Richardson</h3><p>Founder & Creative Director</p></div>
-    <div class="team-member" role="listitem"><img src="michael-chen.jpg" alt="Michael Chen — Head of Design"><h3>Michael Chen</h3><p>Head of Design</p></div>
-    <div class="team-member" role="listitem"><img src="sofia-martinez.jpg" alt="Sofia Martinez — Brand Manager"><h3>Sofia Martinez</h3><p>Brand Manager</p></div>
+    <div class="team-member" role="listitem">
+      <img src="emma-richardson.jpg" alt="Emma Richardson — Founder & Creative Director">
+      <h3>Emma Richardson</h3>
+      <p>Founder & Creative Director</p>
+    </div>
+
+    <div class="team-member" role="listitem">
+      <img src="michael-chen.jpg" alt="Michael Chen — Head of Design">
+      <h3>Michael Chen</h3>
+      <p>Head of Design</p>
+    </div>
+
+    <div class="team-member" role="listitem">
+      <img src="sofia-martinez.jpg" alt="Sofia Martinez — Brand Manager">
+      <h3>Sofia Martinez</h3>
+      <p>Brand Manager</p>
+    </div>
   </div>
 </section>
 
+<!-- Stats Section -->
 <section class="section stats-section" aria-label="Company statistics">
   <div class="stats-grid" role="list">
-    <div class="stat" role="listitem"><h3>50K+</h3><p>Happy Customers</p></div>
-    <div class="stat" role="listitem"><h3>1000+</h3><p>Products</p></div>
-    <div class="stat" role="listitem"><h3>98%</h3><p>Satisfaction Rate</p></div>
-    <div class="stat" role="listitem"><h3>24/7</h3><p>Support</p></div>
+    <div class="stat" role="listitem">
+      <h3>50K+</h3>
+      <p>Happy Customers</p>
+    </div>
+    <div class="stat" role="listitem">
+      <h3>1000+</h3>
+      <p>Products</p>
+    </div>
+    <div class="stat" role="listitem">
+      <h3>98%</h3>
+      <p>Satisfaction Rate</p>
+    </div>
+    <div class="stat" role="listitem">
+      <h3>24/7</h3>
+      <p>Support</p>
+    </div>
   </div>
 </section>
 
+<!-- Newsletter Section -->
 <section class="newsletter" aria-labelledby="newsletter-title">
   <h2 id="newsletter-title">Stay in the Loop</h2>
   <p class="section-subtitle">Subscribe for style updates, early access, and exclusive offers.</p>
-  <form class="newsletter-form" id="newsletterForm" aria-label="Subscribe to newsletter">
-    <input type="email" id="newsletterEmail" name="email" placeholder="Enter your email" required aria-label="Email address" />
+  <form class="newsletter-form" id="newsletterForm" onsubmit="subscribeNewsletter(event)">
+    <input type="email" id="newsletterEmail" name="email" placeholder="Enter your email" required aria-label="Email address">
     <button type="submit">Subscribe</button>
   </form>
-  <p id="newsletterMsg" style="margin-top:1rem;color:#2c3e50"></p>
 </section>
   
-
 </main
 
+  <!-- Footer -->
   <footer>
     <div class="footer-content">
       <div class="footer-brand">
-        <a href="index.html" class="logo" style="color:#fff;text-decoration:none">Trendora</a>
-        <p style="color:#bdc3c7;margin-top:.5rem">Trendora is a demo storefront focused on clean UI and simple workflows.</p>
+        <div class="logo">Trendora</div>
+        <p>Your choice, your style, your identity. Discover curated fashion trends that define who you are.</p>
       </div>
 
   <div class="footer-links">
-    <h3 style="color:#fff">Company</h3>
-    <ul style="list-style:none;padding:0;margin:0">
-      <li><a href="about.html">About</a></li>
+    <h3>Quick Links</h3>
+    <ul>
+      <li><a href="shop.html">Shop All</a></li>
+      <li><a href="about.html">About Us</a></li>
       <li><a href="contact.html">Contact</a></li>
-      <li><a href="shop.html">Shop</a></li>
+      <li><a href="account.html">My Account</a></li>
     </ul>
   </div>
 
   <div class="footer-links">
-    <h3 style="color:#fff">Support</h3>
-    <ul style="list-style:none;padding:0;margin:0">
-      <li><a href="#">Help Center</a></li>
-      <li><a href="#">Returns</a></li>
-      <li><a href="#">Shipping</a></li>
+    <h3>Customer Service</h3>
+    <ul>
+      <li><a href="shipping.html">Shipping Info</a></li>
+      <li><a href="returns.html">Returns</a></li>
+      <li><a href="size-guide.html">Size Guide</a></li>
+      <li><a href="faq.html">FAQ</a></li>
     </ul>
+  </div>
+
+  <div class="footer-links">
+    <h3>Connect With Us</h3>
+    <div class="social-icons" aria-hidden="true">
+      <a href="https://facebook.com" target="_blank" rel="noopener" title="Facebook">📘</a>
+      <a href="https://instagram.com" target="_blank" rel="noopener" title="Instagram">📷</a>
+      <a href="https://twitter.com" target="_blank" rel="noopener" title="Twitter">🐦</a>
+      <a href="https://pinterest.com" target="_blank" rel="noopener" title="Pinterest">📌</a>
+    </div>
+    <p style="margin-top: 1rem; color: #bdc3c7; font-size: 0.9rem;">Follow us for style inspiration and exclusive offers</p>
   </div>
 </div>
 
 <div class="footer-bottom">
-  <div>© 2025 Trendora</div>
-  <div><a href="#" style="color:#bdc3c7;text-decoration:none">Privacy</a> · <a href="#" style="color:#bdc3c7;text-decoration:none">Terms</a></div>
+  <div>© 2025 Trendora. All rights reserved.</div>
+  <div>
+    <a href="privacy.html">Privacy Policy</a>
+    <a href="terms.html">Terms of Service</a>
+  </div>
 </div>
   
-
 </footer
 
+  <!-- Toast Notification -->
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+
+
   <script>
-    // Toggle mobile menu
+    // Mobile menu toggle
     function toggleMobileMenu() {
       const menu = document.getElementById('mobileMenu');
       const overlay = document.getElementById('menuOverlay');
-      if (!menu || !overlay) return;
-        const open = menu.classList.contains('active');
-  if (open) {
-    menu.classList.remove('active');
-    overlay.classList.remove('active');
-    menu.setAttribute('aria-hidden', 'true');
-    overlay.setAttribute('aria-hidden', 'true');
-  } else {
-    menu.classList.add('active');
-    overlay.classList.add('active');
-    menu.setAttribute('aria-hidden', 'false');
-    overlay.setAttribute('aria-hidden', 'false');
+      const isActive = menu.classList.contains('active');
+      if (isActive) {
+        menu.classList.remove('active');
+        overlay.classList.remove('active');
+        menu.setAttribute('aria-hidden', 'true');
+      } else {
+        menu.classList.add('active');
+        overlay.classList.add('active');
+        menu.setAttribute('aria-hidden', 'false');
+      }
+    }
+
+// Highlight active nav link based on file name
+(function highlightActiveNav() {
+  try {
+    const navLinks = document.querySelectorAll('nav a[data-nav], .mobile-nav-links a');
+    const path = window.location.pathname || '';
+    const current = path.split('/').pop().toLowerCase() || 'home.html';
+    navLinks.forEach(a => {
+      const href = (a.getAttribute('href') || '').split('/').pop().toLowerCase();
+      if (href === current || (current === '' && href === 'home.html')) {
+        a.classList.add('active');
+        a.setAttribute('aria-current', 'page');
+      } else {
+        a.classList.remove('active');
+        a.removeAttribute('aria-current');
+      }
+    });
+  } catch (e) {
+    console.warn('Navigation highlight error', e);
   }
+})();
+
+// Simple newsletter subscribe simulation
+function showToast(message, type = 'success') {
+  const toast = document.getElementById('toast');
+  toast.textContent = message;
+  toast.className = 'toast show ' + (type === 'error' ? 'error' : 'success');
+  setTimeout(() => {
+    toast.className = 'toast';
+  }, 3000);
 }
 
-// wire mobile button safely
-document.addEventListener('DOMContentLoaded', function () {
-  const mobileMenuBtn = document.getElementById('mobileMenuBtn');
-  if (mobileMenuBtn) mobileMenuBtn.addEventListener('click', toggleMobileMenu);
-
-  // shop dropdown behavior
-  (function () {
-    const shopCaret = document.getElementById('shopCaret');
-    const shopDropdown = document.getElementById('shopDropdown');
-    if (!shopCaret || !shopDropdown) return;
-
-    shopCaret.addEventListener('click', function (e) {
-      e.stopPropagation();
-      const open = shopDropdown.style.display === 'block';
-      shopDropdown.style.display = open ? 'none' : 'block';
-      shopCaret.setAttribute('aria-expanded', String(!open));
-    });
-
-    document.addEventListener('click', function (e) {
-      if (!shopDropdown.contains(e.target) && e.target !== shopCaret) {
-        shopDropdown.style.display = 'none';
-        shopCaret.setAttribute('aria-expanded', 'false');
-      }
-    });
-
-    document.addEventListener('keydown', function (e) {
-      if (e.key === 'Escape') {
-        shopDropdown.style.display = 'none';
-        shopCaret.setAttribute('aria-expanded', 'false');
-        // close mobile menu too
-        const menu = document.getElementById('mobileMenu');
-        const overlay = document.getElementById('menuOverlay');
-        if (menu && menu.classList.contains('active')) {
-          menu.classList.remove('active');
-          overlay.classList.remove('active');
-          menu.setAttribute('aria-hidden', 'true');
-          overlay.setAttribute('aria-hidden', 'true');
-        }
-      }
-    });
-  })();
-
-  // Newsletter subscribe (demo)
-  const newsletterForm = document.getElementById('newsletterForm');
-  if (newsletterForm) {
-    newsletterForm.addEventListener('submit', function (e) {
-      e.preventDefault();
-      const emailInput = document.getElementById('newsletterEmail');
-      const msg = document.getElementById('newsletterMsg');
-      if (!emailInput || !msg) return;
-
-      const email = emailInput.value.trim();
-      if (!email) return;
-
-      const list = JSON.parse(localStorage.getItem('newsletter') || '[]');
-      if (!list.includes(email)) {
-        list.push(email);
-        localStorage.setItem('newsletter', JSON.stringify(list));
-        msg.textContent = 'Thanks for subscribing!';
-        msg.className = 'toast success show';
-        setTimeout(()=> msg.className = '', 3000);
-      } else {
-        msg.textContent = 'You are already subscribed.';
-        msg.className = 'toast show';
-        setTimeout(()=> msg.className = '', 2500);
-      }
-      newsletterForm.reset();
-    });
+function subscribeNewsletter(e) {
+  e.preventDefault();
+  const email = document.getElementById('newsletterEmail').value;
+  if (!email || !email.includes('@')) {
+    showToast('Please enter a valid email address', 'error');
+    return;
   }
-});
-  
+  // Simulate success
+  showToast('Thanks for subscribing!', 'success');
+  document.getElementById('newsletterForm').reset();
+}
 
+// Example: update cart count (could be replaced with real cart logic)
+(function initCartCount() {
+  const countEl = document.getElementById('cartCount');
+  try {
+    const stored = parseInt(localStorage.getItem('trendoraCartCount') || '0', 10);
+    countEl.textContent = Number.isFinite(stored) ? stored : 0;
+  } catch (e) {
+    countEl.textContent = 0;
+  }
+})();
+  
 </script
+
 </body>
 </html>

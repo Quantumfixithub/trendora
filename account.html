@@ -124,6 +124,8 @@ nav { display:flex; justify-content:space-between; align-items:center; max-width
       <a href="contact.html">Contact</a>
       <a href="account.html" class="active">My Account</a>
       <a href="cart.html">Shopping Cart</a>
+      <a href="signin.html">Shopping Cart</a>
+      <a href="signout.html">Shopping Cart</a>
     </nav>
   </aside>
 
@@ -317,7 +319,7 @@ nav { display:flex; justify-content:space-between; align-items:center; max-width
       });
     });
 
-    // Sign out (demo)
+    // Sign out
     const signOutBtn = document.getElementById('signOutBtn');
     if (signOutBtn) {
       signOutBtn.addEventListener('click', () => {
@@ -329,7 +331,7 @@ nav { display:flex; justify-content:space-between; align-items:center; max-width
       });
     }
 
-    // Profile save (demo)
+    // Profile save
     const profileForm = document.getElementById('profileForm');
     if (profileForm) {
       profileForm.addEventListener('submit', (e) => {
@@ -488,3 +490,4 @@ nav { display:flex; justify-content:space-between; align-items:center; max-width
   </script>
 </body>
 </html>
+

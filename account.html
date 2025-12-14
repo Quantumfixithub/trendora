@@ -381,251 +381,195 @@ footer {
 
   <div id="toast" class="toast" style="display:none"></div>
 
-  <script>
-    // Mobile menu open/close
-    const mobileMenu = document.getElementById('mobileMenu');
-    const menuOverlay = document.getElementById('menuOverlay');
-    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
-    const mobileMenuClose = document.getElementById('mobileMenuClose');
+  <script type="module">
+  import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
-    function openMobileMenu() {
-      if (!mobileMenu || !menuOverlay) return;
-      mobileMenu.classList.add('active');
-      menuOverlay.classList.add('active');
-      mobileMenu.setAttribute('aria-hidden', 'false');
-      menuOverlay.setAttribute('aria-hidden', 'false');
+  // Supabase project credentials (replace with env vars in Vercel)
+  const supabaseUrl = "https://YOUR_PROJECT.supabase.co";
+  const supabaseKey = "YOUR_ANON_PUBLIC_KEY";
+  const supabase = createClient(supabaseUrl, supabaseKey);
+
+  // Mobile Menu Functionality
+  const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+  const mobileBackdrop = document.getElementById('mobileBackdrop');
+  const mobileDrawer = document.getElementById('mobileDrawer');
+  const mobileCloseBtn = document.getElementById('mobileCloseBtn');
+  const mobileShopToggle = document.getElementById('mobileShopToggle');
+  const mobileShopSub = document.getElementById('mobileShopSub');
+
+  function openMobileMenu() {
+    if (mobileBackdrop && mobileDrawer) {
+      mobileBackdrop.classList.add('active');
+      mobileDrawer.classList.add('active');
+      mobileBackdrop.setAttribute('aria-hidden', 'false');
       document.body.style.overflow = 'hidden';
     }
-    
-    function closeMobileMenu() {
-      if (!mobileMenu || !menuOverlay) return;
-      mobileMenu.classList.remove('active');
-      menuOverlay.classList.remove('active');
-      mobileMenu.setAttribute('aria-hidden', 'true');
-      menuOverlay.setAttribute('aria-hidden', 'true');
+  }
+
+  function closeMobileMenu() {
+    if (mobileBackdrop && mobileDrawer) {
+      mobileBackdrop.classList.remove('active');
+      mobileDrawer.classList.remove('active');
+      mobileBackdrop.setAttribute('aria-hidden', 'true');
       document.body.style.overflow = '';
     }
+  }
 
-    if (mobileMenuBtn) mobileMenuBtn.addEventListener('click', openMobileMenu);
-    if (mobileMenuClose) mobileMenuClose.addEventListener('click', closeMobileMenu);
-    if (menuOverlay) menuOverlay.addEventListener('click', closeMobileMenu);
+  if (mobileMenuBtn) mobileMenuBtn.addEventListener('click', openMobileMenu);
+  if (mobileCloseBtn) mobileCloseBtn.addEventListener('click', closeMobileMenu);
+  if (mobileBackdrop) {
+    mobileBackdrop.addEventListener('click', (e) => {
+      if (e.target === mobileBackdrop) closeMobileMenu();
+    });
+  }
 
-    // Close with Escape
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') closeMobileMenu();
+  // Mobile shop submenu toggle
+  if (mobileShopToggle && mobileShopSub) {
+    mobileShopToggle.addEventListener('click', () => {
+      const isExpanded = mobileShopToggle.getAttribute('aria-expanded') === 'true';
+      mobileShopToggle.setAttribute('aria-expanded', !isExpanded);
+      mobileShopSub.classList.toggle('active');
+    });
+  }
+
+  // Desktop Shop Dropdown
+  const shopCaret = document.getElementById('shopCaret');
+  const shopDropdown = document.getElementById('shopDropdown');
+
+  if (shopCaret && shopDropdown) {
+    shopCaret.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const isExpanded = shopCaret.getAttribute('aria-expanded') === 'true';
+      shopCaret.setAttribute('aria-expanded', !isExpanded);
+      shopDropdown.classList.toggle('active');
     });
 
-    // Back to Home mobile - close menu when clicked
-    const backHomeMobile = document.getElementById('backHomeMobile');
-    if (backHomeMobile) {
-      backHomeMobile.addEventListener('click', closeMobileMenu);
-    }
-
-    // Toast notification function
-    function showToast(message, type = 'success') {
-      const toast = document.getElementById('toast');
-      if (!toast) return;
-      toast.textContent = message;
-      toast.className = `toast ${type}`;
-      toast.style.display = 'block';
-      
-      setTimeout(() => {
-        toast.style.display = 'none';
-      }, 3000);
-    }
-
-    // Sidebar navigation: toggle content sections
-    document.querySelectorAll('.sidebar .menu-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        // Handle sign out separately
-        if (btn.id === 'signOutBtn') return;
-        
-        // Update active button
-        document.querySelectorAll('.sidebar .menu-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-
-        // Show corresponding section
-        const sectionId = btn.getAttribute('data-section');
-        if (!sectionId) return;
-        
-        document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
-        const target = document.getElementById(sectionId);
-        if (target) target.classList.add('active');
-        
-        // Close mobile menu on selection
-        closeMobileMenu();
-      });
+    document.addEventListener('click', (e) => {
+      if (!shopCaret.contains(e.target) && !shopDropdown.contains(e.target)) {
+        shopDropdown.classList.remove('active');
+        shopCaret.setAttribute('aria-expanded', 'false');
+      }
     });
+  }
 
-    // Sign out
-    const signOutBtn = document.getElementById('signOutBtn');
-    if (signOutBtn) {
-      signOutBtn.addEventListener('click', () => {
-        // Demo sign out behavior: clear localStorage auth flag and redirect to home
-        try { 
-          localStorage.removeItem('auth');
-          localStorage.removeItem('profile');
-          localStorage.removeItem('settings');
-        } catch (e) {
-          console.error('Error clearing localStorage:', e);
-        }
-        
-        // Show toast then redirect
-        showToast('Signed out successfully', 'success');
-        setTimeout(() => { 
-          window.location.href = 'index.html'; 
-        }, 1000);
-      });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      closeMobileMenu();
+      if (shopDropdown) {
+        shopDropdown.classList.remove('active');
+        if (shopCaret) shopCaret.setAttribute('aria-expanded', 'false');
+      }
     }
+  });
 
-    // Profile save
-    const profileForm = document.getElementById('profileForm');
-    if (profileForm) {
-      profileForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const data = {
-          firstName: document.getElementById('firstName').value.trim(),
-          lastName: document.getElementById('lastName').value.trim(),
-          email: document.getElementById('email').value.trim(),
-          phone: document.getElementById('phone').value.trim(),
-          bio: document.getElementById('bio').value.trim()
-        };
-        
-        // Validate required fields
-        if (!data.firstName || !data.lastName || !data.email) {
-          showToast('Please fill in all required fields', 'error');
-          return;
-        }
-        
-        // Demo save to localStorage
-        try { 
-          localStorage.setItem('profile', JSON.stringify(data)); 
-          showToast('Profile saved successfully', 'success');
+  // Toast notification
+  function showToast(message, type = 'success') {
+    const toast = document.getElementById('toast');
+    if (!toast) return;
+    toast.textContent = message;
+    toast.className = `toast ${type} show`;
+    setTimeout(() => toast.classList.remove('show'), 3000);
+  }
+
+  // Newsletter Form Submission (Supabase integration)
+  const newsletterForm = document.getElementById('newsletterForm');
+  if (newsletterForm) {
+    newsletterForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('newsletterEmail').value.trim();
+
+      if (email) {
+        try {
+          // Insert into Supabase "newsletter" table
+          const { data, error } = await supabase
+            .from('newsletter')
+            .insert([{ email }]);
+
+          if (error) {
+            if (error.code === '23505') { // duplicate email if unique constraint
+              showToast('You are already subscribed!', 'error');
+            } else {
+              console.error('Supabase error:', error);
+              showToast('Subscription failed. Try again.', 'error');
+            }
+          } else {
+            showToast('Successfully subscribed to our newsletter!', 'success');
+            newsletterForm.reset();
+          }
         } catch (err) {
-          console.error('Error saving profile:', err);
-          showToast('Error saving profile', 'error');
+          console.error('Error subscribing:', err);
+          showToast('Unexpected error. Please try again.', 'error');
         }
-      });
-    }
-
-    // Settings save
-    const settingsForm = document.getElementById('settingsForm');
-    if (settingsForm) {
-      settingsForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const settings = {
-          language: document.getElementById('language').value,
-          currency: document.getElementById('currency').value
-        };
-        
-        try { 
-          localStorage.setItem('settings', JSON.stringify(settings)); 
-          showToast('Settings saved successfully', 'success');
-        } catch (err) {
-          console.error('Error saving settings:', err);
-          showToast('Error saving settings', 'error');
-        }
-      });
-    }
-
-    // Demo: load sample orders & wishlist (if none, show empty state)
-    function renderDemoOrders() {
-      const ordersList = document.getElementById('ordersList');
-      const noOrders = document.getElementById('noOrders');
-      if (!ordersList || !noOrders) return;
-      
-      const demo = JSON.parse(localStorage.getItem('demoOrders') || '[]');
-      
-      if (demo.length === 0) {
-        ordersList.style.display = 'none';
-        noOrders.style.display = 'block';
-      } else {
-        ordersList.style.display = 'block';
-        noOrders.style.display = 'none';
-        // Render orders here if needed
-        ordersList.innerHTML = '<p style="color: #666;">Your orders will appear here.</p>';
       }
-    }
-
-    function renderDemoWishlist() {
-      const wishlistGrid = document.getElementById('wishlistGrid');
-      const noWishlist = document.getElementById('noWishlist');
-      if (!wishlistGrid || !noWishlist) return;
-      
-      const demo = JSON.parse(localStorage.getItem('demoWishlist') || '[]');
-      
-      if (demo.length === 0) {
-        wishlistGrid.style.display = 'none';
-        noWishlist.style.display = 'block';
-      } else {
-        wishlistGrid.style.display = 'grid';
-        noWishlist.style.display = 'none';
-        // Render wishlist items here if needed
-        wishlistGrid.innerHTML = '<p style="color: #666;">Your wishlist items will appear here.</p>';
-      }
-    }
-
-    // Load profile data if exists
-    function loadProfile() {
-      try {
-        const savedProfile = localStorage.getItem('profile');
-        if (savedProfile) {
-          const data = JSON.parse(savedProfile);
-          if (data.firstName) document.getElementById('firstName').value = data.firstName;
-          if (data.lastName) document.getElementById('lastName').value = data.lastName;
-          if (data.email) document.getElementById('email').value = data.email;
-          if (data.phone) document.getElementById('phone').value = data.phone;
-          if (data.bio) document.getElementById('bio').value = data.bio;
-        }
-      } catch (err) {
-        console.error('Error loading profile:', err);
-      }
-    }
-
-    // Load settings data if exists
-    function loadSettings() {
-      try {
-        const savedSettings = localStorage.getItem('settings');
-        if (savedSettings) {
-          const data = JSON.parse(savedSettings);
-          if (data.language) document.getElementById('language').value = data.language;
-          if (data.currency) document.getElementById('currency').value = data.currency;
-        }
-      } catch (err) {
-        console.error('Error loading settings:', err);
-      }
-    }
-
-    // Initialize on page load
-    document.addEventListener('DOMContentLoaded', () => {
-      renderDemoOrders();
-      renderDemoWishlist();
-      loadProfile();
-      loadSettings();
     });
+  }
 
-    // Update cart count (demo)
-    function updateCartCount() {
-      const cartCount = document.getElementById('cartCount');
-      if (!cartCount) return;
-      
-      try {
-        const cart = JSON.parse(localStorage.getItem('cart') || '[]');
-        const count = cart.reduce((sum, item) => sum + (item.quantity || 1), 0);
-        
-        if (count > 0) {
-          cartCount.textContent = count;
-          cartCount.style.display = 'inline-block';
-        } else {
-          cartCount.style.display = 'none';
-        }
-      } catch (err) {
-        console.error('Error updating cart count:', err);
+  // Update Cart Count
+  function updateCartCount() {
+    const cartCountElement = document.getElementById('cartCount');
+    if (!cartCountElement) return;
+
+    try {
+      const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+      const totalItems = cart.reduce((sum, item) => sum + (item.quantity || 1), 0);
+
+      if (totalItems > 0) {
+        cartCountElement.textContent = totalItems;
+        cartCountElement.style.display = 'inline-block';
+      } else {
+        cartCountElement.style.display = 'none';
       }
+    } catch (err) {
+      console.error('Error updating cart count:', err);
+      cartCountElement.style.display = 'none';
     }
+  }
 
-    // Initialize cart count
+  // Smooth scroll
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+      const href = this.getAttribute('href');
+      if (href !== '#' && href.length > 1) {
+        e.preventDefault();
+        const target = document.querySelector(href);
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }
+    });
+  });
+
+  // Initialize
+  document.addEventListener('DOMContentLoaded', () => {
     updateCartCount();
-  </script>
+
+    const observerOptions = { threshold: 0.1, rootMargin: '0px 0px -50px 0px' };
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.style.opacity = '1';
+          entry.target.style.transform = 'translateY(0)';
+        }
+      });
+    }, observerOptions);
+
+    document.querySelectorAll('.value-card, .team-member, .stat').forEach(card => {
+      card.style.opacity = '0';
+      card.style.transform = 'translateY(20px)';
+      card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+      observer.observe(card);
+    });
+  });
+
+  window.addEventListener('storage', (e) => {
+    if (e.key === 'cart') updateCartCount();
+  });
+
+  if (window.history.replaceState) {
+    window.history.replaceState(null, null, window.location.href);
+  }
+</script>
+
 </body>
 </html>
+

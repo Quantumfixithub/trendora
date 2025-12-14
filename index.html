@@ -4,20 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Trendora - Autumn Collection 2024</title>
-      <!-- Google Fonts -->
+    
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800;900&amp;family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
     <!-- Remix Icon -->
     <link href="https://cdn.jsdelivr.net/npm/remixicon@4.0.0/fonts/remixicon.css" rel="stylesheet">
     
-    <style>
-      body {
-        font-family: 'Inter', sans-serif;
-      }
-    </style>
-    <script src="auth.js"></script>
     <style>
         * {
             margin: 0;
@@ -26,12 +21,12 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
             line-height: 1.6;
             color: #333;
+            background: #fff;
         }
 
-        
         /* Header Styles */
         header {
             background: #fff;
@@ -48,30 +43,37 @@
             align-items: center;
             max-width: 1400px;
             margin: 0 auto;
+            gap: 1rem;
         }
 
         .logo {
             font-size: 1.8rem;
-            font-weight: bold;
+            font-weight: 700;
             color: #2c3e50;
             text-decoration: none;
+            font-family: 'Playfair Display', serif;
         }
 
         .nav-links {
             display: flex;
             gap: 2rem;
             list-style: none;
+            align-items: center;
         }
 
         .nav-links a {
             text-decoration: none;
             color: #555;
             font-weight: 500;
-            transition: color 0.3s;
+            transition: color 0.25s;
+            padding: 0.35rem 0.5rem;
+            border-radius: 6px;
         }
 
-        .nav-links a:hover {
+        .nav-links a:hover,
+        .nav-links a.active {
             color: #e74c3c;
+            background: rgba(231,76,60,0.04);
         }
 
         .nav-icons {
@@ -85,6 +87,11 @@
             font-size: 1.2rem;
             text-decoration: none;
             position: relative;
+            transition: transform 0.2s;
+        }
+
+        .nav-icons a:hover {
+            transform: scale(1.05);
         }
 
         .cart-count {
@@ -95,9 +102,60 @@
             color: white;
             font-size: 0.7rem;
             padding: 2px 6px;
-            border-radius: 50%;
+            border-radius: 999px;
             min-width: 18px;
             text-align: center;
+            display: none;
+        }
+
+        /* Shop Dropdown */
+        .nav-item {
+            position: relative;
+        }
+
+        .shop-caret {
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            color: #555;
+            font-size: 1rem;
+            padding: 0.3rem 0.45rem;
+            border-radius: 6px;
+            transition: background 0.2s;
+        }
+
+        .shop-caret:hover {
+            background: rgba(231,76,60,0.04);
+        }
+
+        .shop-dropdown {
+            position: absolute;
+            top: calc(100% + 8px);
+            left: 0;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+            min-width: 200px;
+            display: none;
+            padding: 0.4rem;
+            z-index: 1200;
+        }
+
+        .shop-dropdown.active {
+            display: block;
+        }
+
+        .shop-dropdown a {
+            display: block;
+            padding: 0.6rem 0.8rem;
+            color: #2c3e50;
+            text-decoration: none;
+            border-radius: 6px;
+            transition: background 0.2s;
+        }
+
+        .shop-dropdown a:hover {
+            background: #f7f9fb;
         }
 
         /* Mobile Menu */
@@ -110,70 +168,51 @@
             color: #555;
         }
 
-        .mobile-menu {
+        .mobile-drawer-backdrop {
             display: none;
             position: fixed;
-            top: 0;
-            left: -100%;
-            width: 80%;
-            max-width: 300px;
-            height: 100vh;
-            background: white;
-            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
-            transition: left 0.3s ease;
-            z-index: 2000;
-            padding: 2rem;
+            inset: 0;
+            background: rgba(0,0,0,0.4);
+            z-index: 1500;
         }
 
-        .mobile-menu.active {
-            left: 0;
+        .mobile-drawer-backdrop.active {
+            display: block;
         }
 
-        .mobile-menu-close {
-            position: absolute;
-            top: 1rem;
-            right: 1rem;
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            cursor: pointer;
-        }
-
-        .mobile-nav-links {
-            list-style: none;
-            margin-top: 3rem;
-        }
-
-        .mobile-nav-links li {
-            padding: 1rem 0;
-            border-bottom: 1px solid #f0f0f0;
-        }
-
-        .mobile-nav-links a {
-            text-decoration: none;
-            color: #555;
-            font-weight: 500;
-            font-size: 1.1rem;
-        }
-
-        .menu-overlay {
-            display: none;
+        .mobile-drawer {
             position: fixed;
-            top: 0;
             left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.5);
-            z-index: 1999;
+            top: 0;
+            bottom: 0;
+            width: 300px;
+            max-width: 86%;
+            background: #fff;
+            padding: 1rem;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+            transform: translateX(-100%);
+            transition: transform 0.3s ease-in-out;
+            z-index: 1600;
+            overflow: auto;
         }
 
-        .menu-overlay.active {
+        .mobile-drawer.active {
+            transform: translateX(0);
+        }
+
+        .mobile-shop-sub {
+            margin-left: 1rem;
+            margin-top: 0.5rem;
+            display: none;
+        }
+
+        .mobile-shop-sub.active {
             display: block;
         }
 
         /* Hero Section */
         .hero {
-            background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="600"><rect fill="%23d4c5b9" width="1600" height="600"/></svg>');
+            background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), #d4c5b9;
             background-size: cover;
             background-position: center;
             min-height: 500px;
@@ -191,6 +230,7 @@
             margin-bottom: 1rem;
             font-weight: 300;
             letter-spacing: 2px;
+            font-family: 'Playfair Display', serif;
         }
 
         .hero p {
@@ -228,6 +268,7 @@
             font-size: clamp(1.8rem, 4vw, 2.5rem);
             margin-bottom: 1rem;
             color: #2c3e50;
+            font-family: 'Playfair Display', serif;
         }
 
         .section-subtitle {
@@ -257,12 +298,6 @@
 
         .category-card:hover {
             transform: translateY(-5px);
-        }
-
-        .category-card img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
         }
 
         .category-overlay {
@@ -316,6 +351,14 @@
             z-index: 10;
         }
 
+        .product-badge.new {
+            background: #27ae60;
+        }
+
+        .product-badge.bestseller {
+            background: #f39c12;
+        }
+
         .product-image {
             width: 100%;
             height: 250px;
@@ -354,10 +397,15 @@
             font-weight: 600;
             transition: background 0.3s;
             margin-top: 0.5rem;
+            font-family: inherit;
         }
 
         .add-to-cart-btn:hover {
             background: #1a252f;
+        }
+
+        .add-to-cart-btn:active {
+            transform: scale(0.98);
         }
 
         /* Curated Section */
@@ -373,12 +421,12 @@
             overflow: hidden;
             min-height: 350px;
             cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
         }
 
-        .curated-card img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
+        .curated-card:hover {
+            transform: translateY(-5px);
         }
 
         .curated-overlay {
@@ -422,6 +470,7 @@
 
         .newsletter h2 {
             margin-bottom: 1rem;
+            font-family: 'Playfair Display', serif;
         }
 
         .newsletter-form {
@@ -440,6 +489,12 @@
             border: 1px solid #ddd;
             border-radius: 5px;
             font-size: 1rem;
+            font-family: inherit;
+        }
+
+        .newsletter-form input:focus {
+            outline: 2px solid #e74c3c;
+            border-color: #e74c3c;
         }
 
         .newsletter-form button {
@@ -451,10 +506,16 @@
             cursor: pointer;
             font-weight: 600;
             transition: background 0.3s;
+            font-family: inherit;
         }
 
         .newsletter-form button:hover {
             background: #c0392b;
+        }
+
+        .newsletter-form button:disabled {
+            background: #95a5a6;
+            cursor: not-allowed;
         }
 
         /* Footer */
@@ -473,25 +534,34 @@
             margin-bottom: 3rem;
         }
 
+        .footer-brand .logo {
+            color: white;
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
         .footer-brand p {
             color: #bdc3c7;
-            margin-top: 1rem;
             line-height: 1.8;
         }
 
         .footer-links h3 {
             margin-bottom: 1rem;
+            font-size: 1.1rem;
         }
 
         .footer-links ul {
             list-style: none;
         }
 
+        .footer-links ul li {
+            margin-bottom: 0.5rem;
+        }
+
         .footer-links a {
             color: #bdc3c7;
             text-decoration: none;
-            display: block;
-            padding: 0.5rem 0;
             transition: color 0.3s;
         }
 
@@ -508,6 +578,11 @@
         .social-icons a {
             color: white;
             font-size: 1.5rem;
+            transition: transform 0.3s;
+        }
+
+        .social-icons a:hover {
+            transform: scale(1.2);
         }
 
         .footer-bottom {
@@ -523,15 +598,54 @@
             font-size: 0.9rem;
         }
 
-        .footer-bottom a {
+        .footer-bottom-links {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .footer-bottom-links a {
             color: #bdc3c7;
             text-decoration: none;
             margin: 0 0.5rem;
         }
 
+        .footer-bottom-links a:hover {
+            color: white;
+        }
+
         .view-all-btn {
             text-align: center;
             margin-top: 2rem;
+        }
+
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: #2c3e50;
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 5px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+            z-index: 3000;
+            display: none;
+        }
+
+        .toast.show {
+            transform: translateX(0);
+            display: block;
+        }
+
+        .toast.success {
+            background: #27ae60;
+        }
+
+        .toast.error {
+            background: #e74c3c;
         }
 
         /* Responsive Design */
@@ -541,10 +655,6 @@
             }
 
             .mobile-menu-btn {
-                display: block;
-            }
-
-            .mobile-menu {
                 display: block;
             }
 
@@ -590,13 +700,33 @@
             }
         }
 
-        @media (max-width: 480px) {
+        @media (max-width: 768px) {
             header {
                 padding: 1rem 3%;
             }
 
             .logo {
+                font-size: 1.5rem;
+            }
+
+            .nav-icons a {
+                font-size: 1.1rem;
+            }
+
+            .toast {
+                right: 1rem;
+                left: 1rem;
+                bottom: 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .logo {
                 font-size: 1.4rem;
+            }
+
+            .nav-icons {
+                gap: 1rem;
             }
 
             .nav-icons a {
@@ -627,46 +757,13 @@
             }
         }
 
-        /* Loading Animation */
-        .loading {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 3px solid rgba(255,255,255,.3);
-            border-radius: 50%;
-            border-top-color: #fff;
-            animation: spin 1s ease-in-out infinite;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        /* Toast Notification */
-        .toast {
-            position: fixed;
-            bottom: 2rem;
-            right: 2rem;
-            background: #2c3e50;
-            color: white;
-            padding: 1rem 1.5rem;
-            border-radius: 5px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-            transform: translateX(400px);
-            transition: transform 0.3s ease;
-            z-index: 3000;
-        }
-
-        .toast.show {
-            transform: translateX(0);
-        }
-
-        .toast.success {
-            background: #27ae60;
-        }
-
-        .toast.error {
-            background: #e74c3c;
+        /* Accessibility */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
         }
     </style>
 </head>
@@ -675,36 +772,74 @@
     <header>
         <nav>
             <a href="index.html" class="logo">Trendora</a>
-            <ul class="nav-links">
-                <li><a href="index.html">Home</a></li>
-                <li><a href="shop.html">Shop</a></li>
+
+            <!-- Desktop nav -->
+            <ul class="nav-links" id="desktopNav">
+                <li><a href="index.html" class="active">Home</a></li>
+
+                <li class="nav-item" style="display:flex;align-items:center;gap:0.25rem">
+                    <a href="shop.html" class="nav-link">Shop</a>
+                    <button class="shop-caret" id="shopCaret" aria-expanded="false" aria-controls="shopDropdown">▾</button>
+
+                    <div class="shop-dropdown" id="shopDropdown" role="menu" aria-label="Shop categories">
+                        <a href="shop.html?category=women" role="menuitem">Women</a>
+                        <a href="shop.html?category=men" role="menuitem">Men</a>
+                        <a href="shop.html?category=accessories" role="menuitem">Accessories</a>
+                        <a href="shop.html?category=shoes" role="menuitem">Shoes</a>
+                    </div>
+                </li>
+
                 <li><a href="about.html">About Us</a></li>
                 <li><a href="contact.html">Contact</a></li>
             </ul>
-            <div class="nav-icons">
-                <a href="search.html" title="Search">🔍</a>
-                <a href="account.html" title="My Account">👤</a>
-                <a href="cart.html" title="Shopping Cart">
-                    🛒
-                    <span class="cart-count" id="cartCount">0</span>
-                </a>
+
+            <!-- Icons + mobile button -->
+            <div style="display:flex;align-items:center;gap:1rem">
+                <div class="nav-icons">
+                    <a href="search.html" title="Search" aria-label="Search">🔍</a>
+                    <a href="account.html" title="My Account" aria-label="My Account">👤</a>
+                    <a href="cart.html" title="Shopping Cart" aria-label="Shopping Cart">
+                        🛒
+                        <span class="cart-count" id="cartCount">0</span>
+                    </a>
+                </div>
+
+                <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Open menu">☰</button>
             </div>
-            <button class="mobile-menu-btn" onclick="toggleMobileMenu()">☰</button>
         </nav>
     </header>
 
-    <!-- Mobile Menu -->
-    <div class="menu-overlay" id="menuOverlay" onclick="toggleMobileMenu()"></div>
-    <div class="mobile-menu" id="mobileMenu">
-        <button class="mobile-menu-close" onclick="toggleMobileMenu()">✕</button>
-        <ul class="mobile-nav-links">
-            <li><a href="index.html" onclick="toggleMobileMenu()">Home</a></li>
-            <li><a href="shop.html" onclick="toggleMobileMenu()">Shop</a></li>
-            <li><a href="about.html" onclick="toggleMobileMenu()">About Us</a></li>
-            <li><a href="contact.html" onclick="toggleMobileMenu()">Contact</a></li>
-            <li><a href="account.html" onclick="toggleMobileMenu()">My Account</a></li>
-            <li><a href="cart.html" onclick="toggleMobileMenu()">Shopping Cart</a></li>
-        </ul>
+    <!-- Mobile drawer -->
+    <div class="mobile-drawer-backdrop" id="mobileBackdrop" aria-hidden="true">
+        <div class="mobile-drawer" id="mobileDrawer" role="dialog" aria-modal="true" aria-label="Mobile menu">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
+                <a href="index.html" class="logo" style="font-size:1.2rem">Trendora</a>
+                <button id="mobileCloseBtn" aria-label="Close menu" style="background:none;border:none;font-size:1.4rem;cursor:pointer;color:#333">✕</button>
+            </div>
+            
+            <ul class="nav-links" style="display:block">
+                <li style="margin:0.6rem 0"><a href="index.html" class="active">Home</a></li>
+                <li style="margin:0.6rem 0">
+                    <div style="display:flex;justify-content:space-between;align-items:center">
+                        <a href="shop.html">Shop</a>
+                        <button id="mobileShopToggle" aria-expanded="false" aria-label="Toggle shop menu" style="background:none;border:none;cursor:pointer;font-size:1.1rem;color:#555">▾</button>
+                    </div>
+                    <div class="mobile-shop-sub" id="mobileShopSub">
+                        <a href="shop.html?category=women" style="display:block;padding:0.5rem 0;padding-left:1rem">Women</a>
+                        <a href="shop.html?category=men" style="display:block;padding:0.5rem 0;padding-left:1rem">Men</a>
+                        <a href="shop.html?category=accessories" style="display:block;padding:0.5rem 0;padding-left:1rem">Accessories</a>
+                        <a href="shop.html?category=shoes" style="display:block;padding:0.5rem 0;padding-left:1rem">Shoes</a>
+                    </div>
+                </li>
+                <li style="margin:0.6rem 0"><a href="about.html">About Us</a></li>
+                <li style="margin:0.6rem 0"><a href="contact.html">Contact</a></li>
+                <li style="margin:1rem 0"><a href="account.html" style="display:inline-block;padding:0.6rem 1rem;background:#f3f4f6;color:#2c3e50;border-radius:6px;text-decoration:none;font-weight:600">My Account</a></li>
+                <li style="margin:0.5rem 0">
+                    <a href="signin.html" style="display:inline-block;padding:0.6rem 1rem;background:#2c3e50;color:#fff;border-radius:6px;text-decoration:none;margin-right:0.5rem;font-weight:600">Sign In</a>
+                    <a href="signup.html" style="display:inline-block;padding:0.6rem 1rem;background:#e74c3c;color:#fff;border-radius:6px;text-decoration:none;font-weight:600">Sign Up</a>
+                </li>
+            </ul>
+        </div>
     </div>
 
     <!-- Hero Section -->
@@ -719,30 +854,30 @@
         <h2>Shop by Category</h2>
         <p class="section-subtitle">Discover your style across our curated collections</p>
         <div class="category-grid">
-            <div class="category-card" onclick="window.location.href='shop.html?category=women'">
+            <article class="category-card" onclick="window.location.href='shop.html?category=women'">
                 <div class="product-image" style="background: #e8d5d0;">👗</div>
                 <div class="category-overlay">
                     <h3>Women</h3>
                 </div>
-            </div>
-            <div class="category-card" onclick="window.location.href='shop.html?category=men'">
+            </article>
+            <article class="category-card" onclick="window.location.href='shop.html?category=men'">
                 <div class="product-image" style="background: #d0dce8;">👔</div>
                 <div class="category-overlay">
                     <h3>Men</h3>
                 </div>
-            </div>
-            <div class="category-card" onclick="window.location.href='shop.html?category=accessories'">
+            </article>
+            <article class="category-card" onclick="window.location.href='shop.html?category=accessories'">
                 <div class="product-image" style="background: #e8d0d5;">👜</div>
                 <div class="category-overlay">
                     <h3>Accessories</h3>
                 </div>
-            </div>
-            <div class="category-card" onclick="window.location.href='shop.html?category=shoes'">
+            </article>
+            <article class="category-card" onclick="window.location.href='shop.html?category=shoes'">
                 <div class="product-image" style="background: #d5e8d0;">👟</div>
                 <div class="category-overlay">
                     <h3>Shoes</h3>
                 </div>
-            </div>
+            </article>
         </div>
     </section>
 
@@ -750,79 +885,95 @@
     <section class="section" style="background: #f8f9fa;">
         <h2>Trending Now</h2>
         <p class="section-subtitle">Handpicked styles that define this season</p>
-        <div class="product-grid" id="productGrid">
-            <div class="product-card" data-id="1" data-name="Cashmere Blend Sweater" data-price="89.99">
+        <div class="product-grid">
+            <!-- Product 1 -->
+            <article class="product-card" data-product-name="Cashmere Blend Sweater" data-product-price="89.99">
                 <span class="product-badge">Trending</span>
-                <div class="product-image" style="background: #f5f0eb;">🧥</div>
+                <div class="product-image">👚</div>
                 <div class="product-info">
                     <h3>Cashmere Blend Sweater</h3>
                     <div class="product-price">$89.99</div>
-                    <button class="add-to-cart-btn" onclick="addToCart(1, 'Cashmere Blend Sweater', 89.99)">Add to Cart</button>
+                    <button class="add-to-cart-btn">Add to Cart</button>
                 </div>
-            </div>
-            <div class="product-card" data-id="2" data-name="Leather Crossbody Bag" data-price="129.99">
-                <span class="product-badge" style="background: #3498db;">New</span>
-                <div class="product-image" style="background: #ebe8e1;">👜</div>
+            </article>
+
+            <!-- Product 2 -->
+            <article class="product-card" data-product-name="Floral Maxi Dress" data-product-price="129.99">
+                <span class="product-badge new">New</span>
+                <div class="product-image">👗</div>
                 <div class="product-info">
-                    <h3>Leather Crossbody Bag</h3>
+                    <h3>Floral Maxi Dress</h3>
                     <div class="product-price">$129.99</div>
-                    <button class="add-to-cart-btn" onclick="addToCart(2, 'Leather Crossbody Bag', 129.99)">Add to Cart</button>
+                    <button class="add-to-cart-btn">Add to Cart</button>
                 </div>
-            </div>
-            <div class="product-card" data-id="3" data-name="Tailored Wool Coat" data-price="199.99">
-                <span class="product-badge" style="background: #f39c12;">Bestseller</span>
-                <div class="product-image" style="background: #eae4db;">🧥</div>
+            </article>
+
+            <!-- Product 3 -->
+            <article class="product-card" data-product-name="Classic Oxford Shirt" data-product-price="79.99">
+                <span class="product-badge bestseller">Bestseller</span>
+                <div class="product-image">👔</div>
                 <div class="product-info">
-                    <h3>Tailored Wool Coat</h3>
-                    <div class="product-price">$199.99</div>
-                    <button class="add-to-cart-btn" onclick="addToCart(3, 'Tailored Wool Coat', 199.99)">Add to Cart</button>
+                    <h3>Classic Oxford Shirt</h3>
+                    <div class="product-price">$79.99</div>
+                    <button class="add-to-cart-btn">Add to Cart</button>
                 </div>
-            </div>
-            <div class="product-card" data-id="4" data-name="Silk Scarf Collection" data-price="59.99">
-                <span class="product-badge" style="background: #9b59b6;">Limited</span>
-                <div class="product-image" style="background: #f5e8d8;">🧣</div>
+            </article>
+
+            <!-- Product 4 -->
+            <article class="product-card" data-product-name="Designer Handbag" data-product-price="149.99">
+                <div class="product-image">👜</div>
                 <div class="product-info">
-                    <h3>Silk Scarf Collection</h3>
-                    <div class="product-price">$59.99</div>
-                    <button class="add-to-cart-btn" onclick="addToCart(4, 'Silk Scarf Collection', 59.99)">Add to Cart</button>
+                    <h3>Designer Handbag</h3>
+                    <div class="product-price">$149.99</div>
+                    <button class="add-to-cart-btn">Add to Cart</button>
                 </div>
-            </div>
+            </article>
         </div>
         <div class="view-all-btn">
             <a href="shop.html" class="btn-primary">View All Products</a>
         </div>
     </section>
 
-    <!-- Curated Section -->
+    <!-- Curated for You -->
     <section class="section">
         <h2>Curated for You</h2>
         <p class="section-subtitle">Personalized recommendations based on your style</p>
         <div class="curated-grid">
-            <div class="curated-card" onclick="window.location.href='blog.html'">
-                <div class="product-image" style="background: #d4c5b9; height: 100%;">📖</div>
+            <article class="curated-card">
+                <div class="product-image" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 350px;"></div>
                 <div class="curated-overlay">
-                    <h3>Style Guide 2024</h3>
-                    <p>Expert tips to elevate your wardrobe</p>
-                    <a href="blog.html" class="btn-secondary">Read More</a>
+                    <h3>Weekend Essentials</h3>
+                    <p>Comfortable & stylish pieces for your leisure time</p>
+                    <a href="shop.html?collection=weekend" class="btn-secondary">Explore Collection</a>
                 </div>
-            </div>
-            <div class="curated-card" onclick="window.location.href='shop.html?collection=exclusive'">
-                <div class="product-image" style="background: #e8ddd0; height: 100%;">✨</div>
+            </article>
+
+            <article class="curated-card">
+                <div class="product-image" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); min-height: 350px;"></div>
                 <div class="curated-overlay">
-                    <h3>Exclusive Collection</h3>
-                    <p>Limited edition pieces you'll love</p>
-                    <a href="shop.html?collection=exclusive" class="btn-secondary">Discover Now</a>
+                    <h3>Office Chic</h3>
+                    <p>Professional outfits that make a statement</p>
+                    <a href="shop.html?collection=office" class="btn-secondary">Explore Collection</a>
                 </div>
-            </div>
+            </article>
+
+            <article class="curated-card">
+                <div class="product-image" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); min-height: 350px;"></div>
+                <div class="curated-overlay">
+                    <h3>Evening Glamour</h3>
+                    <p>Elegant pieces for special occasions</p>
+                    <a href="shop.html?collection=evening" class="btn-secondary">Explore Collection</a>
+                </div>
+            </article>
         </div>
     </section>
 
-    <!-- Newsletter -->
+    <!-- Newsletter Section -->
     <section class="newsletter">
         <h2>Stay in Style</h2>
         <p>Subscribe to get exclusive offers and style updates</p>
         <form class="newsletter-form" id="newsletterForm">
-            <input type="email" id="newsletterEmail" placeholder="Enter your email" required>
+            <input type="email" id="newsletterEmail" placeholder="Enter your email" required aria-label="Email address">
             <button type="submit">Subscribe</button>
         </form>
     </section>
@@ -834,6 +985,7 @@
                 <div class="logo">Trendora</div>
                 <p>Your choice, your style, your identity. Discover curated fashion trends that define who you are.</p>
             </div>
+            
             <div class="footer-links">
                 <h3>Quick Links</h3>
                 <ul>
@@ -843,6 +995,7 @@
                     <li><a href="account.html">My Account</a></li>
                 </ul>
             </div>
+            
             <div class="footer-links">
                 <h3>Customer Service</h3>
                 <ul>
@@ -852,314 +1005,343 @@
                     <li><a href="faq.html">FAQ</a></li>
                 </ul>
             </div>
+            
             <div class="footer-links">
                 <h3>Connect With Us</h3>
                 <div class="social-icons">
-                    <a href="https://facebook.com" target="_blank" title="Facebook">📘</a>
-                    <a href="https://instagram.com" target="_blank" title="Instagram">📷</a>
-                    <a href="https://twitter.com" target="_blank" title="Twitter">🐦</a>
-                    <a href="https://pinterest.com" target="_blank" title="Pinterest">📌</a>
+                    <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" title="Facebook" aria-label="Facebook">📘</a>
+                    <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" title="Instagram" aria-label="Instagram">📷</a>
+                    <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" title="Twitter" aria-label="Twitter">🐦</a>
+                    <a href="https://pinterest.com" target="_blank" rel="noopener noreferrer" title="Pinterest" aria-label="Pinterest">📌</a>
                 </div>
                 <p style="margin-top: 1rem; color: #bdc3c7; font-size: 0.9rem;">Follow us for style inspiration and exclusive offers</p>
             </div>
         </div>
+        
         <div class="footer-bottom">
             <div>© 2025 Trendora. All rights reserved.</div>
-            <div>
+            <div class="footer-bottom-links">
                 <a href="privacy.html">Privacy Policy</a>
                 <a href="terms.html">Terms of Service</a>
-           </div>
+            </div>
         </div>
     </footer>
 
     <!-- Toast Notification -->
-    <div class="toast" id="toast"></div>
+    <div id="toast" class="toast" role="alert" aria-live="polite"></div>
 
+    <!-- JavaScript -->
     <script>
+        // Mobile Menu Functionality
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const mobileBackdrop = document.getElementById('mobileBackdrop');
+        const mobileDrawer = document.getElementById('mobileDrawer');
+        const mobileCloseBtn = document.getElementById('mobileCloseBtn');
+        const mobileShopToggle = document.getElementById('mobileShopToggle');
+        const mobileShopSub = document.getElementById('mobileShopSub');
 
-// Protect the page - redirect to signin if not authenticated
-        window.addEventListener('DOMContentLoaded', function() {
-            // Check if user is authenticated
-            if (!isAuthenticated()) {
-                // Show a message or redirect
-                const heroSection = document.querySelector('.hero');
-                if (heroSection) {
-                    // Create overlay
-                    const overlay = document.createElement('div');
-                    overlay.style.cssText = `
-                        position: fixed;
-                        top: 0;
-                        left: 0;
-                        right: 0;
-                        bottom: 0;
-                        background: rgba(0,0,0,0.8);
-                        z-index: 9999;
-                        display: flex;
-                        align-items: center;
-                        justify-content: center;
-                    `;
-                    
-                    const modal = document.createElement('div');
-                    modal.style.cssText = `
-                        background: white;
-                        padding: 3rem;
-                        border-radius: 15px;
-                        text-align: center;
-                        max-width: 500px;
-                        margin: 20px;
-                    `;
-                    
-                    modal.innerHTML = `
-                        <h2 style="color: #2c3e50; margin-bottom: 1rem; font-size: 1.8rem;">Welcome to Trendora! 🛍️</h2>
-                        <p style="color: #666; margin-bottom: 2rem; line-height: 1.6;">
-                            Please sign in or create an account to start shopping and discover amazing products.
-                        </p>
-                        <div style="display: flex; gap: 1rem; justify-content: center;">
-                            <a href="signin.html" style="
-                                padding: 1rem 2rem;
-                                background: #2c3e50;
-                                color: white;
-                                text-decoration: none;
-                                border-radius: 8px;
-                                font-weight: 600;
-                                transition: all 0.3s;
-                            ">Sign In</a>
-                            <a href="signup.html" style="
-                                padding: 1rem 2rem;
-                                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-                                color: white;
-                                text-decoration: none;
-                                border-radius: 8px;
-                                font-weight: 600;
-                                transition: all 0.3s;
-                            ">Sign Up</a>
-                        </div>
-                        <p style="color: #999; margin-top: 1.5rem; font-size: 0.9rem;">
-                            Already have an account? Sign in to continue.
-                        </p>
-                    `;
-                    
-                    overlay.appendChild(modal);
-                    document.body.appendChild(overlay);
-                    
-                    // Prevent scrolling
-                    document.body.style.overflow = 'hidden';
-                    
-                    // Redirect after 5 seconds
-                    setTimeout(() => {
-                        window.location.href = 'signin.html?redirect=index.html';
-                    }, 5000);
+        function openMobileMenu() {
+            if (mobileBackdrop && mobileDrawer) {
+                mobileBackdrop.classList.add('active');
+                mobileDrawer.classList.add('active');
+                mobileBackdrop.setAttribute('aria-hidden', 'false');
+                document.body.style.overflow = 'hidden';
+            }
+        }
+
+        function closeMobileMenu() {
+            if (mobileBackdrop && mobileDrawer) {
+                mobileBackdrop.classList.remove('active');
+                mobileDrawer.classList.remove('active');
+                mobileBackdrop.setAttribute('aria-hidden', 'true');
+                document.body.style.overflow = '';
+            }
+        }
+
+        if (mobileMenuBtn) {
+            mobileMenuBtn.addEventListener('click', openMobileMenu);
+        }
+
+        if (mobileCloseBtn) {
+            mobileCloseBtn.addEventListener('click', closeMobileMenu);
+        }
+
+        if (mobileBackdrop) {
+            mobileBackdrop.addEventListener('click', (e) => {
+                if (e.target === mobileBackdrop) {
+                    closeMobileMenu();
+                }
+            });
+        }
+
+        // Mobile shop submenu toggle
+        if (mobileShopToggle && mobileShopSub) {
+            mobileShopToggle.addEventListener('click', () => {
+                const isExpanded = mobileShopToggle.getAttribute('aria-expanded') === 'true';
+                mobileShopToggle.setAttribute('aria-expanded', !isExpanded);
+                mobileShopSub.classList.toggle('active');
+            });
+        }
+
+        // Desktop Shop Dropdown
+        const shopCaret = document.getElementById('shopCaret');
+        const shopDropdown = document.getElementById('shopDropdown');
+
+        if (shopCaret && shopDropdown) {
+            shopCaret.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const isExpanded = shopCaret.getAttribute('aria-expanded') === 'true';
+                shopCaret.setAttribute('aria-expanded', !isExpanded);
+                shopDropdown.classList.toggle('active');
+            });
+
+            // Close dropdown when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!shopCaret.contains(e.target) && !shopDropdown.contains(e.target)) {
+                    shopDropdown.classList.remove('active');
+                    shopCaret.setAttribute('aria-expanded', 'false');
+                }
+            });
+        }
+
+        // Close mobile menu with Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeMobileMenu();
+                if (shopDropdown) {
+                    shopDropdown.classList.remove('active');
+                    if (shopCaret) shopCaret.setAttribute('aria-expanded', 'false');
                 }
             }
         });
 
-        // Make all "Shop Now" buttons check authentication
-        document.addEventListener('DOMContentLoaded', function() {
-            const shopButtons = document.querySelectorAll('a[href="shop.html"], .shop-btn, .cta-button');
-            shopButtons.forEach(button => {
-                button.addEventListener('click', function(e) {
-                    if (!isAuthenticated()) {
-                        e.preventDefault();
-                        window.location.href = 'signin.html?redirect=shop.html';
-                    }
-                });
-            });
-        });
-        
-       // Update account link based on auth status
-function updateAuthLink() {
-    const currentUser = localStorage.getItem('currentUser');
-    const accountLink = document.querySelector('a[href="account.html"]');
-    
-    if (!accountLink) return;
-    
-    if (currentUser) {
-        accountLink.title = 'My Account';
-    } else {
-        accountLink.href = 'signin.html';
-        accountLink.title = 'Sign In';
-    }
-}
-
-// Call on page load
-document.addEventListener('DOMContentLoaded', updateAuthLink);
-        
-        // Shopping Cart Management
-        let cart = JSON.parse(localStorage.getItem('cart')) || [];
-
-        // Update cart count on page load
-        updateCartCount();
-
-        function updateCartCount() {
-            const cartCount = cart.reduce((total, item) => total + item.quantity, 0);
-            document.getElementById('cartCount').textContent = cartCount;
-        }
-
-        function addToCart(id, name, price) {
-            const existingItem = cart.find(item => item.id === id);
-            
-            if (existingItem) {
-                existingItem.quantity += 1;
-            } else {
-                cart.push({
-                    id: id,
-                    name: name,
-                    price: price,
-                    quantity: 1
-                });
-            }
-            
-            localStorage.setItem('cart', JSON.stringify(cart));
-            updateCartCount();
-            showToast(`${name} added to cart!`, 'success');
-        }
-
+        // Toast notification function
         function showToast(message, type = 'success') {
             const toast = document.getElementById('toast');
+            if (!toast) return;
+
             toast.textContent = message;
             toast.className = `toast ${type} show`;
-            
+
             setTimeout(() => {
                 toast.classList.remove('show');
             }, 3000);
         }
 
-        // Mobile Menu Toggle
-        function toggleMobileMenu() {
-            const mobileMenu =document.getElementById('mobileMenu');
-            const menuOverlay = document.getElementById('menuOverlay');
-            
-            mobileMenu.classList.toggle('active');
-            menuOverlay.classList.toggle('active');
-            
-            // Prevent body scroll when menu is open
-            if (mobileMenu.classList.contains('active')) {
-                document.body.style.overflow = 'hidden';
-            } else {
-                document.body.style.overflow = '';
+        // Cart Management
+        function getCart() {
+            try {
+                return JSON.parse(localStorage.getItem('cart') || '[]');
+            } catch (err) {
+                console.error('Error reading cart:', err);
+                return [];
             }
         }
 
-        // Close mobile menu when clicking outside
-        document.getElementById('menuOverlay').addEventListener('click', function() {
-            toggleMobileMenu();
-        });
+        function saveCart(cart) {
+            try {
+                localStorage.setItem('cart', JSON.stringify(cart));
+                updateCartCount();
+            } catch (err) {
+                console.error('Error saving cart:', err);
+            }
+        }
 
-        // Close mobile menu on window resize if it's open
-        window.addEventListener('resize', function() {
-            if (window.innerWidth > 968) {
-                const mobileMenu = document.getElementById('mobileMenu');
-                const menuOverlay = document.getElementById('menuOverlay');
-                
-                if (mobileMenu.classList.contains('active')) {
-                    mobileMenu.classList.remove('active');
-                    menuOverlay.classList.remove('active');
-                    document.body.style.overflow = '';
+        function addToCart(productName, productPrice) {
+            const cart = getCart();
+            
+            // Check if product already exists in cart
+            const existingProduct = cart.find(item => item.name === productName);
+            
+            if (existingProduct) {
+                existingProduct.quantity += 1;
+                showToast(`Updated ${productName} quantity in cart`, 'success');
+            } else {
+                cart.push({
+                    name: productName,
+                    price: parseFloat(productPrice),
+                    quantity: 1,
+                    id: Date.now()
+                });
+                showToast(`${productName} added to cart!`, 'success');
+            }
+            
+            saveCart(cart);
+        }
+
+        function updateCartCount() {
+            const cartCountElement = document.getElementById('cartCount');
+            if (!cartCountElement) return;
+
+            const cart = getCart();
+            const totalItems = cart.reduce((sum, item) => sum + (item.quantity || 1), 0);
+
+            if (totalItems > 0) {
+                cartCountElement.textContent = totalItems;
+                cartCountElement.style.display = 'inline-block';
+            } else {
+                cartCountElement.style.display = 'none';
+            }
+        }
+
+        // Add to cart button handlers
+        document.addEventListener('click', (e) => {
+            if (e.target.classList.contains('add-to-cart-btn')) {
+                const productCard = e.target.closest('.product-card');
+                if (productCard) {
+                    const productName = productCard.getAttribute('data-product-name');
+                    const productPrice = productCard.getAttribute('data-product-price');
+                    
+                    if (productName && productPrice) {
+                        addToCart(productName, productPrice);
+                        
+                        // Visual feedback
+                        const originalText = e.target.textContent;
+                        e.target.textContent = 'Added!';
+                        e.target.style.background = '#27ae60';
+
+                        setTimeout(() => {
+                            e.target.textContent = originalText;
+                            e.target.style.background = '';
+                        }, 1500);
+                    }
                 }
             }
         });
 
-        // Smooth scrolling for anchor links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
+        // Newsletter Form
+        const newsletterForm = document.getElementById('newsletterForm');
+        
+        if (newsletterForm) {
+            newsletterForm.addEventListener('submit', function(e) {
                 e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
-                }
-            });
-        });
-
-        // Newsletter form submission
-        document.getElementById('newsletterForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const email = document.getElementById('newsletterEmail').value;
-            
-            // Simulate API call
-            const button = this.querySelector('button');
-            const originalText = button.textContent;
-            button.innerHTML = '<span class="loading"></span>';
-            button.disabled = true;
-            
-            setTimeout(() => {
-                showToast(`Thank you for subscribing! Updates will be sent to ${email}`, 'success');
-                this.reset();
-                button.textContent = originalText;
-                button.disabled = false;
-            }, 1500);
-        });
-
-        // Intersection Observer for scroll animations
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
-        };
-
-        const observer = new IntersectionObserver(function(entries) {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.style.opacity = '1';
-                    entry.target.style.transform = 'translateY(0)';
-                }
-            });
-        }, observerOptions);
-
-        // Observe elements for animation
-        document.querySelectorAll('.product-card, .category-card, .curated-card').forEach(card => {
-            card.style.opacity = '0';
-            card.style.transform = 'translateY(20px)';
-            card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-            observer.observe(card);
-        });
-
-        // Product card click to view details (excluding button clicks)
-        document.querySelectorAll('.product-card').forEach(card => {
-            card.addEventListener('click', function(e) {
-                // Don't navigate if clicking the add to cart button
-                if (e.target.classList.contains('add-to-cart-btn')) {
+                
+                const emailInput = document.getElementById('newsletterEmail');
+                const email = emailInput.value.trim();
+                
+                if (!email) {
+                    showToast('Please enter your email address', 'error');
                     return;
                 }
                 
-                const productId = this.dataset.id;
-                window.location.href = `product.html?id=${productId}`;
+                // Email validation
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(email)) {
+                    showToast('Please enter a valid email address', 'error');
+                    return;
+                }
+                
+                // Get button
+                const submitBtn = newsletterForm.querySelector('button[type="submit"]');
+                const originalText = submitBtn.textContent;
+                submitBtn.textContent = 'Subscribing...';
+                submitBtn.disabled = true;
+                
+                // Simulate API call
+                setTimeout(() => {
+                    try {
+                        // Store subscription in localStorage (for demo)
+                        const subscribers = JSON.parse(localStorage.getItem('newsletterSubscribers') || '[]');
+                        
+                        if (subscribers.includes(email)) {
+                            showToast('You are already subscribed!', 'error');
+                        } else {
+                            subscribers.push(email);
+                            localStorage.setItem('newsletterSubscribers', JSON.stringify(subscribers));
+                            showToast('Successfully subscribed to our newsletter!', 'success');
+                            emailInput.value = '';
+                        }
+                    } catch (err) {
+                        console.error('Error saving subscription:', err);
+                        showToast('Successfully subscribed!', 'success');
+                        emailInput.value = '';
+                    }
+                    
+                    submitBtn.textContent = originalText;
+                    submitBtn.disabled = false;
+                }, 1500);
+            });
+        }
+
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                const href = this.getAttribute('href');
+                if (href !== '#' && href.length > 1) {
+                    e.preventDefault();
+                    const target = document.querySelector(href);
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                }
             });
         });
 
-        // Prevent card click when clicking add to cart button
-        document.querySelectorAll('.add-to-cart-btn').forEach(btn => {
-            btn.addEventListener('click', function(e) {
-                e.stopPropagation();
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            updateCartCount();
+
+            // Add animation to sections when they come into view
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, observerOptions);
+
+            // Observe product and category cards
+            document.querySelectorAll('.product-card, .category-card, .curated-card').forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                card.style.transition = `opacity 0.6s ease ${index * 0.1}s, transform 0.6s ease ${index * 0.1}s`;
+                observer.observe(card);
             });
         });
 
-        // Check if user is logged in (for account icon)
-        function checkAuthStatus() {
-            const user = JSON.parse(localStorage.getItem('user'));
-            const accountIcon = document.querySelector('.nav-icons a[title="My Account"]');
-            
-            if (user) {
-                // User is logged in
-                accountIcon.innerHTML = '👤';
-                accountIcon.title = `${user.name}'s Account`;
+        // Update cart count when storage changes (for multi-tab support)
+        window.addEventListener('storage', (e) => {
+            if (e.key === 'cart') {
+                updateCartCount();
+            }
+        });
+
+        // Handle category navigation with URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const category = urlParams.get('category');
+        const collection = urlParams.get('collection');
+
+        if (category || collection) {
+            // Redirect to shop page with filters
+            if (window.location.pathname.includes('index.html') || window.location.pathname === '/') {
+                const filterParam = category ? `category=${category}` : `collection=${collection}`;
+                window.location.href = `shop.html?${filterParam}`;
             }
         }
 
-        checkAuthStatus();
-
-        // Search functionality
-        const searchIcon = document.querySelector('.nav-icons a[title="Search"]');
-        searchIcon.addEventListener('click', function(e) {
-            e.preventDefault();
-            const searchTerm = prompt('What are you looking for?');
-            if (searchTerm) {
-                window.location.href = `shop.html?search=${encodeURIComponent(searchTerm)}`;
-            }
+        // Add keyboard navigation for product cards
+        document.querySelectorAll('.product-card, .category-card, .curated-card').forEach((card, index) => {
+            card.setAttribute('tabindex', '0');
+            card.setAttribute('role', 'button');
+            
+            card.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    card.click();
+                }
+            });
         });
 
-        // Lazy loading for images (if you add real images later)
+        // Lazy load images (if you add real images later)
         if ('IntersectionObserver' in window) {
             const imageObserver = new IntersectionObserver((entries, observer) => {
                 entries.forEach(entry => {
@@ -1168,7 +1350,7 @@ document.addEventListener('DOMContentLoaded', updateAuthLink);
                         if (img.dataset.src) {
                             img.src = img.dataset.src;
                             img.removeAttribute('data-src');
-                            imageObserver.unobserve(img);
+                            observer.unobserve(img);
                         }
                     }
                 });
@@ -1179,129 +1361,261 @@ document.addEventListener('DOMContentLoaded', updateAuthLink);
             });
         }
 
-        // Add loading state to page
-        window.addEventListener('load', function() {
-            document.body.classList.add('loaded');
+        // Add hover effect for category cards
+        document.querySelectorAll('.category-card').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-5px)';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+            });
         });
 
-        // Track page view (for analytics)
-        console.log('Page viewed: Home');
-        console.log('Current cart items:', cart.length);
+        // Track user interactions (for analytics)
+        function trackEvent(category, action, label) {
+            console.log('Event tracked:', { category, action, label });
+            // In production, send to analytics service
+            // Example: gtag('event', action, { event_category: category, event_label: label });
+        }
 
-        // Admin link (hidden - only for admin users)
-        document.addEventListener('keydown', function(e) {
-            // Press Ctrl + Shift + A to access admin
-            if (e.ctrlKey && e.shiftKey && e.key === 'A') {
-                const password = prompt('Enter admin password:');
-                if (password === 'admin123') { // Change this to a secure password
-                    window.location.href = 'admin.html';
-                } else if (password) {
-                    alert('Invalid password');
+        // Track add to cart events
+        document.addEventListener('click', (e) => {
+            if (e.target.classList.contains('add-to-cart-btn')) {
+                const productCard = e.target.closest('.product-card');
+                if (productCard) {
+                    const productName = productCard.getAttribute('data-product-name');
+                    trackEvent('Ecommerce', 'Add to Cart', productName);
                 }
             }
         });
 
-        // Handle URL parameters (for category filtering from links)
-        window.addEventListener('DOMContentLoaded', function() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const category = urlParams.get('category');
-            
-            if (category) {
-                // Scroll to category section
-                const categorySection = document.querySelector('.category-grid');
-                if (categorySection) {
-                    categorySection.scrollIntoView({ behavior: 'smooth' });
-                }
-            }
+        // Track newsletter subscriptions
+        if (newsletterForm) {
+            newsletterForm.addEventListener('submit', () => {
+                trackEvent('Newsletter', 'Subscribe', 'Homepage');
+            });
+        }
+
+        // Track category clicks
+        document.querySelectorAll('.category-card').forEach(card => {
+            card.addEventListener('click', function() {
+                const categoryName = this.querySelector('h3')?.textContent || 'Unknown';
+                trackEvent('Navigation', 'Category Click', categoryName);
+            });
         });
 
-        // Performance monitoring
-        if ('PerformanceObserver' in window) {
-            const perfObserver = new PerformanceObserver((list) => {
-                for (const entry of list.getEntries()) {
-                    console.log('Page load time:', entry.loadEventEnd - entry.fetchStart, 'ms');
-                }
+        // Performance optimization: Debounce scroll events
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
+
+        // Add scroll-to-top button (optional enhancement)
+        const scrollToTopBtn = document.createElement('button');
+        scrollToTopBtn.innerHTML = '↑';
+        scrollToTopBtn.setAttribute('aria-label', 'Scroll to top');
+        scrollToTopBtn.style.cssText = `
+            position: fixed;
+            bottom: 5rem;
+            right: 2rem;
+            background: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            opacity: 0;
+            transition: opacity 0.3s, transform 0.3s;
+            z-index: 2000;
+            display: none;
+        `;
+
+        document.body.appendChild(scrollToTopBtn);
+
+        const debouncedScroll = debounce(() => {
+            if (window.pageYOffset > 300) {
+                scrollToTopBtn.style.display = 'block';
+                setTimeout(() => { scrollToTopBtn.style.opacity = '1'; }, 10);
+            } else {
+                scrollToTopBtn.style.opacity = '0';
+                setTimeout(() => { scrollToTopBtn.style.display = 'none'; }, 300);
+            }
+        }, 100);
+
+        window.addEventListener('scroll', debouncedScroll);
+
+        scrollToTopBtn.addEventListener('click', () => {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
             });
-            
-            perfObserver.observe({ entryTypes: ['navigation'] });
+        });
+
+        scrollToTopBtn.addEventListener('mouseenter', function() {
+            this.style.transform = 'scale(1.1)';
+        });
+
+        scrollToTopBtn.addEventListener('mouseleave', function() {
+            this.style.transform = 'scale(1)';
+        });
+
+        // Add loading state for product cards
+        function showLoadingState(element) {
+            const originalContent = element.innerHTML;
+            element.innerHTML = `
+                <div style="display: flex; justify-content: center; align-items: center; height: 100%; padding: 2rem;">
+                    <div class="loading"></div>
+                </div>
+            `;
+            return originalContent;
         }
 
-        // Service Worker registration (for PWA functionality - optional)
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', function() {
-                // Uncomment when you have a service worker file
-                // navigator.serviceWorker.register('/sw.js').then(function(registration) {
-                //     console.log('ServiceWorker registration successful');
-                // }).catch(function(err) {
-                //     console.log('ServiceWorker registration failed: ', err);
-                // });
-            });
+        function hideLoadingState(element, originalContent) {
+            element.innerHTML = originalContent;
         }
 
-        // Dark mode toggle (optional feature)
-        function toggleDarkMode() {
-            document.body.classList.toggle('dark-mode');
-            localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
-        }
+        // Error handling for localStorage operations
+        window.addEventListener('error', (e) => {
+            console.error('Global error:', e.error);
+            // In production, send to error tracking service
+        });
 
-        // Check for saved dark mode preference
-        if (localStorage.getItem('darkMode') === 'true') {
-            document.body.classList.add('dark-mode');
-        }
+        // Handle offline/online status
+        window.addEventListener('online', () => {
+            showToast('Connection restored!', 'success');
+        });
 
-        // Console welcome message
-        console.log('%c Welcome to Trendora! ', 'background: #e74c3c; color: white; font-size: 20px; padding: 10px;');
-        console.log('%c Built with ❤️ for ADETUTU OLUWATOBI ', 'color: #2c3e50; font-size: 14px;');
+        window.addEventListener('offline', () => {
+            showToast('You are offline. Some features may not work.', 'error');
+        });
 
-        // Prevent right-click on product images (optional - for protection)
-        // Uncomment if needed
-        // document.querySelectorAll('.product-image').forEach(img => {
-        //     img.addEventListener('contextmenu', function(e) {
-        //         e.preventDefault();
-        //         showToast('Image protection enabled', 'error');
-        //     });
-        // });
-
-        // Initialize everything
-        (function init() {
-            console.log('Trendora initialized successfully');
-            console.log('User:', localStorage.getItem('user') ? 'Logged in' : 'Guest');
-            console.log('Cart items:', cart.length);
-            
-            // Add CSRF token for forms (security)
-            const csrfToken = Math.random().toString(36).substr(2);
-            sessionStorage.setItem('csrf_token', csrfToken);
-        })();
-    </script>
-    <script src="auth.js"></script>
-<script>
-    // Check authentication and show modal
-    window.addEventListener('DOMContentLoaded', function() {
-        if (!isAuthenticated()) {
-            // Show auth modal after a short delay
-            setTimeout(() => {
-                showAuthModal();
-            }, 1000);
-        }
-
-        // Protect all "Shop Now" and navigation buttons
-        const protectedLinks = document.querySelectorAll('a[href="shop.html"], a[href*="women.html"], a[href*="men.html"], a[href*="accessories.html"], a[href*="shoes.html"], .cta-button, .shop-btn');
+        // Prefetch links for faster navigation
+        const prefetchLinks = document.querySelectorAll('a[href^="shop.html"], a[href^="about.html"], a[href^="contact.html"]');
         
-        protectedLinks.forEach(link => {
-            link.addEventListener('click', function(e) {
-                if (!isAuthenticated()) {
-                    e.preventDefault();
-                    const destination = this.getAttribute('href') || 'shop.html';
-                    window.location.href = `signin.html?redirect=${destination}`;
-                }
+        if ('IntersectionObserver' in window) {
+            const prefetchObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const link = entry.target;
+                        const prefetchLink = document.createElement('link');
+                        prefetchLink.rel = 'prefetch';
+                        prefetchLink.href = link.href;
+                        document.head.appendChild(prefetchLink);
+                        prefetchObserver.unobserve(link);
+                    }
+                });
             });
+
+            prefetchLinks.forEach(link => prefetchObserver.observe(link));
+        }
+
+        // Add page view tracking
+        document.addEventListener('DOMContentLoaded', () => {
+            trackEvent('Page', 'View', 'Homepage');
         });
-    });
-</script>
+
+        // Handle form autofill detection
+        if (newsletterForm) {
+            const emailInput = document.getElementById('newsletterEmail');
+            if (emailInput) {
+                emailInput.addEventListener('animationstart', (e) => {
+                    if (e.animationName === 'onAutoFillStart') {
+                        emailInput.style.background = '#e8f5e9';
+                    }
+                });
+            }
+        }
+
+        // Add CSS animation for autofill detection
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes onAutoFillStart { from {} to {} }
+            input:-webkit-autofill {
+                animation-name: onAutoFillStart;
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Console message for developers
+        console.log('%cTrendora', 'font-size: 20px; color: #e74c3c; font-weight: bold;');
+        console.log('%cHomepage loaded successfully!', 'font-size: 14px; color: #27ae60;');
+        console.log('%cBuilt with ❤️ by Trendora Team', 'font-size: 12px; color: #555;');
+
+        // Service Worker registration (for PWA capabilities)
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                // Uncomment when you have a service worker file
+                // navigator.serviceWorker.register('/sw.js')
+                //     .then(reg => console.log('Service Worker registered'))
+                //     .catch(err => console.log('Service Worker registration failed'));
+            });
+        }
+
+        // Add touch gesture support for mobile
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        document.addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+        });
+
+        document.addEventListener('touchend', (e) => {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+        });
+
+        function handleSwipe() {
+            const swipeThreshold = 50;
+            const diff = touchStartX - touchEndX;
+
+            if (Math.abs(diff) > swipeThreshold) {
+                if (diff > 0) {
+                    // Swipe left - could trigger next product view
+                    console.log('Swiped left');
+                } else {
+                    // Swipe right - could trigger previous product view
+                    console.log('Swiped right');
+                }
+            }
+        }
+
+        // Add page visibility detection
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+                console.log('User left the page');
+            } else {
+                console.log('User returned to the page');
+                updateCartCount(); // Refresh cart count when user returns
+            }
+        });
+
+        // Prevent rapid multiple clicks on buttons
+        const buttons = document.querySelectorAll('button, .btn-primary, .btn-secondary');
+        buttons.forEach(button => {
+            let isProcessing = false;
+            button.addEventListener('click', function(e) {
+                if (isProcessing) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    return false;
+                }
+                isProcessing = true;
+                setTimeout(() => {
+                    isProcessing = false;
+                }, 1000);
+            }, true);
+        });
+    </script>
 </body>
-
 </html>
-
-
-
-

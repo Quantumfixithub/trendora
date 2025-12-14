@@ -327,12 +327,31 @@
                 height: 250px;
             }
         }
+
+        .logo-img {
+  display: inline-block;
+  height: 40px; / header logo height /
+  width: auto;
+}
+
+.footer-logo-img {
+  height: 48px; / footer logo height /
+  width: auto;
+}
+
+/ Responsive tweak /
+@media (max-width: 480px) {
+  .logo-img { height: 32px; }
+  .footer-logo-img { height: 36px; }
+}
     </style>
 </head>
 <body>
     <header>
         <nav>
-            <a href="index.html" class="logo">Trendora</a>
+           <a href="index.html" class="logo" aria-label="Trendora home">
+  <img src="/trendora.jpg" alt="Trendora" class="logo-img">
+</a>
             <ul class="nav-links">
                 <li><a href="index.html">Home</a></li>
                 <li><a href="shop.html">Shop</a></li>
@@ -396,6 +415,50 @@
     </section>
 
     <div class="toast" id="toast"></div>
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <a href="index.html" class="logo" aria-label="Trendora home">
+    <img src="/assets/images/logo.svg" alt="Trendora" class="logo-img footer-logo-img">
+  </a>
+      <p>Your choice, your style, your identity. Discover curated fashion trends that define who you are.</p>
+      <div class="social-icons" aria-label="Follow us">
+        <a href="#" aria-label="Facebook">📘</a>
+        <a href="#" aria-label="Instagram">📷</a>
+        <a href="#" aria-label="Twitter">🐦</a>
+        <a href="#" aria-label="Pinterest">📌</a>
+      </div>
+    </div>
+
+    <div class="footer-links" aria-labelledby="quick-links-title">
+      <h4 id="quick-links-title">Quick Links</h4>
+      <ul>
+        <li><a href="shop.html">Shop All</a></li>
+        <li><a href="about.html">About Us</a></li>
+        <li><a href="contact.html">Contact</a></li>
+        <li><a href="account.html">My Account</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-links" aria-labelledby="customer-service-title">
+      <h4 id="customer-service-title">Customer Service</h4>
+      <ul>
+        <li><a href="shipping.html">Shipping Info</a></li>
+        <li><a href="returns.html">Returns</a></li>
+        <li><a href="size.html">Size Guide</a></li>
+        <li><a href="faq.html">FAQ</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="footer-bottom">
+    <div>© 2025 Trendora. All rights reserved.</div>
+    <div class="links">
+      <a href="privacy.html">Privacy Policy</a>
+      <a href="terms.html">Terms of Service</a>
+    </div>
+  </div>
+</footer>
 
     <script src="auth.js"></script>
     <script>
@@ -628,4 +691,5 @@
 </body>
 
 </html>
+
 

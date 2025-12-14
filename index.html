@@ -210,52 +210,6 @@
             display: block;
         }
 
-        /* Hero Section */
-        .hero {
-            background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), #d4c5b9;
-            background-size: cover;
-            background-position: center;
-            min-height: 500px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            color: white;
-            text-align: center;
-            padding: 2rem;
-        }
-
-        .hero h1 {
-            font-size: clamp(2rem, 5vw, 3.5rem);
-            margin-bottom: 1rem;
-            font-weight: 300;
-            letter-spacing: 2px;
-            font-family: 'Playfair Display', serif;
-        }
-
-        .hero p {
-            font-size: clamp(1rem, 2vw, 1.3rem);
-            margin-bottom: 2rem;
-            font-weight: 300;
-        }
-
-        .btn-primary {
-            background: white;
-            color: #333;
-            padding: 1rem 2.5rem;
-            text-decoration: none;
-            border-radius: 30px;
-            font-weight: 600;
-            transition: all 0.3s;
-            display: inline-block;
-        }
-
-        .btn-primary:hover {
-            background: #e74c3c;
-            color: white;
-            transform: translateY(-2px);
-        }
-
         /* Section Styles */
         .section {
             padding: 4rem 5%;
@@ -782,15 +736,13 @@
   .footer-logo-img { height: 36px; }
 }
 
-        /* Hero/Image Section */
+      /* Hero/Image Section */
 .image-container {
   position: relative;
   width: 100%;
   max-width: 100%;
   overflow: hidden;
 }
-
-
 
 .responsive-img {
   width: 100%;
@@ -799,6 +751,32 @@
   max-height: 500px;
   object-fit: cover;
   display: block;
+}
+
+.image-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  text-align: center;
+  background: rgba(0,0,0,0.5);
+  padding: 2rem 3rem;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 600px;
+}
+
+.image-text h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  margin-bottom: 1rem;
+  font-weight: 700;
+}
+
+.image-text p {
+  font-size: clamp(1rem, 2vw, 1.3rem);
+  font-weight: 300;
 }
 
 
@@ -1660,6 +1638,7 @@
     </script>
 </body>
 </html>
+
 
 
 

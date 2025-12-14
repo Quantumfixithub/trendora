@@ -397,175 +397,122 @@
     </div>
   </div>
 
-  <script type="module">
-    import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
+   <script>
+        // Toggle password visibility
+        function togglePassword(fieldId) {
+            const field = document.getElementById(fieldId);
+            field.type = field.type === 'password' ? 'text' : 'password';
+        }
 
-    // Use your Supabase project credentials (or environment variables in Vercel)
-    const supabaseUrl = "https://yyhdjacrehxjjydbupix.supabase.co";
-    const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl5aGRqYWNyZWh4amp5ZGJ1cGl4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU2OTc2NzYsImV4cCI6MjA4MTI3MzY3Nn0.R4f3UBO0-8WaO5VW5_O4fxG6iOBuHBSPgUREDE1n6P4";
-    const supabase = createClient("https://yyhdjacrehxjjydbupix.supabase.co, eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl5aGRqYWNyZWh4amp5ZGJ1cGl4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU2OTc2NzYsImV4cCI6MjA4MTI3MzY3Nn0.R4f3UBO0-8WaO5VW5_O4fxG6iOBuHBSPgUREDE1n6P4");
+        // Show error message
+        function showError(message) {
+            const errorDiv = document.getElementById('errorMessage');
+            errorDiv.textContent = message;
+            errorDiv.classList.add('show');
+            setTimeout(() => errorDiv.classList.remove('show'), 5000);
+        }
 
+        // Show success message
+        function showSuccess(message) {
+            const successDiv = document.getElementById('successMessage');
+            successDiv.textContent = message;
+            successDiv.classList.add('show');
+            setTimeout(() => successDiv.classList.remove('show'), 5000);
+        }
 
+        // Handle form submission
+        document.getElementById('signupForm').addEventListener('submit', function(e) {
+            e.preventDefault();
 
-    const messages = document.getElementById('messages');
+            // Get form values
+            const firstName = document.getElementById('firstName').value.trim();
+            const lastName = document.getElementById('lastName').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const phone = document.getElementById('phone').value.trim();
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const termsAccepted = document.getElementById('terms').checked;
 
-    function showMessage(text, type='info') {
-      messages.innerHTML = `<div class="${type === 'error' ? 'error' : 'success'}">${text}</div>`;
-      setTimeout(()=> messages.innerHTML='', 4000);
-    }
+            // Validation
+            if (!firstName || !lastName || !email || !phone || !password) {
+                showError('Please fill in all fields');
+                return;
+            }
 
-    document.getElementById('signupForm').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const firstName = document.getElementById('firstName').value.trim();
-      const lastName = document.getElementById('lastName').value.trim();
-      const email = document.getElementById('email').value.trim();
-      const phone = document.getElementById('phone').value.trim();
-      const password = document.getElementById('password').value;
+            // Email validation
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                showError('Please enter a valid email address');
+                return;
+            }
 
-      if (!firstName || !lastName || !email || !phone || !password) {
-        showMessage('Please complete all fields', 'error'); return;
-      }
+            // Password validation
+            if (password.length < 8) {
+                showError('Password must be at least 8 characters long');
+                return;
+            }
 
-      if (password.length < 8) {
-        showMessage('Password must be at least 8 characters', 'error'); return;
-      }
+            if (password !== confirmPassword) {
+                showError('Passwords do not match');
+                return;
+            }
 
-      try {
-        // SIGN UP with metadata stored in user.app_metadata / user.user_metadata
-        const { data, error } = await supabase.auth.signUp({
-          email,
-          password,
-          options: {
-            data: { firstName, lastName, phone }
-          }
+            if (!termsAccepted) {
+                showError('Please accept the Terms & Conditions');
+                return;
+            }
+
+            // Check if user already exists
+            const existingUsers = JSON.parse(localStorage.getItem('users')) || [];
+            const userExists = existingUsers.some(user => user.email === email);
+
+            if (userExists) {
+                showError('An account with this email already exists');
+                return;
+            }
+
+            // Create user object
+            const newUser = {
+                id: Date.now(),
+                firstName,
+                lastName,
+                email,
+                phone,
+                password, // In production, this should be hashed!
+                createdAt: new Date().toISOString()
+            };
+
+            // Save user
+            existingUsers.push(newUser);
+            localStorage.setItem('users', JSON.stringify(existingUsers));
+
+            // Set as current user
+            localStorage.setItem('currentUser', JSON.stringify({
+                id: newUser.id,
+                firstName: newUser.firstName,
+                lastName: newUser.lastName,
+                email: newUser.email,
+                phone: newUser.phone
+            }));
+
+            showSuccess('Account created successfully! Redirecting...');
+
+            // Redirect to account page
+            setTimeout(() => {
+                window.location.href = 'account.html';
+            }, 2000);
         });
 
-        console.log('signUp result', { data, error });
-
-        if (error) {
-          showMessage(error.message, 'error'); return;
+        // Social signup (demo)
+        function socialSignup(provider) {
+            showSuccess(`${provider} signup coming soon!`);
+            // In production, implement OAuth flow
         }
-
-        // If user created immediately (no email confirm required), create profile row
-        const user = data?.user ?? null;
-        if (user) {
-          // Create customers profile row linked to auth user id
-          const profile = {
-            id: user.id,
-            full_name: `${firstName} ${lastName}`,
-            email: user.email,
-            phone
-          };
-          const { data: profData, error: profErr } = await supabase
-            .from('customers')
-            .upsert(profile, { onConflict: ['id'] })
-            .select()
-            .single();
-
-          if (profErr) console.error('profile upsert error', profErr);
-          else console.log('profile upserted', profData);
-        }
-
-        // Inform user and redirect (if desired)
-        if (data?.user) {
-          showMessage('Account created. You are signed in.', 'success');
-          // optional: redirect to account page
-          setTimeout(()=> window.location.href = '/account.html', 1200);
-        } else {
-          showMessage('Account created. Check your email to confirm.', 'success');
-        }
-      } catch (err) {
-        console.error(err);
-        showMessage(err.message || 'Signup failed', 'error');
-      }
-    });
- 
-    function togglePassword(fieldId) {
-      const field = document.getElementById(fieldId);
-      field.type = field.type === 'password' ? 'text' : 'password';
-    }
-
-    function showError(message) {
-      const errorDiv = document.getElementById('errorMessage');
-      errorDiv.textContent = message;
-      errorDiv.classList.add('show');
-      setTimeout(() => errorDiv.classList.remove('show'), 5000);
-    }
-
-    function showSuccess(message) {
-      const successDiv = document.getElementById('successMessage');
-      successDiv.textContent = message;
-      successDiv.classList.add('show');
-      setTimeout(() => successDiv.classList.remove('show'), 5000);
-    }
-
-    document.getElementById('signupForm').addEventListener('submit', async function(e) {
-      e.preventDefault();
-
-      const firstName = document.getElementById('firstName').value.trim();
-      const lastName = document.getElementById('lastName').value.trim();
-      const email = document.getElementById('email').value.trim();
-      const phone = document.getElementById('phone').value.trim();
-      const password = document.getElementById('password').value;
-      const confirmPassword = document.getElementById('confirmPassword').value;
-      const termsAccepted = document.getElementById('terms').checked;
-
-      if (!firstName || !lastName || !email || !phone || !password) {
-        showError('Please fill in all fields');
-        return;
-      }
-
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailRegex.test(email)) {
-        showError('Please enter a valid email address');
-        return;
-      }
-
-      if (password.length < 8) {
-        showError('Password must be at least 8 characters long');
-        return;
-      }
-
-      if (password !== confirmPassword) {
-        showError('Passwords do not match');
-        return;
-      }
-
-      if (!termsAccepted) {
-        showError('Please accept the Terms & Conditions');
-        return;
-      }
-
-      // Supabase signup
-      const { data, error } = await supabase.auth.signUp({
-        email,
-        password,
-        options: {
-          data: { firstName, lastName, phone } // store extra fields in user metadata
-        }
-      });
-
-      if (error) {
-        showError(error.message);
-        return;
-      }
-
-      showSuccess('Account created successfully! Check your email to confirm.');
-
-      setTimeout(() => {
-        window.location.href = 'account.html';
-      }, 2000);
-    });
-
-    function socialSignup(provider) {
-      showSuccess(`${provider} signup coming soon!`);
-      // In production, implement Supabase OAuth:
-      // supabase.auth.signInWithOAuth({ provider })
-    }
-  </script>
+    </script>
 </body>
 
 </html>
+
 
 
 

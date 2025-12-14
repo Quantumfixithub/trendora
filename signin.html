@@ -316,171 +316,151 @@
     </style>
 </head>
 <body>
-    <div class="auth-container">
-        <div class="auth-card">
-            <div class="auth-header">
-                <a href="index.html" class="logo">Trendora</a>
-                <h1>Welcome Back</h1>
-                <p>Sign in to continue shopping</p>
-            </div>
+  <div class="auth-container">
+    <div class="auth-card">
+      <div class="auth-header">
+        <a href="index.html" class="logo">Trendora</a>
+        <h1>Welcome Back</h1>
+        <p>Sign in to continue shopping</p>
+      </div>
 
-            <div class="error-message" id="errorMessage"></div>
-            <div class="success-message" id="successMessage"></div>
+      <div class="error-message" id="errorMessage"></div>
+      <div class="success-message" id="successMessage"></div>
 
-            <form id="signinForm">
-                <div class="form-group">
-                    <label for="email">Email Address</label>
-                    <input type="email" id="email" placeholder="john@example.com" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="password">Password</label>
-                    <div class="password-group">
-                        <input type="password" id="password" placeholder="Enter your password" required>
-                        <button type="button" class="toggle-password" onclick="togglePassword('password')">👁️</button>
-                    </div>
-                </div>
-
-                <div class="form-footer">
-                    <div class="remember-me">
-                        <input type="checkbox" id="remember">
-                        <label for="remember">Remember me</label>
-                    </div>
-                    <a href="forgotpassword.html" class="forgot-password">Forgot Password?</a>
-                </div>
-
-                <button type="submit" class="submit-btn">Sign In</button>
-            </form>
-
-            <div class="divider">OR</div>
-
-            <div class="social-login">
-                <button class="social-btn" onclick="socialSignin('Google')">
-                    <span>🔵</span>
-                    Continue with Google
-                </button>
-                <button class="social-btn" onclick="socialSignin('Facebook')">
-                    <span>📘</span>
-                    Continue with Facebook
-                </button>
-            </div>
-
-            <div class="auth-footer">
-                Don't have an account? <a href="signup.html">Sign Up</a>
-            </div>
+      <form id="signinForm">
+        <div class="form-group">
+          <label for="email">Email Address</label>
+          <input type="email" id="email" placeholder="john@example.com" required>
         </div>
 
-        <div class="back-home">
-            <a href="index.html">← Back to Home</a>
+        <div class="form-group">
+          <label for="password">Password</label>
+          <div class="password-group">
+            <input type="password" id="password" placeholder="Enter your password" required>
+            <button type="button" class="toggle-password" onclick="togglePassword('password')">👁️</button>
+          </div>
         </div>
+
+        <div class="form-footer">
+          <div class="remember-me">
+            <input type="checkbox" id="remember">
+            <label for="remember">Remember me</label>
+          </div>
+          <a href="forgotpassword.html" class="forgot-password">Forgot Password?</a>
+        </div>
+
+        <button type="submit" class="submit-btn">Sign In</button>
+      </form>
+
+      <div class="divider">OR</div>
+
+      <div class="social-login">
+        <button class="social-btn" onclick="socialSignin('Google')">
+          <span>🔵</span>
+          Continue with Google
+        </button>
+        <button class="social-btn" onclick="socialSignin('Facebook')">
+          <span>📘</span>
+          Continue with Facebook
+        </button>
+      </div>
+
+      <div class="auth-footer">
+        Don't have an account? <a href="signup.html">Sign Up</a>
+      </div>
     </div>
 
-    <script>
-// Redirect to account page or previous page
-setTimeout(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const redirectUrl = urlParams.get('redirect') || 'account.html';
-    window.location.href = redirectUrl;
-}, 1500);
-        
-        // Toggle password visibility
-        function togglePassword(fieldId) {
-            const field = document.getElementById(fieldId);
-            field.type = field.type === 'password' ? 'text' : 'password';
-        }
+    <div class="back-home">
+      <a href="index.html">← Back to Home</a>
+    </div>
+  </div>
 
-        // Show error message
-        function showError(message) {
-            const errorDiv = document.getElementById('errorMessage');
-            errorDiv.textContent = message;
-            errorDiv.classList.add('show');
-            setTimeout(() => errorDiv.classList.remove('show'), 5000);
-        }
+  <script type="module">
+    import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
-        // Show success message
-        function showSuccess(message) {
-            const successDiv = document.getElementById('successMessage');
-            successDiv.textContent = message;
-            successDiv.classList.add('show');
-            setTimeout(() => successDiv.classList.remove('show'), 5000);
-        }
+    // Use environment variables in Vercel (NEXT_PUBLIC_SUPABASE_URL / NEXT_PUBLIC_SUPABASE_KEY)
+    const supabaseUrl = "https://YOUR_PROJECT.supabase.co";
+    const supabaseKey = "YOUR_ANON_PUBLIC_KEY";
+    const supabase = createClient(supabaseUrl, supabaseKey);
 
-        // Handle form submission
-        document.getElementById('signinForm').addEventListener('submit', function(e) {
-            e.preventDefault();
+    // Toggle password visibility
+    function togglePassword(fieldId) {
+      const field = document.getElementById(fieldId);
+      field.type = field.type === 'password' ? 'text' : 'password';
+    }
 
-            // Get form values
-            const email = document.getElementById('email').value.trim();
-            const password = document.getElementById('password').value;
-            const remember = document.getElementById('remember').checked;
+    // Show error message
+    function showError(message) {
+      const errorDiv = document.getElementById('errorMessage');
+      errorDiv.textContent = message;
+      errorDiv.classList.add('show');
+      setTimeout(() => errorDiv.classList.remove('show'), 5000);
+    }
 
-            // Validation
-            if (!email || !password) {
-                showError('Please fill in all fields');
-                return;
-            }
+    // Show success message
+    function showSuccess(message) {
+      const successDiv = document.getElementById('successMessage');
+      successDiv.textContent = message;
+      successDiv.classList.add('show');
+      setTimeout(() => successDiv.classList.remove('show'), 5000);
+    }
 
-            // Email validation
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!emailRegex.test(email)) {
-                showError('Please enter a valid email address');
-                return;
-            }
+    // Handle form submission with Supabase Auth
+    document.getElementById('signinForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
 
-            // Get users from localStorage
-            const users = JSON.parse(localStorage.getItem('users')) || [];
-            
-            // Find user
-            const user = users.find(u => u.email === email && u.password === password);
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+      const remember = document.getElementById('remember').checked;
 
-            if (!user) {
-                showError('Invalid email or password');
-                return;
-            }
+      if (!email || !password) {
+        showError('Please fill in all fields');
+        return;
+      }
 
-            // Set current user
-            const currentUser = {
-                id: user.id,
-                firstName: user.firstName,
-                lastName: user.lastName,
-                email: user.email,
-                phone: user.phone
-            };
+      // Supabase login
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password
+      });
 
-            localStorage.setItem('currentUser', JSON.stringify(currentUser));
+      if (error) {
+        showError(error.message);
+        return;
+      }
 
-            // Handle remember me
-            if (remember) {
-                localStorage.setItem('rememberMe', 'true');
-            } else {
-                localStorage.removeItem('rememberMe');
-            }
+      showSuccess('Sign in successful! Redirecting...');
 
-            showSuccess('Sign in successful! Redirecting...');
+      // Handle remember me (Supabase manages sessions automatically, but you can store a flag)
+      if (remember) {
+        localStorage.setItem('rememberMe', 'true');
+      } else {
+        localStorage.removeItem('rememberMe');
+      }
 
-            // Redirect to account page or previous page
-            setTimeout(() => {
-                const redirectUrl = new URLSearchParams(window.location.search).get('redirect') || 'account.html';
-                window.location.href = redirectUrl;
-            }, 1500);
-        });
+      // Redirect after login
+      setTimeout(() => {
+        const redirectUrl = new URLSearchParams(window.location.search).get('redirect') || 'account.html';
+        window.location.href = redirectUrl;
+      }, 1500);
+    });
 
-        // Social signin (demo)
-        function socialSignin(provider) {
-            showSuccess(`${provider} sign in coming soon!`);
-            // In production, implement OAuth flow
-        }
+    // Social signin (demo placeholder)
+    function socialSignin(provider) {
+      showSuccess(`${provider} sign in coming soon!`);
+      // In production, implement Supabase OAuth: supabase.auth.signInWithOAuth({ provider })
+    }
 
-        // Check if user is already signed in
-        window.addEventListener('DOMContentLoaded', function() {
-            const currentUser = localStorage.getItem('currentUser');
-            if (currentUser) {
-                showSuccess('You are already signed in. Redirecting...');
-                setTimeout(() => {
-                    window.location.href = 'account.html';
-                }, 1500);
-            }
-        });
-    </script>
+    // Check if user is already signed in
+    window.addEventListener('DOMContentLoaded', async function() {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session) {
+        showSuccess('You are already signed in. Redirecting...');
+        setTimeout(() => {
+          window.location.href = 'account.html';
+        }, 1500);
+      }
+    });
+  </script>
 </body>
 </html>

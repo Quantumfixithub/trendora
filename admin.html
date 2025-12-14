@@ -2177,6 +2177,329 @@
                 });
             });
         });
+   
+</script>
+  
+
+    <!-- Supabase JS -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script>
+    // ====== CONFIG - Replace placeholders with your values ======
+    const SUPABASE_URL = "https://yyhdjacrehxjjydbupix.supabase.co"; // replace
+    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl5aGRqYWNyZWh4amp5ZGJ1cGl4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU2OTc2NzYsImV4cCI6MjA4MTI3MzY3Nn0.R4f3UBO0-8WaO5VW5_O4fxG6iOBuHBSPgUREDE1n6P4"; // replace
+    const FUNCTIONS_URL = "https://yyhdjacrehxjjydbupix.functions.supabase.co/admin-create-product"; // replace
+    // ===========================================================
+
+    const supabase = supabaseJs.createClient(https://yyhdjacrehxjjydbupix.supabase.co, eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl5aGRqYWNyZWh4amp5ZGJ1cGl4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU2OTc2NzYsImV4cCI6MjA4MTI3MzY3Nn0.R4f3UBO0-8WaO5VW5_O4fxG6iOBuHBSPgUREDE1n6P4);
+
+    // UI elements
+    const navItems = document.querySelectorAll('.nav-item[data-target]');
+    const sections = document.querySelectorAll('.content-section');
+    const signOutBtn = document.getElementById('signOutBtn');
+    const userAvatar = document.getElementById('userAvatar');
+    const userEmail = document.getElementById('userEmail');
+    const userRole = document.getElementById('userRole');
+    const toastEl = document.getElementById('toast');
+
+    const openCreateModal = document.getElementById('openCreateModal');
+    const createModal = document.getElementById('createModal');
+    const closeCreateModal = document.getElementById('closeCreateModal');
+    const createProductForm = document.getElementById('createProductForm');
+    const pImage = document.getElementById('pImage');
+    const imagePreview = document.getElementById('imagePreview');
+    const imageUpload = document.getElementById('imageUpload');
+    const submitCreate = document.getElementById('submitCreate');
+    const createStatus = document.getElementById('createStatus');
+    const productsTableBody = document.querySelector('#productsTable tbody');
+
+    let selectedFile = null;
+    let currentUser = null;
+
+    // Navigation
+    navItems.forEach(item => {
+        item.addEventListener('click', () => {
+            navItems.forEach(i => i.classList.remove('active'));
+            item.classList.add('active');
+            const target = item.dataset.target;
+            sections.forEach(s => s.classList.remove('active'));
+            document.getElementById(target).classList.add('active');
+        });
+    });
+
+    // Sign out
+    signOutBtn.addEventListener('click', async () => {
+        await supabase.auth.signOut();
+        showToast('Signed out', 'success');
+        location.reload();
+    });
+
+    // Image upload UI
+    imageUpload.addEventListener('click', () => pImage.click());
+    pImage.addEventListener('change', handleFileSelect);
+    imageUpload.addEventListener('dragover', (e) => { e.preventDefault(); imageUpload.classList.add('dragover'); });
+    imageUpload.addEventListener('dragleave', () => imageUpload.classList.remove('dragover'));
+    imageUpload.addEventListener('drop', (e) => {
+        e.preventDefault();
+        imageUpload.classList.remove('dragover');
+        if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+            pImage.files = e.dataTransfer.files;
+            handleFileSelect();
+        }
+    });
+
+    function handleFileSelect() {
+        imagePreview.innerHTML = '';
+        const file = pImage.files[0];
+        if (!file) return;
+        selectedFile = file;
+        const url = URL.createObjectURL(file);
+        const item = document.createElement('div');
+        item.className = 'image-preview-item';
+        item.innerHTML = `
+            <img src="${url}" alt="${file.name}" />
+            <button class="remove-image" title="Remove">×</button>
+        `;
+        imagePreview.appendChild(item);
+        item.querySelector('.remove-image').addEventListener('click', () => {
+            selectedFile = null;
+            pImage.value = '';
+            imagePreview.innerHTML = '';
+        });
+    }
+
+    // Modal open/close
+    openCreateModal.addEventListener('click', () => {
+        createModal.classList.add('active');
+        createModal.setAttribute('aria-hidden', 'false');
+    });
+    closeCreateModal.addEventListener('click', () => {
+        createModal.classList.remove('active');
+        createModal.setAttribute('aria-hidden', 'true');
+    });
+
+    // Toast helper
+    function showToast(msg, type = 'success') {
+        toastEl.textContent = msg;
+        toastEl.className = `toast show ${type === 'error' ? 'error' : 'success'}`;
+        setTimeout(() => { toastEl.className = 'toast'; }, 3000);
+    }
+
+    // Initialize: check session and load products
+    (async function init() {
+        const { data } = await supabase.auth.getSession();
+        const session = data.session;
+        if (session && session.user) {
+            currentUser = session.user;
+            await postSignInSetup(currentUser);
+        } else {
+            // If not signed in, redirect to your sign-in page or show minimal info
+            userEmail.textContent = 'Not signed in';
+            userRole.textContent = 'Sign in to manage';
+            userAvatar.textContent = 'A';
+            // Optionally, open auth popup - for convenience leave as is
+        }
+        await loadProducts();
+    })();
+
+    // After sign-in checks
+    async function postSignInSetup(user) {
+        currentUser = user;
+        userEmail.textContent = user.email;
+        userAvatar.textContent = (user.email && user.email[0]) ? user.email[0].toUpperCase() : 'A';
+        // check admin role
+        const { data, error } = await supabase.from('admins').select('role').eq('user_id', user.id).single();
+        if (error || !data) {
+            userRole.textContent = 'No admin access';
+            showToast('You are not an admin', 'error');
+            // sign out to prevent accidental access
+            await supabase.auth.signOut();
+            setTimeout(() => location.href = '/', 1200);
+            return;
+        }
+        userRole.textContent = data.role || 'admin';
+    }
+
+    // Create product form submit
+    createProductForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        submitCreate.disabled = true;
+        createStatus.textContent = 'Creating...';
+
+        try {
+            const name = document.getElementById('pName').value.trim();
+            const price = parseFloat(document.getElementById('pPrice').value);
+            const description = document.getElementById('pDescription').value.trim();
+            const category = document.getElementById('pCategory').value.trim();
+
+            if (!name || !price) {
+                showToast('Name and price are required', 'error');
+                submitCreate.disabled = false;
+                createStatus.textContent = '';
+                return;
+            }
+
+            let imageBase64 = null;
+            let imageFilename = null;
+            let imageContentType = null;
+
+            if (selectedFile) {
+                imageFilename = selectedFile.name;
+                imageContentType = selectedFile.type || 'image/png';
+                imageBase64 = await fileToBase64(selectedFile);
+                imageBase64 = imageBase64.split(',')[1]; // remove data:<type>;base64, prefix
+            }
+
+            // get access token
+            const { data: sessionData } = await supabase.auth.getSession();
+            const token = sessionData?.session?.access_token;
+            if (!token) throw new Error('Not authenticated');
+
+            const payload = { name, description, price, category, imageBase64, imageFilename, imageContentType };
+
+            const res = await fetch(FUNCTIONS_URL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify(payload)
+            });
+
+            const json = await res.json();
+            if (!res.ok) throw new Error(json?.error || JSON.stringify(json));
+
+            showToast('Product created', 'success');
+            createModal.classList.remove('active');
+            createModal.setAttribute('aria-hidden', 'true');
+            createProductForm.reset();
+            imagePreview.innerHTML = '';
+            selectedFile = null;
+            createStatus.textContent = '';
+            await loadProducts();
+        } catch (err) {
+            console.error(err);
+            showToast(err.message || 'Create failed', 'error');
+            createStatus.textContent = 'Error';
+        } finally {
+            submitCreate.disabled = false;
+        }
+    });
+
+    // Convert file to base64
+    function fileToBase64(file) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = (e) => reject(e);
+            reader.readAsDataURL(file);
+        });
+    }
+
+    // Load products from Supabase and render table
+    async function loadProducts() {
+        productsTableBody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:20px">Loading...</td></tr>';
+        const { data, error } = await supabase.from('products').select('id, name, price, category, image_url, created_at').order('created_at', { ascending: false });
+        if (error) {
+            productsTableBody.innerHTML = `<tr><td colspan="5" style="text-align:center;padding:20px">Error loading products</td></tr>`;
+            console.error('Load products error', error);
+            return;
+        }
+        if (!data || !data.length) {
+            productsTableBody.innerHTML = `<tr><td colspan="5" style="text-align:center;padding:20px">No products found</td></tr>`;
+            return;
+        }
+
+        productsTableBody.innerHTML = data.map(p => `
+            <tr>
+                <td>
+                    <div class="product-cell">
+                        <div class="product-image">
+                            ${p.image_url ? `<img src="${p.image_url}" alt="${p.name}" style="width:100%;height:100%;object-fit:cover;border-radius:6px" />` : '🛍️'}
+                        </div>
+                        <div>
+                            <div style="font-weight:600;color:#111">${p.name}</div>
+                            <div class="muted" style="font-size:13px">${p.category || ''}</div>
+                        </div>
+                    </div>
+                </td>
+                <td>$${Number(p.price).toFixed(2)}</td>
+                <td>${p.category || '-'}</td>
+                <td>${new Date(p.created_at).toLocaleString()}</td>
+                <td>
+                    <div class="action-buttons">
+                        <button class="action-btn edit" data-id="${p.id}">Edit</button>
+                        <button class="action-btn delete" data-id="${p.id}">Delete</button>
+                        <button class="action-btn view" data-id="${p.id}">View</button>
+                    </div>
+                </td>
+            </tr>
+        `).join('');
+        // attach action handlers
+        document.querySelectorAll('.action-btn.delete').forEach(btn => {
+            btn.addEventListener('click', async (e) => {
+                const id = btn.dataset.id;
+                if (!confirm('Delete this product?')) return;
+                try {
+                    // delete via client (requires RLS/policy) or call an admin function
+                    const { error } = await supabase.from('products').delete().eq('id', id);
+                    if (error) throw error;
+                    showToast('Product deleted', 'success');
+                    await loadProducts();
+                } catch (err) {
+                    console.error(err);
+                    showToast('Delete failed', 'error');
+                }
+            });
+        });
+
+        document.querySelectorAll('.action-btn.edit').forEach(btn => {
+            btn.addEventListener('click', async (e) => {
+                const id = btn.dataset.id;
+                // simple inline edit prompt (replace with modal if you want)
+                const newName = prompt('New product name:');
+                if (!newName) return;
+                try {
+                    const { error } = await supabase.from('products').update({ name: newName }).eq('id', id);
+                    if (error) throw error;
+                    showToast('Product updated', 'success');
+                    await loadProducts();
+                } catch (err) {
+                    console.error(err);
+                    showToast('Update failed', 'error');
+                }
+            });
+        });
+
+        document.querySelectorAll('.action-btn.view').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const id = btn.dataset.id;
+                // open product in new tab / or show modal with details
+                const row = btn.closest('tr');
+                const img = row.querySelector('img')?.src || '';
+                const name = row.querySelector('td div div').textContent || '';
+                alert(`Product: ${name}\nID: ${id}\nImage: ${img}`);
+            });
+        });
+    }
+
+    // Simple polling for auth changes to update UI
+    supabase.auth.onAuthStateChange((event, session) => {
+        if (event === 'SIGNED_IN') {
+            postSignInSetup(session.user);
+        } else if (event === 'SIGNED_OUT') {
+            currentUser = null;
+            userEmail.textContent = 'Not signed in';
+            userRole.textContent = 'Visitor';
+            userAvatar.textContent = 'A';
+        }
+    });
+
+    // OPTIONAL: Protect page when not signed in - redirect to sign-in page if you have one
+    (function protectPage() {
+        // If you want to force login to access admin, uncomment:
+        // if (!currentUser) location.href = '/signin.html';
+    })();
+
     </script>
 </body>
 </html>

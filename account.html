@@ -13,9 +13,8 @@
   <!-- Remix Icon -->
   <link href="https://cdn.jsdelivr.net/npm/remixicon@4.0.0/fonts/remixicon.css" rel="stylesheet">
 
-  <script src="auth.js" defer></script>
-
   <style>
+/* ---------- CSS (kept and cleaned) ---------- */
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Ubuntu, Cantarell, sans-serif;
@@ -53,7 +52,7 @@ nav { display:flex; justify-content:space-between; align-items:center; max-width
 .account-page { display:flex; gap:40px; padding:60px 5%; max-width:1400px; margin:0 auto; }
 .sidebar { width:280px; flex-shrink:0; background:#fff; padding:2rem; border-radius:10px; box-shadow:0 5px 15px rgba(0,0,0,0.1); height:fit-content; position:sticky; top:110px; }
 .sidebar h1 { font-size:1.5rem; color:#2c3e50; margin-bottom:1.25rem; }
-.sidebar-menu { list-style:none; }
+.sidebar-menu { list-style:none; padding:0; margin:0; }
 .sidebar-menu li { margin-bottom:10px; }
 .sidebar-menu button { width:100%; padding:12px 20px; text-align:left; border:none; background:#fff; cursor:pointer; border-radius:8px; font-size:15px; transition:all .2s; color:#555; display:flex; align-items:center; gap:10px; }
 .sidebar-menu button.active { background:#2c3e50; color:#fff; }
@@ -85,10 +84,10 @@ nav { display:flex; justify-content:space-between; align-items:center; max-width
 .empty-state-btn:hover { background:#1a252f; }
 
 /* Toast notification */
-.toast { position:fixed; bottom:30px; right:30px; background:#2c3e50; color:#fff; padding:16px 24px; border-radius:8px; box-shadow:0 4px 12px rgba(0,0,0,0.15); z-index:9999; animation:slideIn .3s ease; }
+.toast { position:fixed; bottom:30px; right:30px; background:#2c3e50; color:#fff; padding:16px 24px; border-radius:8px; box-shadow:0 4px 12px rgba(0,0,0,0.15); z-index:9999; opacity:0; transform:translateY(12px); transition:all .25s; }
+.toast.show { opacity:1; transform:translateY(0); }
 .toast.success { background:#27ae60; }
 .toast.error { background:#e74c3c; }
-@keyframes slideIn { from { transform:translateX(400px); opacity:0; } to { transform:translateX(0); opacity:1; } }
 
 /* Footer */
 footer {
@@ -188,7 +187,6 @@ footer {
     <nav>
       <div class="nav-left">
         <a href="index.html" class="logo">Trendora</a>
-        <!-- Back to Home button visible on desktop/tablet -->
         <a href="index.html" class="back-home" id="backHomeDesktop">Back to Home</a>
       </div>
 
@@ -227,7 +225,7 @@ footer {
     </nav>
   </aside>
 
-  <div class="account-page" id="accountPage">
+  <div class="account-page" id="accountPage" aria-live="polite">
     <aside class="sidebar" aria-label="Account sidebar">
       <h1>My Account</h1>
       <ul class="sidebar-menu" role="menu" aria-label="Account navigation">
@@ -239,7 +237,7 @@ footer {
       </ul>
     </aside>
 
-    <main class="main-content">
+    <main class="main-content" id="mainContent">
       <!-- Profile -->
       <section id="profile" class="content-section active" aria-labelledby="profileTitle">
         <h2 id="profileTitle">Profile Information</h2>
@@ -247,29 +245,29 @@ footer {
           <div class="form-row">
             <div class="form-group">
               <label for="firstName">First Name</label>
-              <input id="firstName" name="firstName" type="text" value="Sarah" required>
+              <input id="firstName" name="firstName" type="text" required>
             </div>
             <div class="form-group">
               <label for="lastName">Last Name</label>
-              <input id="lastName" name="lastName" type="text" value="Johnson" required>
+              <input id="lastName" name="lastName" type="text" required>
             </div>
           </div>
 
           <div class="form-row">
             <div class="form-group">
-              <label for="email">Email</label>
-              <input id="email" name="email" type="email" value="sarah.johnson@email.com" required>
+              <label for="emailField">Email</label>
+              <input id="emailField" name="email" type="email" required>
             </div>
             <div class="form-group">
               <label for="phone">Phone</label>
-              <input id="phone" name="phone" type="tel" value="+1 555-123-4567">
+              <input id="phone" name="phone" type="tel">
             </div>
           </div>
 
           <div class="form-row">
             <div class="form-group full-width">
               <label for="bio">Bio</label>
-              <textarea id="bio" name="bio" placeholder="Tell us about yourself...">Style lover & coffee enthusiast.</textarea>
+              <textarea id="bio" name="bio" placeholder="Tell us about yourself..."></textarea>
             </div>
           </div>
 
@@ -280,7 +278,7 @@ footer {
       <!-- Orders -->
       <section id="orders" class="content-section" aria-labelledby="ordersTitle">
         <h2 id="ordersTitle">Your Orders</h2>
-        <div id="ordersList"></div>
+        <div id="ordersList" aria-live="polite"></div>
         <div id="noOrders" class="empty-state" style="display:none">
           <div class="empty-state-icon">📭</div>
           <h3>No orders yet</h3>
@@ -310,7 +308,6 @@ footer {
               <label for="language">Language</label>
               <select id="language" name="language">
                 <option value="en" selected>English</option>
-                <option value="es">Español</option>
                 <option value="fr">Français</option>
               </select>
             </div>
@@ -330,7 +327,7 @@ footer {
     </main>
   </div>
 
-  <!-- Footer -->
+  <!-- Footer (kept from earlier) -->
   <footer>
     <div class="footer-content">
       <div class="footer-brand">
@@ -379,9 +376,9 @@ footer {
     </div>
   </footer>
 
-  <div id="toast" class="toast" style="display:none"></div>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
-  <script type="module">
+<script type="module">
 import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
 // ===== CONFIG: replace with your Supabase values =====

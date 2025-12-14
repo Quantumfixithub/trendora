@@ -1,0 +1,24 @@
+name: Deploy Supabase Functions
+
+on:
+  push:
+    branches:
+      - main   # Runs when you push to the main branch
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      # Step 1: Checkout your repo code
+      - uses: actions/checkout@v3
+
+      # Step 2: Install Supabase CLI
+      - name: Install Supabase CLI
+        run: npm install -g supabase
+
+      # Step 3: Deploy your function
+      - name: Deploy Supabase Functions
+        run: supabase functions deploy admin-create-product
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ sbp_957cad336ce9e5f80d9cc096f2972e67f40c64a4 }}
+          SUPABASE_PROJECT_REF: ${{ yyhdjacrehxjjydbupix }}

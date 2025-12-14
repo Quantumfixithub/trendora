@@ -3,22 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Contact - Trendora</title>
-      <!-- Google Fonts -->
+    <title>Contact Us - Trendora</title>
+    
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800;900&amp;family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
     <!-- Remix Icon -->
     <link href="https://cdn.jsdelivr.net/npm/remixicon@4.0.0/fonts/remixicon.css" rel="stylesheet">
     
     <style>
-      body {
-        font-family: 'Inter', sans-serif;
-      }
-    </style>
-    <script src="auth.js"></script>
-    <style>
+        /* Global Reset */
         * {
             margin: 0;
             padding: 0;
@@ -26,15 +22,10 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
             line-height: 1.6;
             color: #333;
-        }
-
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 0 5%;
+            background: #fff;
         }
 
         /* Header */
@@ -53,31 +44,37 @@
             align-items: center;
             max-width: 1400px;
             margin: 0 auto;
+            gap: 1rem;
         }
 
         .logo {
             font-size: 1.8rem;
-            font-weight: bold;
+            font-weight: 700;
             color: #2c3e50;
             text-decoration: none;
+            font-family: 'Playfair Display', serif;
         }
 
         .nav-links {
             display: flex;
             gap: 2rem;
             list-style: none;
+            align-items: center;
         }
 
         .nav-links a {
             text-decoration: none;
             color: #555;
             font-weight: 500;
-            transition: color 0.3s;
+            transition: color 0.25s;
+            padding: 0.35rem 0.5rem;
+            border-radius: 6px;
         }
 
         .nav-links a:hover,
         .nav-links a.active {
             color: #e74c3c;
+            background: rgba(231,76,60,0.04);
         }
 
         .nav-icons {
@@ -90,11 +87,26 @@
             color: #555;
             font-size: 1.2rem;
             text-decoration: none;
-            transition: transform 0.3s;
+            position: relative;
+            transition: transform 0.2s;
         }
 
         .nav-icons a:hover {
-            transform: scale(1.1);
+            transform: scale(1.05);
+        }
+
+        .cart-count {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #e74c3c;
+            color: #fff;
+            font-size: 0.7rem;
+            padding: 2px 6px;
+            border-radius: 999px;
+            min-width: 18px;
+            text-align: center;
+            display: none;
         }
 
         .mobile-menu-btn {
@@ -106,9 +118,104 @@
             color: #555;
         }
 
+        /* Shop Dropdown */
+        .nav-item {
+            position: relative;
+        }
+
+        .shop-caret {
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            color: #555;
+            font-size: 1rem;
+            padding: 0.3rem 0.45rem;
+            border-radius: 6px;
+            transition: background 0.2s;
+        }
+
+        .shop-caret:hover {
+            background: rgba(231,76,60,0.04);
+        }
+
+        .shop-dropdown {
+            position: absolute;
+            top: calc(100% + 8px);
+            left: 0;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+            min-width: 200px;
+            display: none;
+            padding: 0.4rem;
+            z-index: 1200;
+        }
+
+        .shop-dropdown.active {
+            display: block;
+        }
+
+        .shop-dropdown a {
+            display: block;
+            padding: 0.6rem 0.8rem;
+            color: #2c3e50;
+            text-decoration: none;
+            border-radius: 6px;
+            transition: background 0.2s;
+        }
+
+        .shop-dropdown a:hover {
+            background: #f7f9fb;
+        }
+
+        /* Mobile Drawer */
+        .mobile-drawer-backdrop {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.4);
+            z-index: 1500;
+        }
+
+        .mobile-drawer-backdrop.active {
+            display: block;
+        }
+
+        .mobile-drawer {
+            position: fixed;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 300px;
+            max-width: 86%;
+            background: #fff;
+            padding: 1rem;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+            transform: translateX(-100%);
+            transition: transform 0.3s ease-in-out;
+            z-index: 1600;
+            overflow: auto;
+        }
+
+        .mobile-drawer.active {
+            transform: translateX(0);
+        }
+
+        .mobile-shop-sub {
+            margin-left: 1rem;
+            margin-top: 0.5rem;
+            display: none;
+        }
+
+        .mobile-shop-sub.active {
+            display: block;
+        }
+
         /* Main Content */
         .contact-section {
             padding: 4rem 5%;
+            max-width: 1400px;
+            margin: 0 auto;
         }
 
         .contact-header {
@@ -120,6 +227,7 @@
             font-size: clamp(2rem, 5vw, 3rem);
             margin-bottom: 1rem;
             color: #2c3e50;
+            font-family: 'Playfair Display', serif;
         }
 
         .contact-header p {
@@ -132,15 +240,21 @@
             grid-template-columns: 1fr 1fr;
             gap: 4rem;
             margin-bottom: 4rem;
-            max-width: 1400px;
-            margin: 0 auto;
         }
 
         /* Contact Form */
+        .contact-form {
+            background: #fff;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+
         .contact-form h2 {
             font-size: 1.8rem;
             margin-bottom: 2rem;
             color: #2c3e50;
+            font-family: 'Playfair Display', serif;
         }
 
         .form-group {
@@ -155,7 +269,8 @@
         }
 
         .form-group input,
-        .form-group textarea {
+        .form-group textarea,
+        .form-group select {
             width: 100%;
             padding: 0.8rem;
             border: 1px solid #ddd;
@@ -166,7 +281,8 @@
         }
 
         .form-group input:focus,
-        .form-group textarea:focus {
+        .form-group textarea:focus,
+        .form-group select:focus {
             outline: none;
             border-color: #e74c3c;
         }
@@ -194,27 +310,48 @@
             font-weight: 600;
             cursor: pointer;
             transition: background 0.3s;
+            font-family: inherit;
         }
 
         .submit-btn:hover {
             background: #1a252f;
         }
 
-        .submit-btn:active {
+        .submit-btn:disabled {
+            background: #95a5a6;
+            cursor: not-allowed;
+        }
+
+        .submit-btn:active:not(:disabled) {
             transform: scale(0.98);
         }
 
         /* Contact Info */
+        .contact-info {
+            background: #fff;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+
         .contact-info h2 {
             font-size: 1.8rem;
             margin-bottom: 2rem;
             color: #2c3e50;
+            font-family: 'Playfair Display', serif;
         }
 
         .info-item {
             display: flex;
             gap: 1rem;
             margin-bottom: 2rem;
+            padding: 1rem;
+            border-radius: 8px;
+            transition: background 0.2s;
+        }
+
+        .info-item:hover {
+            background: #f8f9fa;
         }
 
         .info-icon {
@@ -226,12 +363,24 @@
             font-size: 1.1rem;
             margin-bottom: 0.5rem;
             color: #2c3e50;
+            font-weight: 600;
         }
 
         .info-content p {
             color: #666;
             font-size: 0.95rem;
             line-height: 1.8;
+        }
+
+        .info-content a {
+            color: #e74c3c;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .info-content a:hover {
+            color: #c0392b;
+            text-decoration: underline;
         }
 
         /* Map */
@@ -260,6 +409,7 @@
             margin-bottom: 1rem;
             color: #2c3e50;
             font-size: 1.1rem;
+            font-weight: 600;
         }
 
         .social-links {
@@ -297,12 +447,14 @@
             border-radius: 5px;
             box-shadow: 0 5px 15px rgba(0,0,0,0.3);
             transform: translateX(400px);
-            transition: transform 0.3s;
+            transition: transform 0.3s ease;
             z-index: 3000;
+            display: none;
         }
 
         .toast.show {
             transform: translateX(0);
+            display: block;
         }
 
         .toast.success {
@@ -332,11 +484,19 @@
         .footer-section h3 {
             margin-bottom: 1rem;
             font-size: 1.1rem;
+            color: white;
         }
 
         .footer-section p {
             color: #bdc3c7;
             line-height: 1.8;
+        }
+
+        .footer-section .logo {
+            color: white;
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            display: block;
         }
 
         .footer-section ul {
@@ -386,7 +546,7 @@
 
         .footer-links {
             display: flex;
-            gap: 2rem;
+            gap: 1rem;
             flex-wrap: wrap;
         }
 
@@ -394,12 +554,14 @@
             color: #bdc3c7;
             text-decoration: none;
             margin: 0 0.5rem;
+            transition: color 0.3s;
         }
 
         .footer-links a:hover {
             color: white;
         }
 
+        /* Responsive Design */
         @media (max-width: 968px) {
             .nav-links {
                 display: none;
@@ -414,6 +576,29 @@
                 gap: 3rem;
             }
 
+            .contact-form,
+            .contact-info {
+                padding: 1.5rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            header {
+                padding: 1rem 3%;
+            }
+
+            .logo {
+                font-size: 1.5rem;
+            }
+
+            .nav-icons a {
+                font-size: 1.1rem;
+            }
+
+            .contact-section {
+                padding: 3rem 3%;
+            }
+
             .footer-content {
                 grid-template-columns: 1fr;
                 gap: 2rem;
@@ -423,15 +608,21 @@
                 flex-direction: column;
                 text-align: center;
             }
+
+            .toast {
+                right: 1rem;
+                left: 1rem;
+                bottom: 1rem;
+            }
         }
 
         @media (max-width: 480px) {
-            header {
-                padding: 1rem 3%;
-            }
-
             .logo {
                 font-size: 1.4rem;
+            }
+
+            .nav-icons {
+                gap: 1rem;
             }
 
             .nav-icons a {
@@ -441,64 +632,145 @@
             .contact-section {
                 padding: 2rem 3%;
             }
+
+            .contact-form,
+            .contact-info {
+                padding: 1rem;
+            }
+
+            .social-links {
+                flex-wrap: wrap;
+            }
+        }
+
+        /* Accessibility */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
         }
     </style>
 </head>
 <body>
+    <!-- Header -->
     <header>
-        <nav class="container">
+        <nav>
             <a href="index.html" class="logo">Trendora</a>
-            <ul class="nav-links">
+
+            <!-- Desktop nav -->
+            <ul class="nav-links" id="desktopNav">
                 <li><a href="index.html">Home</a></li>
-                <li><a href="shop.html">Shop</a></li>
+
+                <li class="nav-item" style="display:flex;align-items:center;gap:0.25rem">
+                    <a href="shop.html" class="nav-link">Shop</a>
+                    <button class="shop-caret" id="shopCaret" aria-expanded="false" aria-controls="shopDropdown">▾</button>
+
+                    <div class="shop-dropdown" id="shopDropdown" role="menu" aria-label="Shop categories">
+                        <a href="women.html" role="menuitem">Women</a>
+                        <a href="men.html" role="menuitem">Men</a>
+                        <a href="accessories.html" role="menuitem">Accessories</a>
+                        <a href="shoes.html" role="menuitem">Shoes</a>
+                    </div>
+                </li>
+
                 <li><a href="about.html">About Us</a></li>
                 <li><a href="contact.html" class="active">Contact</a></li>
             </ul>
-            <div class="nav-icons">
-                <a href="search.html" title="Search">🔍</a>
-                <a href="account.html" title="My Account">👤</a>
-                <a href="cart.html" title="Shopping Cart">🛒</a>
+
+            <!-- Icons + mobile button -->
+            <div style="display:flex;align-items:center;gap:1rem">
+                <div class="nav-icons">
+                    <a href="search.html" title="Search" aria-label="Search">🔍</a>
+                    <a href="account.html" title="My Account" aria-label="My Account">👤</a>
+                    <a href="cart.html" title="Shopping Cart" aria-label="Shopping Cart">
+                        🛒
+                        <span class="cart-count" id="cartCount">0</span>
+                    </a>
+                </div>
+
+                <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Open menu">☰</button>
             </div>
-            <button class="mobile-menu-btn" onclick="alert('Mobile menu')">☰</button>
         </nav>
     </header>
 
-    <main class="contact-section container">
+    <!-- Mobile drawer -->
+    <div class="mobile-drawer-backdrop" id="mobileBackdrop" aria-hidden="true">
+        <div class="mobile-drawer" id="mobileDrawer" role="dialog" aria-modal="true" aria-label="Mobile menu">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
+                <a href="index.html" class="logo" style="font-size:1.2rem">Trendora</a>
+                <button id="mobileCloseBtn" aria-label="Close menu" style="background:none;border:none;font-size:1.4rem;cursor:pointer;color:#333">✕</button>
+            </div>
+            
+            <ul class="nav-links" style="display:block">
+                <li style="margin:0.6rem 0"><a href="index.html">Home</a></li>
+                <li style="margin:0.6rem 0">
+                    <div style="display:flex;justify-content:space-between;align-items:center">
+                        <a href="shop.html">Shop</a>
+                        <button id="mobileShopToggle" aria-expanded="false" aria-label="Toggle shop menu" style="background:none;border:none;cursor:pointer;font-size:1.1rem;color:#555">▾</button>
+                    </div>
+                    <div class="mobile-shop-sub" id="mobileShopSub">
+                        <a href="women.html" style="display:block;padding:0.5rem 0;padding-left:1rem">Women</a>
+                        <a href="men.html" style="display:block;padding:0.5rem 0;padding-left:1rem">Men</a>
+                        <a href="accessories.html" style="display:block;padding:0.5rem 0;padding-left:1rem">Accessories</a>
+                        <a href="shoes.html" style="display:block;padding:0.5rem 0;padding-left:1rem">Shoes</a>
+                    </div>
+                </li>
+                <li style="margin:0.6rem 0"><a href="about.html">About Us</a></li>
+                <li style="margin:0.6rem 0"><a href="contact.html" class="active">Contact</a></li>
+                <li style="margin:1rem 0"><a href="account.html" style="display:inline-block;padding:0.6rem 1rem;background:#f3f4f6;color:#2c3e50;border-radius:6px;text-decoration:none;font-weight:600">My Account</a></li>
+                <li style="margin:0.5rem 0">
+                    <a href="signin.html" style="display:inline-block;padding:0.6rem 1rem;background:#2c3e50;color:#fff;border-radius:6px;text-decoration:none;margin-right:0.5rem;font-weight:600">Sign In</a>
+                    <a href="signup.html" style="display:inline-block;padding:0.6rem 1rem;background:#e74c3c;color:#fff;border-radius:6px;text-decoration:none;font-weight:600">Sign Up</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="contact-section">
         <div class="contact-header">
             <h1>Get in Touch</h1>
             <p>We'd love to hear from you. Send us a message and we'll respond as soon as possible.</p>
         </div>
 
         <div class="contact-content">
+            <!-- Contact Form -->
             <div class="contact-form">
                 <h2>Send us a Message</h2>
-                <form id="contactForm">
+                <form id="contactForm" aria-label="Contact form">
                     <div class="form-group">
-                        <label>Name *</label>
-                        <input type="text" id="name" placeholder="Your Name" required>
+                        <label for="name">Name *</label>
+                        <input type="text" id="name" name="name" placeholder="Your Name" required aria-required="true">
                     </div>
+                    
                     <div class="form-group">
-                        <label>Email *</label>
-                        <input type="email" id="email" placeholder="your@email.com" required>
+                        <label for="email">Email *</label>
+                        <input type="email" id="email" name="email" placeholder="your@email.com" required aria-required="true">
                     </div>
+                    
                     <div class="form-group">
-                        <label>Subject *</label>
-                        <input type="text" id="subject" placeholder="How can we help?" required>
+                        <label for="subject">Subject *</label>
+                        <input type="text" id="subject" name="subject" placeholder="How can we help?" required aria-required="true">
                     </div>
+                    
                     <div class="form-group">
-                        <label>Message *</label>
-                        <textarea id="message" placeholder="Tell us more about your inquiry" maxlength="500" required></textarea>
+                        <label for="message">Message *</label>
+                        <textarea id="message" name="message" placeholder="Tell us more about your inquiry" maxlength="500" required aria-required="true"></textarea>
                         <div class="char-count"><span id="charCount">0</span>/500 characters</div>
                     </div>
+                    
                     <button type="submit" class="submit-btn">Send Message</button>
                 </form>
             </div>
 
+            <!-- Contact Info -->
             <div class="contact-info">
                 <h2>Contact Information</h2>
                 
                 <div class="info-item">
-                    <div class="info-icon">📍</div>
+                    <div class="info-icon" aria-hidden="true">📍</div>
                     <div class="info-content">
                         <h3>Address</h3>
                         <p>123 Fashion Avenue<br>New York, NY 10001<br>United States</p>
@@ -506,44 +778,49 @@
                 </div>
 
                 <div class="info-item">
-                    <div class="info-icon">📞</div>
+                    <div class="info-icon" aria-hidden="true">📞</div>
                     <div class="info-content">
                         <h3>Phone</h3>
-                        <p>+1 (555) 123-4567<br>Mon-Fri: 9AM - 6PM EST</p>
+                        <p><a href="tel:+15551234567">+1 (555) 123-4567</a><br>Mon-Fri: 9AM - 6PM EST</p>
                     </div>
                 </div>
 
                 <div class="info-item">
-                    <div class="info-icon">✉️</div>
+                    <div class="info-icon" aria-hidden="true">✉️</div>
                     <div class="info-content">
                         <h3>Email</h3>
-                        <p>support@trendora.com<br>info@trendora.com</p>
+                        <p>
+                            <a href="mailto:support@trendora.com">support@trendora.com</a><br>
+                            <a href="mailto:info@trendora.com">info@trendora.com</a>
+                        </p>
                     </div>
                 </div>
 
-                <div class="map-container">
+                <div class="map-container" role="img" aria-label="Map placeholder">
                     <p>🗺️ Map Placeholder</p>
                 </div>
 
                 <div class="social-section">
                     <h3>Follow Us</h3>
                     <div class="social-links">
-                        <a href="https://facebook.com" target="_blank" class="social-icon" title="Facebook">📘</a>
-                        <a href="https://instagram.com" target="_blank" class="social-icon" title="Instagram">📷</a>
-                        <a href="https://twitter.com" target="_blank" class="social-icon" title="Twitter">🐦</a>
-                        <a href="https://pinterest.com" target="_blank" class="social-icon" title="Pinterest">📌</a>
+                        <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" class="social-icon" title="Facebook" aria-label="Visit our Facebook page">📘</a>
+                        <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" class="social-icon" title="Instagram" aria-label="Visit our Instagram page">📷</a>
+                        <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" class="social-icon" title="Twitter" aria-label="Visit our Twitter page">🐦</a>
+                        <a href="https://pinterest.com" target="_blank" rel="noopener noreferrer" class="social-icon" title="Pinterest" aria-label="Visit our Pinterest page">📌</a>
                     </div>
                 </div>
             </div>
         </div>
     </main>
 
+    <!-- Footer -->
     <footer>
-        <div class="container footer-content">
+        <div class="footer-content">
             <div class="footer-section">
-                <h3>Trendora</h3>
+                <div class="logo">Trendora</div>
                 <p>Your choice, your style, your identity. Discover curated fashion trends that define who you are.</p>
             </div>
+            
             <div class="footer-section">
                 <h3>Quick Links</h3>
                 <ul>
@@ -553,6 +830,7 @@
                     <li><a href="account.html">My Account</a></li>
                 </ul>
             </div>
+            
             <div class="footer-section">
                 <h3>Customer Service</h3>
                 <ul>
@@ -562,18 +840,20 @@
                     <li><a href="faq.html">FAQ</a></li>
                 </ul>
             </div>
+            
             <div class="footer-section">
                 <h3>Connect With Us</h3>
                 <div class="footer-social-links">
-                    <a href="https://facebook.com" target="_blank" class="social-icon" title="Facebook">📘</a>
-                    <a href="https://instagram.com" target="_blank" class="social-icon" title="Instagram">📷</a>
-                    <a href="https://twitter.com" target="_blank" class="social-icon" title="Twitter">🐦</a>
-                    <a href="https://pinterest.com" target="_blank" class="social-icon" title="Pinterest">📌</a>
+                    <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" class="social-icon" title="Facebook" aria-label="Facebook">📘</a>
+                    <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" class="social-icon" title="Instagram" aria-label="Instagram">📷</a>
+                    <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" class="social-icon" title="Twitter" aria-label="Twitter">🐦</a>
+                    <a href="https://pinterest.com" target="_blank" rel="noopener noreferrer" class="social-icon" title="Pinterest" aria-label="Pinterest">📌</a>
                 </div>
                 <p style="margin-top: 1rem; color: #bdc3c7; font-size: 0.9rem;">Follow us for style inspiration and exclusive offers</p>
             </div>
         </div>
-        <div class="container footer-bottom">
+        
+        <div class="footer-bottom">
             <div>© 2025 Trendora. All rights reserved.</div>
             <div class="footer-links">
                 <a href="privacy.html">Privacy Policy</a>
@@ -583,99 +863,237 @@
     </footer>
 
     <!-- Toast Notification -->
-    <div class="toast" id="toast"></div>
+    <div id="toast" class="toast" role="alert" aria-live="polite"></div>
 
+    <!-- JavaScript -->
     <script>
+        // Mobile Menu Functionality
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const mobileBackdrop = document.getElementById('mobileBackdrop');
+        const mobileDrawer = document.getElementById('mobileDrawer');
+        const mobileCloseBtn = document.getElementById('mobileCloseBtn');
+        const mobileShopToggle = document.getElementById('mobileShopToggle');
+        const mobileShopSub = document.getElementById('mobileShopSub');
+
+        function openMobileMenu() {
+            if (mobileBackdrop && mobileDrawer) {
+                mobileBackdrop.classList.add('active');
+                mobileDrawer.classList.add('active');
+                mobileBackdrop.setAttribute('aria-hidden', 'false');
+                document.body.style.overflow = 'hidden';
+            }
+        }
+
+        function closeMobileMenu() {
+            if (mobileBackdrop && mobileDrawer) {
+                mobileBackdrop.classList.remove('active');
+                mobileDrawer.classList.remove('active');
+                mobileBackdrop.setAttribute('aria-hidden', 'true');
+                document.body.style.overflow = '';
+            }
+        }
+
+        if (mobileMenuBtn) {
+            mobileMenuBtn.addEventListener('click', openMobileMenu);
+        }
+
+        if (mobileCloseBtn) {
+            mobileCloseBtn.addEventListener('click', closeMobileMenu);
+        }
+
+        if (mobileBackdrop) {
+            mobileBackdrop.addEventListener('click', (e) => {
+                if (e.target === mobileBackdrop) {
+                    closeMobileMenu();
+                }
+            });
+        }
+
+        // Mobile shop submenu toggle
+        if (mobileShopToggle && mobileShopSub) {
+            mobileShopToggle.addEventListener('click', () => {
+                const isExpanded = mobileShopToggle.getAttribute('aria-expanded') === 'true';
+                mobileShopToggle.setAttribute('aria-expanded', !isExpanded);
+                mobileShopSub.classList.toggle('active');
+            });
+        }
+
+        // Desktop Shop Dropdown
+        
+        const shopCaret = document.getElementById('shopCaret');
+        const shopDropdown = document.getElementById('shopDropdown');
+
+        if (shopCaret && shopDropdown) {
+            shopCaret.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const isExpanded = shopCaret.getAttribute('aria-expanded') === 'true';
+                shopCaret.setAttribute('aria-expanded', !isExpanded);
+                shopDropdown.classList.toggle('active');
+            });
+
+            // Close dropdown when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!shopCaret.contains(e.target) && !shopDropdown.contains(e.target)) {
+                    shopDropdown.classList.remove('active');
+                    shopCaret.setAttribute('aria-expanded', 'false');
+                }
+            });
+        }
+
+        // Close mobile menu with Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeMobileMenu();
+                if (shopDropdown) {
+                    shopDropdown.classList.remove('active');
+                    if (shopCaret) shopCaret.setAttribute('aria-expanded', 'false');
+                }
+            }
+        });
+
         // Character counter for message textarea
         const messageTextarea = document.getElementById('message');
         const charCount = document.getElementById('charCount');
 
-        messageTextarea.addEventListener('input', function() {
-            const length = this.value.length;
-            charCount.textContent = length;
-            
-            if (length > 450) {
-                charCount.style.color = '#e74c3c';
-            } else {
-                charCount.style.color = '#999';
-            }
-        });
+        if (messageTextarea && charCount) {
+            messageTextarea.addEventListener('input', function() {
+                const length = this.value.length;
+                charCount.textContent = length;
+                
+                if (length > 450) {
+                    charCount.style.color = '#e74c3c';
+                } else {
+                    charCount.style.color = '#999';
+                }
+            });
+        }
 
-        // Form submission handler
-        const contactForm = document.getElementById('contactForm');
-        const toast = document.getElementById('toast');
-
+        // Toast notification function
         function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            if (!toast) return;
+
             toast.textContent = message;
             toast.className = `toast ${type} show`;
-            
+
             setTimeout(() => {
                 toast.classList.remove('show');
             }, 3000);
         }
 
-        contactForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            // Get form values
-            const name = document.getElementById('name').value;
-            const email = document.getElementById('email').value;
-            const subject = document.getElementById('subject').value;
-            const message = document.getElementById('message').value;
+        // Form submission handler
+        const contactForm = document.getElementById('contactForm');
 
-            // Basic validation
-            if (!name || !email || !subject || !message) {
-                showToast('Please fill in all required fields', 'error');
-                return;
+        if (contactForm) {
+            contactForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Get form values
+                const name = document.getElementById('name').value.trim();
+                const email = document.getElementById('email').value.trim();
+                const subject = document.getElementById('subject').value.trim();
+                const message = document.getElementById('message').value.trim();
+
+                // Basic validation
+                if (!name || !email || !subject || !message) {
+                    showToast('Please fill in all required fields', 'error');
+                    return;
+                }
+
+                // Email validation
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(email)) {
+                    showToast('Please enter a valid email address', 'error');
+                    return;
+                }
+
+                // Get submit button
+                const submitBtn = contactForm.querySelector('.submit-btn');
+                const originalText = submitBtn.textContent;
+                submitBtn.textContent = 'Sending...';
+                submitBtn.disabled = true;
+
+                // Simulate form submission (replace with actual API call)
+                setTimeout(() => {
+                    try {
+                        // Store contact data in localStorage (for demo purposes)
+                        const contactData = {
+                            name: name,
+                            email: email,
+                            subject: subject,
+                            message: message,
+                            timestamp: new Date().toISOString()
+                        };
+
+                        // Get existing contacts or initialize empty array
+                        const existingContacts = JSON.parse(localStorage.getItem('contactSubmissions') || '[]');
+                        existingContacts.push(contactData);
+                        localStorage.setItem('contactSubmissions', JSON.stringify(existingContacts));
+
+                        // Show success message
+                        showToast('Message sent successfully! We\'ll get back to you soon.', 'success');
+                        
+                        // Reset form
+                        contactForm.reset();
+                        charCount.textContent = '0';
+                        
+                    } catch (err) {
+                        console.error('Error saving contact data:', err);
+                        showToast('Message sent successfully!', 'success');
+                        contactForm.reset();
+                        charCount.textContent = '0';
+                    }
+
+                    // Re-enable button
+                    submitBtn.textContent = originalText;
+                    submitBtn.disabled = false;
+                }, 1500);
+            });
+        }
+
+        // Update Cart Count
+        function updateCartCount() {
+            const cartCountElement = document.getElementById('cartCount');
+            if (!cartCountElement) return;
+
+            try {
+                const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+                const totalItems = cart.reduce((sum, item) => sum + (item.quantity || 1), 0);
+
+                if (totalItems > 0) {
+                    cartCountElement.textContent = totalItems;
+                    cartCountElement.style.display = 'inline-block';
+                } else {
+                    cartCountElement.style.display = 'none';
+                }
+            } catch (err) {
+                console.error('Error updating cart count:', err);
+                cartCountElement.style.display = 'none';
             }
+        }
 
-            // Email validation
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!emailRegex.test(email)) {
-                showToast('Please enter a valid email address', 'error');
-                return;
-            }
-
-            // Simulate form submission (you can replace this with actual API call)
-            const submitBtn = contactForm.querySelector('.submit-btn');
-            submitBtn.textContent = 'Sending...';
-            submitBtn.disabled = true;
-
-            // Simulate network delay
-            setTimeout(() => {
-                // Store in localStorage (for demo purposes)
-                const contactData = {
-                    name: name,
-                    email: email,
-                    subject: subject,
-                    message: message,
-                    timestamp: new Date().toISOString()
-                };
-                
-                let contacts = JSON.parse(localStorage.getItem('contacts')) || [];
-                contacts.push(contactData);
-                localStorage.setItem('contacts', JSON.stringify(contacts));
-
-                // Show success message
-                showToast('Message sent successfully! We\'ll get back to you soon.', 'success');
-                
-                // Reset form
-                contactForm.reset();
-                charCount.textContent = '0';
-                
-                // Reset button
-                submitBtn.textContent = 'Send Message';
-                submitBtn.disabled = false;
-            }, 1500);
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                const href = this.getAttribute('href');
+                if (href !== '#' && href.length > 1) {
+                    e.preventDefault();
+                    const target = document.querySelector(href);
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                }
+            });
         });
 
-        // Add focus effects to form inputs
-        const formInputs = document.querySelectorAll('.form-group input, .form-group textarea');
-        
+        // Form field animations
+        const formInputs = document.querySelectorAll('.form-group input, .form-group textarea, .form-group select');
         formInputs.forEach(input => {
             input.addEventListener('focus', function() {
                 this.parentElement.style.transform = 'translateY(-2px)';
-                this.parentElement.style.transition = 'transform 0.3s';
             });
             
             input.addEventListener('blur', function() {
@@ -683,19 +1101,98 @@
             });
         });
 
-        // Prevent form submission on Enter key (except in textarea)
-        contactForm.addEventListener('keydown', function(e) {
-            if (e.key === 'Enter' && e.target.tagName !== 'TEXTAREA') {
-                e.preventDefault();
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            updateCartCount();
+
+            // Add animation to info items when they come into view
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, observerOptions);
+
+            // Observe info items for animation
+            document.querySelectorAll('.info-item').forEach(item => {
+                item.style.opacity = '0';
+                item.style.transform = 'translateY(20px)';
+                item.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                observer.observe(item);
+            });
+
+            // Observe form and contact info for animation
+            const contactForm = document.querySelector('.contact-form');
+            const contactInfo = document.querySelector('.contact-info');
+            
+            if (contactForm) {
+                contactForm.style.opacity = '0';
+                contactForm.style.transform = 'translateY(20px)';
+                contactForm.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                observer.observe(contactForm);
+            }
+            
+            if (contactInfo) {
+                contactInfo.style.opacity = '0';
+                contactInfo.style.transform = 'translateY(20px)';
+                contactInfo.style.transition = 'opacity 0.6s ease 0.2s, transform 0.6s ease 0.2s';
+                observer.observe(contactInfo);
             }
         });
 
-        // Auto-resize textarea based on content
-        messageTextarea.addEventListener('input', function() {
-            this.style.height = 'auto';
-            this.style.height = (this.scrollHeight) + 'px';
+        // Update cart count when storage changes (for multi-tab support)
+        window.addEventListener('storage', (e) => {
+            if (e.key === 'cart') {
+                updateCartCount();
+            }
         });
+
+        // Prevent form resubmission on page refresh
+        if (window.history.replaceState) {
+            window.history.replaceState(null, null, window.location.href);
+        }
+
+        // Add real-time validation feedback
+        const emailInput = document.getElementById('email');
+        if (emailInput) {
+            emailInput.addEventListener('blur', function() {
+                const email = this.value.trim();
+                if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                    this.style.borderColor = '#e74c3c';
+                    showToast('Please enter a valid email address', 'error');
+                } else if (email) {
+                    this.style.borderColor = '#27ae60';
+                }
+            });
+
+            emailInput.addEventListener('input', function() {
+                this.style.borderColor = '#ddd';
+            });
+        }
+
+        // Add name validation
+        const nameInput = document.getElementById('name');
+        if (nameInput) {
+            nameInput.addEventListener('blur', function() {
+                const name = this.value.trim();
+                if (name && name.length < 2) {
+                    this.style.borderColor = '#e74c3c';
+                } else if (name) {
+                    this.style.borderColor = '#27ae60';
+                }
+            });
+
+            nameInput.addEventListener('input', function() {
+                this.style.borderColor = '#ddd';
+            });
+        }
     </script>
 </body>
-
 </html>

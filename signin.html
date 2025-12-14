@@ -375,92 +375,105 @@
     </div>
   </div>
 
-  <script type="module">
-    import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
+  <script>
+        // Toggle password visibility
+        function togglePassword(fieldId) {
+            const field = document.getElementById(fieldId);
+            field.type = field.type === 'password' ? 'text' : 'password';
+        }
 
-    // Use environment variables in Vercel (NEXT_PUBLIC_SUPABASE_URL / NEXT_PUBLIC_SUPABASE_KEY)
-    const supabaseUrl = "https://yyhdjacrehxjjydbupix.supabase.co";
-    const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl5aGRqYWNyZWh4amp5ZGJ1cGl4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU2OTc2NzYsImV4cCI6MjA4MTI3MzY3Nn0.R4f3UBO0-8WaO5VW5_O4fxG6iOBuHBSPgUREDE1n6P4";
-    const supabase = createClient(supabaseUrl, supabaseKey);
+        // Show error message
+        function showError(message) {
+            const errorDiv = document.getElementById('errorMessage');
+            errorDiv.textContent = message;
+            errorDiv.classList.add('show');
+            setTimeout(() => errorDiv.classList.remove('show'), 5000);
+        }
 
-    // Toggle password visibility
-    function togglePassword(fieldId) {
-      const field = document.getElementById(fieldId);
-      field.type = field.type === 'password' ? 'text' : 'password';
-    }
+        // Show success message
+        function showSuccess(message) {
+            const successDiv = document.getElementById('successMessage');
+            successDiv.textContent = message;
+            successDiv.classList.add('show');
+            setTimeout(() => successDiv.classList.remove('show'), 5000);
+        }
 
-    // Show error message
-    function showError(message) {
-      const errorDiv = document.getElementById('errorMessage');
-      errorDiv.textContent = message;
-      errorDiv.classList.add('show');
-      setTimeout(() => errorDiv.classList.remove('show'), 5000);
-    }
+        // Handle form submission
+        document.getElementById('signinForm').addEventListener('submit', function(e) {
+            e.preventDefault();
 
-    // Show success message
-    function showSuccess(message) {
-      const successDiv = document.getElementById('successMessage');
-      successDiv.textContent = message;
-      successDiv.classList.add('show');
-      setTimeout(() => successDiv.classList.remove('show'), 5000);
-    }
+            // Get form values
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            const remember = document.getElementById('remember').checked;
 
-    // Handle form submission with Supabase Auth
-    document.getElementById('signinForm').addEventListener('submit', async function(e) {
-      e.preventDefault();
+            // Validation
+            if (!email || !password) {
+                showError('Please fill in all fields');
+                return;
+            }
 
-      const email = document.getElementById('email').value.trim();
-      const password = document.getElementById('password').value;
-      const remember = document.getElementById('remember').checked;
+            // Email validation
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                showError('Please enter a valid email address');
+                return;
+            }
 
-      if (!email || !password) {
-        showError('Please fill in all fields');
-        return;
-      }
+            // Get users from localStorage
+            const users = JSON.parse(localStorage.getItem('users')) || [];
+            
+            // Find user
+            const user = users.find(u => u.email === email && u.password === password);
 
-      // Supabase login
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email,
-        password
-      });
+            if (!user) {
+                showError('Invalid email or password');
+                return;
+            }
 
-      if (error) {
-        showError(error.message);
-        return;
-      }
+            // Set current user
+            const currentUser = {
+                id: user.id,
+                firstName: user.firstName,
+                lastName: user.lastName,
+                email: user.email,
+                phone: user.phone
+            };
 
-      showSuccess('Sign in successful! Redirecting...');
+            localStorage.setItem('currentUser', JSON.stringify(currentUser));
 
-      // Handle remember me (Supabase manages sessions automatically, but you can store a flag)
-      if (remember) {
-        localStorage.setItem('rememberMe', 'true');
-      } else {
-        localStorage.removeItem('rememberMe');
-      }
+            // Handle remember me
+            if (remember) {
+                localStorage.setItem('rememberMe', 'true');
+            } else {
+                localStorage.removeItem('rememberMe');
+            }
 
-      // Redirect after login
-      setTimeout(() => {
-        const redirectUrl = new URLSearchParams(window.location.search).get('redirect') || 'account.html';
-        window.location.href = redirectUrl;
-      }, 1500);
-    });
+            showSuccess('Sign in successful! Redirecting...');
 
-    // Social signin (demo placeholder)
-    function socialSignin(provider) {
-      showSuccess(`${provider} sign in coming soon!`);
-      // In production, implement Supabase OAuth: supabase.auth.signInWithOAuth({ provider })
-    }
+            // Redirect to account page or previous page
+            setTimeout(() => {
+                const redirectUrl = new URLSearchParams(window.location.search).get('redirect') || 'account.html';
+                window.location.href = redirectUrl;
+            }, 1500);
+        });
 
-    // Check if user is already signed in
-    window.addEventListener('DOMContentLoaded', async function() {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (session) {
-        showSuccess('You are already signed in. Redirecting...');
-        setTimeout(() => {
-          window.location.href = 'account.html';
-        }, 1500);
-      }
-    });
-  </script>
+        // Social signin (demo)
+        function socialSignin(provider) {
+            showSuccess(`${provider} sign in coming soon!`);
+            // In production, implement OAuth flow
+        }
+
+        // Check if user is already signed in
+        window.addEventListener('DOMContentLoaded', function() {
+            const currentUser = localStorage.getItem('currentUser');
+            if (currentUser) {
+                showSuccess('You are already signed in. Redirecting...');
+                setTimeout(() => {
+                    window.location.href = 'account.html';
+                }, 1500);
+            }
+        });
+    </script>
 </body>
 </html>

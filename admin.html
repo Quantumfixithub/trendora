@@ -881,6 +881,22 @@
                 transition-duration: 0.01ms !important;
             }
         }
+        .logo-img {
+  display: inline-block;
+  height: 40px; / header logo height /
+  width: auto;
+}
+
+.footer-logo-img {
+  height: 48px; / footer logo height /
+  width: auto;
+}
+
+/ Responsive tweak /
+@media (max-width: 480px) {
+  .logo-img { height: 32px; }
+  .footer-logo-img { height: 36px; }
+}
     </style>
 </head>
 <body>
@@ -938,6 +954,9 @@
         <main class="main-content">
             <!-- Header -->
             <div class="header">
+                <a href="index.html" class="logo" aria-label="Trendora home">
+  <img src="/trendora.jpg" alt="Trendora" class="logo-img">
+</a>
                 <h1>Welcome Back, Admin!</h1>
                 <div class="user-info">
                     <span>ADETUTU OLUWATOBI</span>
@@ -2503,3 +2522,4 @@
     </script>
 </body>
 </html>
+

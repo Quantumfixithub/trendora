@@ -381,142 +381,300 @@ footer {
 
   <div id="toast" class="toast" style="display:none"></div>
 
-  
-<script type="module">
-  import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
+  <script type="module">
+import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
-  const supabaseUrl = "https://YOUR_PROJECT.supabase.co";
-  const supabaseKey = "YOUR_ANON_PUBLIC_KEY";
-  const supabase = createClient(supabaseUrl, supabaseKey);
+// ===== CONFIG: replace with your Supabase values =====
+const SUPABASE_URL = "https://YOUR_PROJECT.supabase.co";
+const SUPABASE_ANON_KEY = "YOUR_ANON_PUBLIC_KEY";
+// =====================================================
+const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-  // Toast notification
-  function showToast(message, type = 'success') {
-    const toast = document.getElementById('toast');
-    if (!toast) return;
-    toast.textContent = message;
-    toast.className = `toast ${type} show`;
-    setTimeout(() => toast.classList.remove('show'), 3000);
-  }
+// DOM refs
+const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+const mobileMenu = document.getElementById('mobileMenu');
+const mobileMenuClose = document.getElementById('mobileMenuClose');
+const menuOverlay = document.getElementById('menuOverlay');
+const sidebarButtons = Array.from(document.querySelectorAll('.sidebar-menu .menu-btn'));
+const signOutBtn = document.getElementById('signOutBtn');
+const ordersList = document.getElementById('ordersList');
+const noOrders = document.getElementById('noOrders');
+const wishlistGrid = document.getElementById('wishlistGrid');
+const noWishlist = document.getElementById('noWishlist');
+const settingsForm = document.getElementById('settingsForm');
+const profileForm = document.getElementById('profileForm');
+const cartCountEl = document.getElementById('cartCount');
+const toastEl = document.getElementById('toast');
 
-  // Newsletter Form Submission (Supabase)
-  const newsletterForm = document.getElementById('newsletterForm');
-  if (newsletterForm) {
-    newsletterForm.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const email = document.getElementById('newsletterEmail').value.trim();
+// Simple toast
+function showToast(msg, type='success') {
+  if (!toastEl) return;
+  toastEl.textContent = msg;
+  toastEl.className = `toast ${type} show`;
+  setTimeout(()=> toastEl.classList.remove('show'), 3000);
+}
 
-      if (email) {
-        try {
-          const { error } = await supabase
-            .from('newsletter')
-            .insert([{ email }]);
+// Mobile menu handlers
+function openMobileMenu() {
+  mobileMenu?.classList.add('active');
+  menuOverlay?.classList.add('active');
+  mobileMenu?.setAttribute('aria-hidden', 'false');
+  menuOverlay?.setAttribute('aria-hidden', 'false');
+}
+function closeMobileMenu() {
+  mobileMenu?.classList.remove('active');
+  menuOverlay?.classList.remove('active');
+  mobileMenu?.setAttribute('aria-hidden', 'true');
+  menuOverlay?.setAttribute('aria-hidden', 'true');
+}
+mobileMenuBtn?.addEventListener('click', openMobileMenu);
+mobileMenuClose?.addEventListener('click', closeMobileMenu);
+menuOverlay?.addEventListener('click', closeMobileMenu);
 
-          if (error) {
-            if (error.code === '23505') {
-              showToast('You are already subscribed!', 'error');
-            } else {
-              console.error('Supabase error:', error);
-              showToast('Subscription failed. Try again.', 'error');
-            }
-          } else {
-            showToast('Successfully subscribed to our newsletter!', 'success');
-            newsletterForm.reset();
-          }
-        } catch (err) {
-          console.error('Error subscribing:', err);
-          showToast('Unexpected error. Please try again.', 'error');
-        }
-      }
-    });
-  }
-
-  // Add item to cart (Supabase)
-  async function addToCart(productId, quantity = 1) {
-    const { data: { session } } = await supabase.auth.getSession();
-    if (!session) {
-      alert("Please sign in to add items to your cart.");
-      window.location.href = "signin.html";
-      return;
-    }
-
-    const userId = session.user.id;
-
-    const { error } = await supabase
-      .from('cart')
-      .insert([{ user_id: userId, product_id: productId, quantity }]);
-
-    if (error) {
-      console.error("Error adding to cart:", error);
-      showToast("Failed to add item.", "error");
+// NAVBAR: set active link based on current page (index.html patterns)
+document.querySelectorAll('nav .nav-links a').forEach(a => {
+  try {
+    if (a.getAttribute('href') === window.location.pathname.split('/').pop()) {
+      a.classList.add('active');
     } else {
-      showToast("Item added to cart!", "success");
-      updateCartCount();
+      a.classList.remove('active');
     }
-  }
+  } catch(e){}
+});
 
-  // Update Cart Count (Supabase)
-  async function updateCartCount() {
-    const cartCountElement = document.getElementById('cartCount');
-    if (!cartCountElement) return;
+// Sidebar navigation: keyboard + click friendly
+function activateSection(sectionId, buttonEl) {
+  document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
+  const target = document.getElementById(sectionId);
+  if (target) target.classList.add('active');
+  sidebarButtons.forEach(b => b.classList.remove('active'));
+  if (buttonEl) buttonEl.classList.add('active');
+  // close mobile menu after navigation
+  closeMobileMenu();
+}
 
-    const { data: { session } } = await supabase.auth.getSession();
-    if (!session) {
-      cartCountElement.style.display = 'none';
-      return;
-    }
-
-    const userId = session.user.id;
-
-    const { data, error } = await supabase
-      .from('cart')
-      .select('quantity')
-      .eq('user_id', userId);
-
-    if (error) {
-      console.error("Error fetching cart:", error);
-      cartCountElement.style.display = 'none';
-      return;
-    }
-
-    const totalItems = data.reduce((sum, item) => sum + (item.quantity || 1), 0);
-
-    if (totalItems > 0) {
-      cartCountElement.textContent = totalItems;
-      cartCountElement.style.display = 'inline-block';
-    } else {
-      cartCountElement.style.display = 'none';
-    }
-  }
-
-  // Remove item from cart
-  async function removeFromCart(productId) {
-    const { data: { session } } = await supabase.auth.getSession();
-    if (!session) return;
-
-    const userId = session.user.id;
-
-    const { error } = await supabase
-      .from('cart')
-      .delete()
-      .eq('user_id', userId)
-      .eq('product_id', productId);
-
-    if (error) {
-      console.error("Error removing item:", error);
-    } else {
-      showToast("Item removed from cart", "success");
-      updateCartCount();
-    }
-  }
-
-  // Initialize on page load
-  document.addEventListener('DOMContentLoaded', () => {
-    updateCartCount();
+sidebarButtons.forEach(btn => {
+  btn.addEventListener('click', (e) => {
+    const sec = btn.dataset.section;
+    activateSection(sec, btn);
   });
+  btn.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      btn.click();
+    }
+  });
+});
+
+// Sign out
+signOutBtn?.addEventListener('click', async (e) => {
+  e.preventDefault();
+  try {
+    await supabase.auth.signOut();
+    showToast('Signed out', 'success');
+    setTimeout(()=> window.location.href = 'index.html', 700);
+  } catch (err) {
+    console.error('Sign out error', err);
+    showToast('Sign out failed', 'error');
+  }
+});
+
+// Ensure Orders/Wishlist/Settings are responsive even if empty
+function renderEmptyStates() {
+  if (ordersList && (!ordersList.innerHTML || ordersList.innerHTML.trim() === '')) {
+    noOrders.style.display = 'block';
+  } else {
+    noOrders.style.display = 'none';
+  }
+  if (wishlistGrid && (!wishlistGrid.innerHTML || wishlistGrid.innerHTML.trim() === '')) {
+    noWishlist.style.display = 'block';
+  } else {
+    noWishlist.style.display = 'none';
+  }
+}
+renderEmptyStates();
+
+// Load orders (called from init too)
+async function loadOrders(userId) {
+  if (!ordersList) return;
+  ordersList.innerHTML = '<p>Loading orders...</p>';
+  try {
+    const { data, error } = await supabase
+      .from('orders')
+      .select('id, status, total, shipping, tax, created_at, order_items (id, product_name, unit_price, quantity)')
+      .eq('customer_id', userId)
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      console.error('Error fetching orders', error);
+      ordersList.innerHTML = '<p class="muted">Unable to load orders.</p>';
+      return;
+    }
+    if (!data || data.length === 0) {
+      ordersList.innerHTML = '';
+      noOrders.style.display = 'block';
+      return;
+    }
+    noOrders.style.display = 'none';
+    ordersList.innerHTML = data.map(order => {
+      const items = (order.order_items || []).map(it => `<div style="display:flex;justify-content:space-between"><div>${escapeHtml(it.product_name)}</div><div>${it.quantity} × $${Number(it.unit_price).toFixed(2)}</div></div>`).join('');
+      return `<div style="border:1px solid #eef2f6;border-radius:8px;padding:12px;margin-bottom:12px">
+        <div style="display:flex;justify-content:space-between"><strong>Order #${escapeHtml(order.id)}</strong><small>${new Date(order.created_at).toLocaleString()}</small></div>
+        <div style="margin-top:8px">${items}</div>
+        <div style="display:flex;justify-content:space-between;margin-top:8px"><strong>Total: $${Number(order.total).toFixed(2)}</strong><small>${escapeHtml(order.status)}</small></div>
+      </div>`;
+    }).join('');
+  } catch (err) {
+    console.error('loadOrders exception', err);
+    ordersList.innerHTML = '<p class="muted">Error loading orders.</p>';
+  }
+}
+
+// Simple wishlist loader (adjust if you have wishlist table)
+async function loadWishlist(userId) {
+  if (!wishlistGrid) return;
+  wishlistGrid.innerHTML = '<p>Loading wishlist...</p>';
+  try {
+    const { data, error } = await supabase
+      .from('wishlist')
+      .select('id, product_id, product_name, created_at')
+      .eq('user_id', userId)
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      console.error('wishlist fetch error', error);
+      wishlistGrid.innerHTML = '<p class="muted">Unable to load wishlist.</p>';
+      return;
+    }
+    if (!data || data.length === 0) {
+      wishlistGrid.innerHTML = '';
+      noWishlist.style.display = 'block';
+      return;
+    }
+    noWishlist.style.display = 'none';
+    wishlistGrid.innerHTML = data.map(item => `<div style="border:1px solid #eef2f6;padding:10px;border-radius:8px;margin-bottom:10px"><div>${escapeHtml(item.product_name || item.product_id)}</div></div>`).join('');
+  } catch (err) {
+    console.error('loadWishlist exception', err);
+    wishlistGrid.innerHTML = '<p class="muted">Error loading wishlist.</p>';
+  }
+}
+
+// Utility: escape HTML
+function escapeHtml(unsafe) {
+  if (unsafe === null || unsafe === undefined) return '';
+  return String(unsafe).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;');
+}
+
+// Profile save handler (keeps same logic)
+profileForm?.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const firstName = document.getElementById('firstName').value.trim();
+  const lastName = document.getElementById('lastName').value.trim();
+  const email = document.getElementById('emailField').value.trim();
+  const phone = document.getElementById('phone').value.trim();
+  const bio = document.getElementById('bio').value.trim();
+
+  const { data } = await supabase.auth.getSession();
+  const user = data?.session?.user;
+  if (!user) { showToast('Not signed in', 'error'); return; }
+
+  const profile = { id: user.id, email, first_name: firstName, last_name: lastName, phone, bio };
+  const { error } = await supabase.from('customers').upsert(profile, { onConflict: ['id'] });
+  if (error) {
+    console.error('profile upsert error', error);
+    showToast('Failed to save profile', 'error');
+  } else {
+    showToast('Profile saved', 'success');
+  }
+});
+
+// Settings save (same as before)
+settingsForm?.addEventListener('submit', (e) => {
+  e.preventDefault();
+  const language = document.getElementById('language').value;
+  const currency = document.getElementById('currency').value;
+  localStorage.setItem('trendora_settings', JSON.stringify({ language, currency }));
+  showToast('Settings saved', 'success');
+});
+
+// Update cart count
+async function updateCartCount() {
+  try {
+    const { data } = await supabase.auth.getSession();
+    const user = data?.session?.user;
+    if (!user) { cartCountEl.style.display = 'none'; return; }
+    const { data: items, error } = await supabase.from('cart').select('quantity').eq('user_id', user.id);
+    if (error) { console.error('cart fetch error', error); cartCountEl.style.display='none'; return; }
+    const total = (items || []).reduce((s, it) => s + (it.quantity || 1), 0);
+    if (total > 0) {
+      cartCountEl.textContent = total;
+      cartCountEl.style.display = 'inline-block';
+    } else cartCountEl.style.display = 'none';
+  } catch (err) {
+    console.error('updateCartCount err', err);
+    cartCountEl.style.display = 'none';
+  }
+}
+
+// Init: check session, load profile, orders, wishlist
+(async function init() {
+  try {
+    const { data } = await supabase.auth.getSession();
+    const session = data?.session;
+    if (!session || !session.user) {
+      // Not signed in -> redirect to signin
+      window.location.href = 'signin.html';
+      return;
+    }
+    const user = session.user;
+
+    // Prefill profile fields from customers table or user metadata
+    const { data: profile, error } = await supabase.from('customers').select('*').eq('id', user.id).single();
+    if (!error && profile) {
+      document.getElementById('firstName').value = profile.first_name || profile.full_name?.split(' ')[0] || '';
+      document.getElementById('lastName').value = profile.last_name || (profile.full_name ? profile.full_name.split(' ').slice(1).join(' ') : '');
+      document.getElementById('emailField').value = profile.email || user.email || '';
+      document.getElementById('phone').value = profile.phone || '';
+      document.getElementById('bio').value = profile.bio || '';
+    } else {
+      // fallback to auth metadata
+      const metadata = user.user_metadata || {};
+      document.getElementById('firstName').value = metadata.firstName || metadata.first_name || '';
+      document.getElementById('lastName').value = metadata.lastName || metadata.last_name || '';
+      document.getElementById('emailField').value = user.email || '';
+      document.getElementById('phone').value = metadata.phone || '';
+    }
+
+    // Load orders and wishlist
+    await loadOrders(user.id);
+    await loadWishlist(user.id);
+    await updateCartCount();
+
+    // Bind keyboard navigation for sidebar
+    document.querySelectorAll('.sidebar-menu .menu-btn').forEach((b, i, arr) => {
+      b.setAttribute('tabindex', '0');
+      b.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowDown') { e.preventDefault(); const next = arr[(i+1)%arr.length]; next.focus(); }
+        if (e.key === 'ArrowUp') { e.preventDefault(); const prev = arr[(i-1+arr.length)%arr.length]; prev.focus(); }
+      });
+    });
+
+    // ensure initial active link highlights
+    const activeBtn = document.querySelector('.sidebar-menu .menu-btn.active') || document.querySelector('.sidebar-menu .menu-btn');
+    if (activeBtn) {
+      activateSection(activeBtn.dataset.section, activeBtn);
+    }
+
+    // listen for auth changes to redirect when signed out
+    supabase.auth.onAuthStateChange((event, sess) => {
+      if (event === 'SIGNED_OUT') window.location.href = 'index.html';
+    });
+
+  } catch (err) {
+    console.error('Init error', err);
+    showToast('Initialization error', 'error');
+  }
+})();
 </script>
-</body>  
+</body>
 </html>
-
-
-
-

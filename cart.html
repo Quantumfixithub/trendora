@@ -542,6 +542,106 @@
     </footer>
 
 <script>
+
+<script type="module">
+  import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
+
+  const supabaseUrl = "https://YOUR_PROJECT.supabase.co";
+  const supabaseKey = "YOUR_ANON_PUBLIC_KEY";
+  const supabase = createClient(supabaseUrl, supabaseKey);
+
+  // Add item to cart
+  async function addToCart(productId, quantity = 1) {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) {
+      alert("Please sign in to add items to your cart.");
+      window.location.href = "signin.html";
+      return;
+    }
+
+    const userId = session.user.id;
+
+    const { data, error } = await supabase
+      .from("cart")
+      .insert([{ user_id: userId, product_id: productId, quantity }]);
+
+    if (error) {
+      console.error("Error adding to cart:", error);
+    } else {
+      showToast("Item added to cart!", "success");
+      updateCartCount();
+    }
+  }
+
+  // Get cart count
+  async function updateCartCount() {
+    const cartCountElement = document.getElementById("cartCount");
+    if (!cartCountElement) return;
+
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) {
+      cartCountElement.style.display = "none";
+      return;
+    }
+
+    const userId = session.user.id;
+
+    const { data, error } = await supabase
+      .from("cart")
+      .select("quantity")
+      .eq("user_id", userId);
+
+    if (error) {
+      console.error("Error fetching cart:", error);
+      cartCountElement.style.display = "none";
+      return;
+    }
+
+    const totalItems = data.reduce((sum, item) => sum + (item.quantity || 1), 0);
+
+    if (totalItems > 0) {
+      cartCountElement.textContent = totalItems;
+      cartCountElement.style.display = "inline-block";
+    } else {
+      cartCountElement.style.display = "none";
+    }
+  }
+
+  // Remove item from cart
+  async function removeFromCart(productId) {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) return;
+
+    const userId = session.user.id;
+
+    const { error } = await supabase
+      .from("cart")
+      .delete()
+      .eq("user_id", userId)
+      .eq("product_id", productId);
+
+    if (error) {
+      console.error("Error removing item:", error);
+    } else {
+      showToast("Item removed from cart", "success");
+      updateCartCount();
+    }
+  }
+
+  // Toast notification
+  function showToast(message, type = "success") {
+    const toast = document.getElementById("toast");
+    if (!toast) return;
+    toast.textContent = message;
+    toast.className = `toast ${type} show`;
+    setTimeout(() => toast.classList.remove("show"), 3000);
+  }
+
+  // Initialize cart count on page load
+  document.addEventListener("DOMContentLoaded", updateCartCount);
+</script>
+
+    <script>
     // Header interactions: desktop dropdown and mobile drawer
     (function(){
         const shopCaret = document.getElementById('shopCaret');
@@ -870,5 +970,6 @@
 </script>
 </body>
 </html>
+
 
 

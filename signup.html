@@ -403,8 +403,83 @@
     // Use your Supabase project credentials (or environment variables in Vercel)
     const supabaseUrl = "https://yyhdjacrehxjjydbupix.supabase.co";
     const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl5aGRqYWNyZWh4amp5ZGJ1cGl4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU2OTc2NzYsImV4cCI6MjA4MTI3MzY3Nn0.R4f3UBO0-8WaO5VW5_O4fxG6iOBuHBSPgUREDE1n6P4";
-    const supabase = createClient(supabaseUrl, supabaseKey);
+    const supabase = createClient("https://yyhdjacrehxjjydbupix.supabase.co, eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl5aGRqYWNyZWh4amp5ZGJ1cGl4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU2OTc2NzYsImV4cCI6MjA4MTI3MzY3Nn0.R4f3UBO0-8WaO5VW5_O4fxG6iOBuHBSPgUREDE1n6P4");
 
+
+
+    const messages = document.getElementById('messages');
+
+    function showMessage(text, type='info') {
+      messages.innerHTML = `<div class="${type === 'error' ? 'error' : 'success'}">${text}</div>`;
+      setTimeout(()=> messages.innerHTML='', 4000);
+    }
+
+    document.getElementById('signupForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const firstName = document.getElementById('firstName').value.trim();
+      const lastName = document.getElementById('lastName').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const phone = document.getElementById('phone').value.trim();
+      const password = document.getElementById('password').value;
+
+      if (!firstName || !lastName || !email || !phone || !password) {
+        showMessage('Please complete all fields', 'error'); return;
+      }
+
+      if (password.length < 8) {
+        showMessage('Password must be at least 8 characters', 'error'); return;
+      }
+
+      try {
+        // SIGN UP with metadata stored in user.app_metadata / user.user_metadata
+        const { data, error } = await supabase.auth.signUp({
+          email,
+          password,
+          options: {
+            data: { firstName, lastName, phone }
+          }
+        });
+
+        console.log('signUp result', { data, error });
+
+        if (error) {
+          showMessage(error.message, 'error'); return;
+        }
+
+        // If user created immediately (no email confirm required), create profile row
+        const user = data?.user ?? null;
+        if (user) {
+          // Create customers profile row linked to auth user id
+          const profile = {
+            id: user.id,
+            full_name: `${firstName} ${lastName}`,
+            email: user.email,
+            phone
+          };
+          const { data: profData, error: profErr } = await supabase
+            .from('customers')
+            .upsert(profile, { onConflict: ['id'] })
+            .select()
+            .single();
+
+          if (profErr) console.error('profile upsert error', profErr);
+          else console.log('profile upserted', profData);
+        }
+
+        // Inform user and redirect (if desired)
+        if (data?.user) {
+          showMessage('Account created. You are signed in.', 'success');
+          // optional: redirect to account page
+          setTimeout(()=> window.location.href = '/account.html', 1200);
+        } else {
+          showMessage('Account created. Check your email to confirm.', 'success');
+        }
+      } catch (err) {
+        console.error(err);
+        showMessage(err.message || 'Signup failed', 'error');
+      }
+    });
+ 
     function togglePassword(fieldId) {
       const field = document.getElementById(fieldId);
       field.type = field.type === 'password' ? 'text' : 'password';
@@ -491,5 +566,6 @@
 </body>
 
 </html>
+
 
 

@@ -297,6 +297,138 @@
                 height: 250px;
             }
         }
+
+        /* Footer (replace/merge with existing footer rules) */
+footer {
+  background: #2c3e50;
+  color: white;
+  padding: 4rem 5% 2rem;
+  margin-top: 4rem;
+}
+
+.footer-inner {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 3rem;
+  margin-bottom: 3rem;
+}
+
+.footer-brand .logo {
+  color: white;
+  font-size: 1.8rem;
+  margin-bottom: 1rem;
+  display: block;
+  font-family: "Playfair Display", serif;
+  text-decoration: none;
+}
+
+.footer-brand p {
+  color: #bdc3c7;
+  margin-top: 0.5rem;
+  line-height: 1.8;
+  max-width: 340px;
+}
+
+.footer-links h4 {
+  margin-bottom: 1rem;
+  color: white;
+}
+
+.footer-links ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.footer-links a {
+  color: #bdc3c7;
+  text-decoration: none;
+  display: block;
+  padding: 0.25rem 0;
+  transition: color 0.3s;
+}
+
+.footer-links a:hover {
+  color: white;
+}
+
+.social-icons {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.social-icons a {
+  width: 45px;
+  height: 45px;
+  background: #34495e;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  color: white;
+  text-decoration: none;
+  transition: transform 0.25s, background 0.25s;
+}
+
+.social-icons a:hover {
+  background: #e74c3c;
+  transform: translateY(-3px);
+}
+
+.footer-bottom {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding-top: 2rem;
+  border-top: 1px solid #34495e;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  font-size: 0.9rem;
+}
+
+.footer-bottom .links {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.footer-bottom a {
+  color: #bdc3c7;
+  text-decoration: none;
+}
+
+.footer-bottom a:hover {
+  color: white;
+}
+
+/* Responsive: smaller screens */
+@media (max-width: 768px) {
+  .footer-bottom { flex-direction: column; text-align: center; }
+  .footer-brand p { margin: 0 auto 1rem; }
+}
+
+.logo-img {
+  display: inline-block;
+  height: 40px; / header logo height /
+  width: auto;
+}
+
+.footer-logo-img {
+  height: 48px; / footer logo height /
+  width: auto;
+}
+
+/ Responsive tweak /
+@media (max-width: 480px) {
+  .logo-img { height: 32px; }
+  .footer-logo-img { height: 36px; }
+}
     </style>
 </head>
 <body>
@@ -366,6 +498,50 @@
     </section>
 
     <div class="toast" id="toast"></div>
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <a href="index.html" class="logo" aria-label="Trendora home">
+    <img src="/assets/images/logo.svg" alt="Trendora" class="logo-img footer-logo-img">
+  </a>
+      <p>Your choice, your style, your identity. Discover curated fashion trends that define who you are.</p>
+      <div class="social-icons" aria-label="Follow us">
+        <a href="#" aria-label="Facebook">📘</a>
+        <a href="#" aria-label="Instagram">📷</a>
+        <a href="#" aria-label="Twitter">🐦</a>
+        <a href="#" aria-label="Pinterest">📌</a>
+      </div>
+    </div>
+
+    <div class="footer-links" aria-labelledby="quick-links-title">
+      <h4 id="quick-links-title">Quick Links</h4>
+      <ul>
+        <li><a href="shop.html">Shop All</a></li>
+        <li><a href="about.html">About Us</a></li>
+        <li><a href="contact.html">Contact</a></li>
+        <li><a href="account.html">My Account</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-links" aria-labelledby="customer-service-title">
+      <h4 id="customer-service-title">Customer Service</h4>
+      <ul>
+        <li><a href="shipping.html">Shipping Info</a></li>
+        <li><a href="returns.html">Returns</a></li>
+        <li><a href="size.html">Size Guide</a></li>
+        <li><a href="faq.html">FAQ</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="footer-bottom">
+    <div>© 2025 Trendora. All rights reserved.</div>
+    <div class="links">
+      <a href="privacy.html">Privacy Policy</a>
+      <a href="terms.html">Terms of Service</a>
+    </div>
+  </div>
+</footer>
 
     <script src="auth.js"></script>
     <script>
@@ -592,4 +768,5 @@
 </body>
 
 </html>
+
 
